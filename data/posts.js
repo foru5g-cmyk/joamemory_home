@@ -1,5 +1,16 @@
-window.JOA_POSTS_AT = 1795261547342;
+window.JOA_POSTS_AT = 1795271177703;
 window.JOA_POSTS = [
+  {
+    "id": "pmwqi3u93",
+    "menu": "mmwqi3ngt",
+    "date": "2026-11-21",
+    "icon": "",
+    "title": "",
+    "body": "asd",
+    "tags": [],
+    "images": [],
+    "pin": false
+  },
   {
     "id": "p20261121",
     "menu": "news",
@@ -107,7 +118,7 @@ window.JOA_POSTS = [
     "date": "2026-11-07",
     "icon": "📖",
     "title": "사용 설명서",
-    "body": "조아메모리 화면과 기능을 두 장에 담았어요. (수정전 버전이예요! 참고만 해주세요.)",
+    "body": "조아메모리 화면과 기능을 두 장에 담았어요.",
     "tags": [
       "처음"
     ],
