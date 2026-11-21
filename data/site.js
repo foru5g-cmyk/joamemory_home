@@ -1,4 +1,4 @@
-window.JOA_SITE_AT = 1795271170062;
+window.JOA_SITE_AT = 1795271229455;
 window.JOA_SITE = {
   "small": "랙시들의",
   "title": "조아메모리",
@@ -39,6 +39,12 @@ window.JOA_SITE = {
       "kind": "faq"
     },
     {
+      "id": "mmwqi3ngt",
+      "icon": "🗒️",
+      "name": "피드",
+      "kind": "stream"
+    },
+    {
       "id": "bug",
       "icon": "🐞",
       "name": "오류 알리기",
@@ -46,12 +52,6 @@ window.JOA_SITE = {
       "text": "오류는 지금처럼 다음 카페 조아메모리 글에 댓글로 알려 주세요.\n조아메모리 › 설정 › 기록 › 오류 기록 화면을 캡처해서 같이 올려 주시면 훨씬 빨리 찾아요.\n쓰는 판 번호와 폰·컴 중 어디인지도 같이 적어 주세요.",
       "linkName": "카페 글로 가기",
       "linkUrl": "https://cafe.daum.net/subdued20club/VrjL/1002719"
-    },
-    {
-      "id": "mmwqi3ngt",
-      "icon": "🗒️",
-      "name": "피드",
-      "kind": "stream"
     }
   ]
 };
