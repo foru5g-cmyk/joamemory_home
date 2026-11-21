@@ -1,4 +1,4 @@
-window.JOA_POSTS_AT = 1795251135183;
+window.JOA_POSTS_AT = 1795251138715;
 window.JOA_POSTS = [
   {
     "id": "p20261121",
@@ -246,7 +246,7 @@ window.JOA_POSTS = [
       "로그"
     ],
     "images": [],
-    "pin": true
+    "pin": false
   },
   {
     "id": "t-textjoah",
