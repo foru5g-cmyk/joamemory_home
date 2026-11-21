@@ -7,29 +7,12 @@
   const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
   const hexRgb = h => { h = String(h).replace('#', ''); if (h.length === 3) h = [...h].map(c => c + c).join(''); const n = parseInt(h, 16) || 0; return [n >> 16 & 255, n >> 8 & 255, n & 255]; };
   const mix = (a, b, t) => '#' + hexRgb(a).map((x, i) => Math.round(x + (hexRgb(b)[i] - x) * t).toString(16).padStart(2, '0')).join(''); // a→b로 t만큼
-  const ARTS = {
-    heart: ['하트', [' x   x ', 'xxxxxxx', 'xxxxxxx', ' xxxxx ', '  xxx  ', '   x   ']],
-    kiss: ['큰 하트', [' x   x ', 'xxx xxx', 'xxxxxxx', ' xxxxx ', '  xxx  ', '   x   ']],
-    star: ['별', ['   x   ', '  xxx  ', 'xxxxxxx', ' xxxxx ', ' xx xx ', 'x     x']],
-    smile: ['웃음', [' xxxxx ', 'x     x', 'x x x x', 'x     x', 'x xxx x', ' xxxxx ']],
-    bolt: ['번개', ['   xxx ', '  xxx  ', ' xxxxx ', '   xx  ', '  xx   ', ' x     ']],
-    cat: ['고양이', ['x     x', 'xx   xx', 'xxxxxxx', 'x xxx x', 'xxxxxxx', ' xxxxx ']],
-    flower: ['꽃', ['  x x  ', ' xxxxx ', 'xx x xx', ' xxxxx ', '  x x  ', '   x   ']],
-  };
   // 소식 색: 바탕만 고르면 나머지(내 말풍선·버튼·그림 글자색)는 바탕에서 뽑아요
   const NEWS = [
-    { name: '보라', bg: '#c9d2e4', av: '🐯', art: 'heart', ch: '앙', acc: '#7b61d9' },
-    { name: '민트', bg: '#d3e8dc', av: '🐣', art: 'star', ch: '뿅', acc: '#3f9d6b' },
-    { name: '살구', bg: '#f1dccd', av: '🐱', art: 'smile', ch: '냥', acc: '#d9774a' },
-    { name: '분홍', bg: '#efd5df', av: '🐰', art: 'kiss', ch: '쪽', acc: '#d6588a' },
-    { name: '하늘', bg: '#cfe0f1', av: '🐻', art: 'bolt', ch: '슝', acc: '#3d7fc4' },
-    { name: '노랑', bg: '#f1e6c2', av: '🐥', art: 'flower', ch: '삐', acc: '#c9971a' },
-    { name: '라벤더', bg: '#ddd5f0', av: '🦄', art: 'star', ch: '반', acc: '#8a5cf0' },
-    { name: '회색', bg: '#dcdde2', av: '🐨', art: 'cat', ch: '냐', acc: '#5f6070' },
+    { name: '보라', bg: '#c9d2e4', acc: '#7b61d9' }, { name: '민트', bg: '#d3e8dc', acc: '#3f9d6b' }, { name: '살구', bg: '#f1dccd', acc: '#d9774a' }, { name: '분홍', bg: '#efd5df', acc: '#d6588a' },
+    { name: '하늘', bg: '#cfe0f1', acc: '#3d7fc4' }, { name: '노랑', bg: '#f1e6c2', acc: '#c9971a' }, { name: '라벤더', bg: '#ddd5f0', acc: '#8a5cf0' }, { name: '회색', bg: '#dcdde2', acc: '#5f6070' },
   ];
-  const AVS = ['🐯', '🐣', '🐱', '🐰', '🐻', '🐥', '🦄', '🐨', '🐶', '🦊', '🐼', '🐸', '🐹', '💜'];
   const ACCS = ['#7b61d9', '#3f9d6b', '#d9774a', '#d6588a', '#3d7fc4', '#c9971a', '#8a5cf0', '#5f6070'];
-  const PHRASES = ['huh', 'Go on with what you were doing.', 'Alright.', 'Go ahead.', 'Come on.', 'Hear that?', 'yeah?', '…흥미롭네.'];
   const CSS = `
   .mk { width:780px; color:#17151f; font-family:'Gowun Dodum','Malgun Gothic','Segoe UI Emoji',sans-serif; word-break:keep-all; letter-spacing:0; line-height:normal; }
   .mk * { box-sizing:border-box; margin:0; padding:0; }
@@ -48,10 +31,6 @@
   .mk .b b { display:block; font-weight:400; font-size:28px; line-height:1.35; }
   .mk .b span { display:block; font-size:22px; color:#807b8c; margin-top:3px; }
   .mk .t { font-size:20px; color:#4a5670; padding-bottom:6px; flex:none; }
-  .mk .art { padding:18px 22px 16px; }
-  .mk .art p { font-family:'Jua','Malgun Gothic',sans-serif; font-size:25px; }
-  .mk .art p span { display:block; height:30px; color:inherit; font-size:inherit; margin:0; }
-  .mk .art p i { display:inline-block; width:28px; text-align:center; font-style:normal; }
   .mk .me { display:flex; justify-content:flex-end; align-items:flex-end; gap:14px; padding:14px 24px 0; }
   .mk .me .b { border-radius:26px 26px 8px 26px; font-size:28px; }
   .mk .card { margin:34px 32px 0; background:#f2f3f9; border-radius:26px; padding:24px 30px 26px; font-size:25px; line-height:1.75; color:#4a4860; }
@@ -127,7 +106,6 @@
 
   const now = () => { const d = new Date(), h = d.getHours(); return (h < 12 ? '오전 ' : '오후 ') + ((h % 12) || 12) + ':' + String(d.getMinutes()).padStart(2, '0'); };
   const later = t => { const m = t.match(/(\d+):(\d+)$/); if (!m) return t; let mm = +m[2] + 1, hh = +m[1]; if (mm > 59) { mm = 0; hh = hh % 12 + 1; } return t.replace(/\d+:\d+$/, hh + ':' + String(mm).padStart(2, '0')); };
-  const art = (k, ch, col) => '<p style="color:' + col + '">' + (ARTS[k] || ARTS.heart)[1].map(r => '<span>' + [...r].map(c => '<i>' + (c === 'x' ? esc(ch) : '') + '</i>').join('') + '</span>').join('') + '</p>';
   const lines = t => String(t || '').split('\n').map(x => x.trim()).filter(Boolean);
   const pair = l => { const i = l.indexOf('|'); return i < 0 ? [l, ''] : [l.slice(0, i).trim(), l.slice(i + 1).trim()]; };
   const cardLine = l => { const [a, b] = pair(l), m = a.match(/^(\p{Extended_Pictographic}️?)\s*(.*)$/u); return m ? [m[1], m[2], b] : ['•', a, b]; };
@@ -137,24 +115,23 @@
     const bg = d.bg, acc = d.acc, t1 = d.time || now(), avbg = mix(bg, '#ffffff', .6), me = mix(bg, '#ffffff', .55);
     const bubbles = lines(d.bubbles).map(pair), cards = lines(d.cards).map(cardLine);
     return `<div class="mk" style="background:${bg}">
-      <div class="top"><span class="back">‹</span><span class="em">💜</span><h1>조아메모리</h1><small>업데이트</small></div>
+      <div class="top"><span class="back">‹</span><h1>${esc(d.head || '조아메모리')}</h1>${d.sub ? `<small>${esc(d.sub)}</small>` : ''}</div>
       <div class="pill"><i>${esc(d.pill || '소식')}</i></div>
-      <div class="row"><div class="av" style="background:${avbg}">${esc(d.av)}</div><div><div class="who">조아메모리</div>
-        ${d.ch ? `<div class="line first"><div class="b art">${art(d.art, d.ch, acc)}</div>${bubbles.length ? '' : `<div class="t">${t1}</div>`}</div>` : ''}
-        ${bubbles.map(([a, b], i) => `<div class="line${!d.ch && !i ? ' first' : ''}"><div class="b"><b>${esc(a)}</b>${b ? `<span>${esc(b)}</span>` : ''}</div>${i === bubbles.length - 1 ? `<div class="t">${t1}</div>` : ''}</div>`).join('')}
+      <div class="row"><div class="av" style="background:${avbg}">${d.av ? esc(d.av) : '<img src="img/icon.png" alt="" style="width:100%;height:100%;border-radius:26px">'}</div><div><div class="who">${esc(d.head || '조아메모리')}</div>
+        ${bubbles.map(([a, b], i) => `<div class="line${!i ? ' first' : ''}"><div class="b"><b>${esc(a)}</b>${b ? `<span>${esc(b)}</span>` : ''}</div>${i === bubbles.length - 1 ? `<div class="t">${t1}</div>` : ''}</div>`).join('')}
       </div></div>
       ${d.me ? `<div class="me"><div class="t">${later(t1)}</div><div class="b" style="background:${me}">${esc(d.me)}</div></div>` : ''}
       ${cards.length ? `<div class="card">${cards.map(([e, a, b]) => `${e}<b>${esc(a)}</b>${esc(b)}`).join('<br>')}</div>` : ''}
       ${d.foot ? `<div class="foot"><i>${esc(d.foot)}</i></div>` : '<div class="nofoot"></div>'}
-      <div class="bar"><div>💌 조아메모리${d.ver ? ' ' + esc(d.ver) : ''}</div><u style="background:${acc}">💜</u></div></div>`;
+      <div class="bar"><div>조아메모리${d.ver ? ' ' + esc(d.ver) : ''}</div><u style="background:${acc};color:#fff;font-weight:700">↑</u></div></div>`;
   }
   // 쓰는 법: 카페 설명 그림 모양
   function guideHtml(d) {
     const acc = d.acc, stepBg = mix(acc, '#ffffff', .93), tipBg = mix(acc, '#ffffff', .9), steps = d.steps.filter(x => x.t || x.p || x.img), tips = lines(d.tips).map(cardLine), errs = lines(d.errs).map(l => l.split('|').map(x => x.trim()));
     return `<div class="gd"><div class="cd">
-      <h1>${esc(d.title || '제목')}</h1><p class="lead">조아메모리${d.lead ? ' · ' + esc(d.lead) : ' 쓰는 법'}</p>
+      <h1>${esc(d.title || '제목')}</h1>${d.lead ? `<p class="lead">${esc(d.lead)}</p>` : ''}
       <div class="steps">${steps.map((x, i) => `<div class="st" style="background:${stepBg}"><div class="n" style="background:${acc}">${i + 1}</div><div class="sb">${x.t ? `<b>${esc(x.t)}</b>` : ''}${x.p ? `<p>${esc(x.p)}</p>` : ''}${x.img ? `<img src="${x.img}" alt="">` : ''}</div></div>`).join('')}</div>
-      ${errs.length ? `<div class="eh"><span>오류에 뜨는 말</span><span>원인 → 고치는 법</span></div>${errs.map(([a, b, c]) => `<div class="er"><div class="tg">${a.split(/s*·s*/).filter(Boolean).map(x => `<i>${esc(x)}</i>`).join('')}</div><div class="rs">${esc(b)}${c ? `<u style="color:${acc}">→ ${esc(c)}</u>` : ''}</div></div>`).join('')}` : ''}
+      ${errs.length ? `<div class="eh"><span>오류에 뜨는 말</span><span>원인 → 고치는 법</span></div>${errs.map(([a, b, c]) => `<div class="er"><div class="tg">${a.split(/\s*·\s*/).filter(Boolean).map(x => `<i>${esc(x)}</i>`).join('')}</div><div class="rs">${esc(b)}${c ? `<u style="color:${acc}">→ ${esc(c)}</u>` : ''}</div></div>`).join('')}` : ''}
       ${tips.length ? `<div class="tips" style="background:${tipBg}">${tips.map(([e, a, b]) => `${e}<b>${esc(a)}</b>${esc(b)}`).join('<br>')}</div>` : ''}
       <div class="ft">조아메모리ෆ${d.ver ? ' ' + esc(d.ver) : ''}</div></div></div>`;
   }
@@ -180,13 +157,12 @@
 
   // 소식 칸들
   const newsForm = d => `
-      <label>색<div class="sw">${NEWS.map((t, i) => `<button type="button" data-preset="${i}" aria-pressed="${d.bg === t.bg}"><i style="background:${t.bg}">${t.av}</i>${t.name}</button>`).join('')}<input type="color" class="cpick" data-k="bg" value="${d.bg}" title="바탕색 직접 고르기"></div></label>
-      <label>프로필<div class="em">${AVS.map(a => `<button type="button" data-av="${a}" aria-pressed="${d.av === a}">${a}</button>`).join('')}</div></label>
-      <div class="two"><label>첫 그림 모양<div class="sw">${Object.entries(ARTS).map(([k, [n]]) => `<button type="button" data-art="${k}" aria-pressed="${d.art === k}" style="padding:5px 11px">${n}</button>`).join('')}</div></label>
-        <label>그림 글자 (비우면 그림 없음)<input data-k="ch" maxlength="2" value="${esc(d.ch)}"></label></div>
+      <label>색<div class="sw">${NEWS.map((t, i) => `<button type="button" data-preset="${i}" aria-pressed="${d.bg === t.bg}"><i style="background:${t.bg}"></i>${t.name}</button>`).join('')}<input type="color" class="cpick" data-k="bg" value="${d.bg}" title="바탕색 직접 고르기"></div></label>
+      <div class="two"><label>위 제목<input data-k="head" value="${esc(d.head)}" placeholder="조아메모리"></label><label>제목 옆 작은 글씨 (안 써도 돼요)<input data-k="sub" value="${esc(d.sub)}" placeholder="업데이트"></label></div>
+      <label>프로필 이모지 (비우면 조아메모리 아이콘)<input data-k="av" maxlength="4" value="${esc(d.av)}" placeholder="비워 두면 아이콘"></label>
       <div class="two"><label>날짜 줄<input data-k="pill" value="${esc(d.pill)}"></label><label>판 번호<input data-k="ver" value="${esc(d.ver)}" placeholder="5.8.48"></label></div>
-      <label>말풍선 (한 줄에 하나 · 작은 설명은 | 뒤에)<textarea data-k="bubbles" placeholder="장기기억, 한 번에 지워 줄게. | 설정 › 편의 · 웹 모드&#10;굳은 문장, 더 꼼꼼히 찾을게. | 문장 꼴 · 버릇 말까지">${esc(d.bubbles)}</textarea><span class="hint">말하듯 짧게, 한 줄에 한 가지만 쓰면 예뻐요. 6~7줄이 알맞아요.</span></label>
-      <label>내 말풍선<input data-k="me" value="${esc(d.me)}"><div class="chips">${PHRASES.map(p => `<button type="button" data-ph="${esc(p)}">${esc(p)}</button>`).join('')}</div></label>
+      <label>말풍선 (한 줄에 하나 · 작은 설명은 | 뒤에)<textarea data-k="bubbles" placeholder="장기기억, 한 번에 지워 줄게. | 설정 › 편의 · 웹 모드&#10;굳은 문장, 더 꼼꼼히 찾을게. | 문장 꼴 · 버릇 말까지&#10;(이모지는 원하는 곳에 직접 넣어요)">${esc(d.bubbles)}</textarea><span class="hint">말하듯 짧게, 한 줄에 한 가지만 쓰면 예뻐요. 6~7줄이 알맞아요.</span></label>
+      <label>내 말풍선 (오른쪽 · 안 써도 돼요)<input data-k="me" value="${esc(d.me)}"></label>
       <label>아래 상자 (한 줄에 하나 · 이모지 이름 | 내용)<textarea data-k="cards" style="min-height:80px" placeholder="🔧 그 밖에 | ETC용 모델 고르기&#10;🐛 고친 것 | 그 외 오류 수정">${esc(d.cards)}</textarea></label>
       <label>맨 아래 한마디 (안 써도 돼요)<input data-k="foot" value="${esc(d.foot)}" placeholder="* 지운 카드는 못 되돌려요 🥹"></label>`;
   // 쓰는 법 칸들
@@ -209,7 +185,7 @@
     init(); const last = store.get() || {}, dt = String(opt.date || '').split('-').map(Number), kind = opt.kind === 'guide' ? 'guide' : 'news';
     const P = NEWS[((last.preset ?? NEWS.length - 1) + 1) % NEWS.length]; // 소식 색은 지난번 다음 색부터
     const d = { kind, ver: opt.version || '', time: now(),
-      bg: P.bg, acc: P.acc, av: P.av, art: P.art, ch: P.ch, pill: dt[1] ? `${dt[1]}월 ${dt[2]}일 소식` : '소식', bubbles: '', me: 'huh', cards: '', foot: '',
+      bg: P.bg, acc: P.acc, av: '', pill: dt[1] ? `${dt[1]}월 ${dt[2]}일 소식` : '소식', head: '조아메모리', sub: '업데이트', bubbles: '', me: '', cards: '', foot: '',
       title: '', lead: '', steps: [{ t: '', p: '', img: '' }, { t: '', p: '', img: '' }], tips: '', errs: '' };
     if (kind === 'guide') d.acc = last.gacc || ACCS[0];
     const dlg = document.createElement('dialog'); dlg.className = 'mkd'; document.body.appendChild(dlg);
@@ -227,11 +203,8 @@
     const busy = on => dlg.querySelectorAll('[data-mk]').forEach(b => { b.disabled = on; });
     dlg.addEventListener('click', async e => {
       const g = s => e.target.closest(s);
-      if (g('[data-preset]')) { const t = NEWS[+g('[data-preset]').dataset.preset]; Object.assign(d, { bg: t.bg, acc: t.acc, av: t.av, art: t.art, ch: t.ch }); d.preset = +g('[data-preset]').dataset.preset; return repaint(); }
-      if (g('[data-av]')) { d.av = g('[data-av]').dataset.av; return repaint(); }
-      if (g('[data-art]')) { d.art = g('[data-art]').dataset.art; return repaint(); }
+      if (g('[data-preset]')) { const t = NEWS[+g('[data-preset]').dataset.preset]; Object.assign(d, { bg: t.bg, acc: t.acc }); d.preset = +g('[data-preset]').dataset.preset; return repaint(); }
       if (g('[data-acc]')) { d.acc = g('[data-acc]').dataset.acc; return repaint(); }
-      if (g('[data-ph]')) { d.me = g('[data-ph]').dataset.ph; return repaint(); }
       if (g('[data-addstep]')) { d.steps.push({ t: '', p: '', img: '' }); repaint(); return dlg.querySelector('.add')?.scrollIntoView({ block: 'center' }); }
       if (g('[data-delstep]')) { d.steps.splice(+g('[data-delstep]').dataset.delstep, 1); return repaint(); }
       if (g('[data-pickshot]')) return dlg.querySelector(`[data-shot="${g('[data-pickshot]').dataset.pickshot}"]`).click();
@@ -245,7 +218,7 @@
         if (mk === 'save') { const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = name; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 4000); }
         else { dlg.close(); const file = new File([blob], name, { type: 'image/png' });
           if (kind === 'guide') done && done({ file, title: d.title.trim(), body: d.lead.trim(), icon: '📖', tags: [] });
-          else { const b = lines(d.bubbles).map(pair); done && done({ file, title: b[0][0].replace(/[.!~]+$/, ''), body: b.slice(0, 3).map(x => x[0]).join(' '), icon: d.av, tags: d.ver ? [d.ver] : [] }); } }
+          else { const b = lines(d.bubbles).map(pair); done && done({ file, title: b[0][0].replace(/[.!~]+$/, ''), body: b.slice(0, 3).map(x => x[0]).join(' '), icon: d.av || '', tags: d.ver ? [d.ver] : [] }); } }
       } catch (err) { alert(err.message || '그림을 못 만들었어요'); } finally { btn.textContent = was; busy(false); }
     });
     dlg.addEventListener('close', () => dlg.remove());

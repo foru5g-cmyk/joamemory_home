@@ -79,9 +79,8 @@
   function postForm(m) {
     const p = st.edit, feeds = site().menus.filter(x => x.kind === 'feed' || x.kind === 'cards');
     return `<form class="form" data-form="post">
-      <div class="row"><input class="ic" name="icon" maxlength="4" value="${esc(p.icon || '')}" aria-label="제목 앞 이모지" title="제목 앞에 붙는 이모지 · 안 써도 돼요" placeholder="🙂">
+      <div class="row"><input class="ic" name="icon" maxlength="4" value="${esc(p.icon || '')}" aria-label="제목 앞 이모지" title="제목 앞에 붙는 이모지 · 안 써도 돼요" placeholder="이모지">
         <input class="grow" name="title" required value="${esc(p.title || '')}" placeholder="제목"></div>
-      <div class="emo"><span>제목 앞 이모지</span>${['📮', '✨', '⚡', '🧠', '💞', '🎨', '📸', '🛠', '🐛', '📖', '💬', '🎉', '🌱', '🔥'].map(e => `<button type="button" data-act="emo" data-arg="${e}" aria-pressed="${p.icon === e}">${e}</button>`).join('')}<button type="button" data-act="emo" data-arg="" title="빼기">✕</button></div>
       <textarea name="body" placeholder="내용">${esc(p.body || '')}</textarea>
       <div class="row"><select class="sel" name="menu" aria-label="메뉴">${feeds.map(x => `<option value="${esc(x.id)}"${x.id === (p.menu || m.id) ? ' selected' : ''}>${esc(x.name)}</option>`).join('')}</select>
         <input class="dt" type="date" name="date" required value="${esc(p.date || today())}" aria-label="날짜">
