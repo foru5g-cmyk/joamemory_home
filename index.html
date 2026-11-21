@@ -96,6 +96,11 @@
   .one p a { color:var(--acc); text-decoration:underline; }
   .one .full { display:block; margin-top:22px; border-radius:14px; overflow:hidden; border:1px solid var(--line); background:var(--soft); }
   .one .full img { display:block; width:100%; }
+  button.full { padding:0; width:100%; cursor:zoom-in; text-align:left; }
+  .zoom { position:fixed; inset:0; z-index:60; background:#14121ce8; overflow:auto; -webkit-overflow-scrolling:touch; display:flex; justify-content:center; padding:56px 12px 24px; }
+  .zoom .zi { width:100%; max-width:980px; margin:0 auto; } .zoom.big .zi { max-width:none; width:200%; }
+  .zoom img { display:block; width:100%; height:auto; border-radius:10px; -webkit-touch-callout:none; user-select:none; }
+  .zoom .zx { position:fixed; top:12px; right:12px; width:40px; height:40px; border-radius:50%; background:#ffffffe6; color:#17151f; font-size:18px; z-index:61; }
   main img { -webkit-touch-callout:none; -webkit-user-drag:none; user-select:none; -webkit-user-select:none; }
   .tools { margin-top:12px; display:flex; gap:14px; font-size:14px; color:var(--sub); }
   .tools button:hover { color:var(--ink); }
@@ -105,7 +110,9 @@
 
   /* 글쓰기 (주인만) */
   .new { margin-bottom:46px; }
-  .new .dot { border:0; background:var(--ink); color:#fff; width:30px; height:30px; margin-top:4px; display:grid; place-items:center; font-size:20px; line-height:1; }
+  .new .dot { border:0; background:var(--ink); color:transparent; width:30px; height:30px; margin-top:4px; font-size:0; position:relative; } /* + 는 글자 대신 선 두 개로(글꼴마다 위아래로 밀리지 않게) */
+  .new .dot::before, .new .dot::after { content:""; position:absolute; left:50%; top:50%; width:12px; height:2px; margin:-1px 0 0 -6px; background:#fff; border-radius:2px; }
+  .new .dot::after { transform:rotate(90deg); }
   .new > button { text-align:left; color:var(--sub); font-size:18px; padding-top:5px; }
   .form { background:var(--soft); border-radius:18px; padding:20px; display:grid; gap:10px; }
   .form .row { display:flex; gap:10px; flex-wrap:wrap; }
@@ -113,6 +120,11 @@
   .form textarea { min-height:110px; resize:vertical; }
   .form .ic { width:64px; text-align:center; } .form .sel { width:150px; } .form .dt { width:170px; } .form .grow { flex:1; min-width:180px; }
   .form label { font-size:14px; color:var(--sub); }
+  .form .emo { display:flex; flex-wrap:wrap; gap:4px; align-items:center; margin:-2px 0 2px; }
+  .form .emo span { font-size:12.5px; color:var(--sub); margin-right:4px; }
+  .form .emo button { width:34px; height:34px; border-radius:10px; background:#fff; border:1px solid var(--line); font-size:18px; line-height:1; }
+  .form .emo button[aria-pressed="true"] { border-color:var(--acc); box-shadow:0 0 0 2px var(--acc) inset; }
+  .form .emo button:last-child { font-size:13px; color:var(--sub); }
   .form .pv { display:flex; gap:8px; flex-wrap:wrap; }
   .form .pv span { position:relative; width:84px; height:84px; border-radius:10px; overflow:hidden; border:1px solid var(--line); background:#fff; }
   .form .pv img { width:100%; height:100%; object-fit:cover; }
@@ -172,6 +184,8 @@
   .info u { text-decoration:none; font-size:40px; display:block; }
   .info p { white-space:pre-wrap; margin-top:10px; color:#5f5e5b; }
   .info .btn { display:inline-block; margin-top:22px; }
+  .info .tools { margin-top:18px; }
+  .info-edit { max-width:640px; margin:0 auto; } .info-edit textarea { min-height:160px; }
 
   footer { text-align:center; color:var(--sub); font-size:14px; padding:0 20px 50px; }
   footer button { color:var(--sub); text-decoration:underline; }
@@ -182,7 +196,16 @@
   dialog p { font-size:15px; color:var(--sub); margin-bottom:14px; }
   dialog .form { background:none; padding:0; }
   dialog .mrow { display:flex; gap:8px; align-items:center; }
-  dialog .mrow input:first-child { width:64px; text-align:center; }
+  dialog .mrow input:first-child { width:56px; flex:none; text-align:center; }
+  dialog .mrow input[name^="mn"] { flex:1; min-width:0; }
+  dialog .mrow .mk2 { flex:none; font-style:normal; font-size:12px; font-weight:600; color:#6b6880; background:var(--tab); border-radius:6px; padding:2px 8px; }
+  dialog .mrow .mb { flex:none; width:32px; height:36px; border-radius:9px; border:1px solid var(--line); background:#fff; color:var(--ink); font-size:14px; }
+  dialog .mrow .mb[disabled] { opacity:.3; cursor:default; }
+  dialog .madd { display:flex; flex-wrap:wrap; gap:6px; align-items:center; margin-top:4px; }
+  dialog .madd span { font-size:14px; font-weight:700; margin-right:4px; }
+  dialog .madd button { border:1px solid var(--line); background:#fff; border-radius:99px; padding:6px 13px; font-size:14px; }
+  dialog .madd button:hover { background:var(--tab); }
+  dialog .hint { font-size:12.5px; color:var(--sub); margin:-2px 2px 4px; }
   /* 맨 위로: 조금 내려가면 오른쪽 아래에 나타나요 */
   .up { position:fixed; right:22px; bottom:24px; z-index:15; width:46px; height:46px; border-radius:50%; background:#fff; border:1px solid var(--line); box-shadow:0 6px 18px #0000001f; display:grid; place-items:center; color:var(--ink); transition:opacity .2s, transform .2s; }
   .up::before { content:""; width:10px; height:10px; border-left:2.5px solid currentColor; border-top:2.5px solid currentColor; transform:rotate(45deg); margin-top:5px; }
@@ -191,13 +214,16 @@
   .toast { position:fixed; left:50%; bottom:28px; transform:translateX(-50%); background:var(--ink); color:#fff; border-radius:99px; padding:11px 22px; font-size:15px; z-index:50; max-width:calc(100vw - 32px); }
 
   @media (max-width:720px) {
-    .bar { padding:10px 14px; } .bar .r em { display:none; }
+    .bar { padding:10px 14px; white-space:nowrap; } .bar .r em { display:none; } .bar .sep, #barMenu { display:none; } #barName { overflow:hidden; text-overflow:ellipsis; min-width:0; } /* 폰: 맨 위 줄이 두 줄로 안 넘어가게 */
     .page { padding:8px 14px 80px; }
 
     .head .icon { width:104px; height:104px; border-radius:28px; margin-top:-52px; }
     h1 { font-size:40px; } h1 small { font-size:18px; } h1 i { font-size:15px; padding:3px 10px 4px; margin-left:6px; top:2px; }
-    .lead { font-size:16px; }
-    .tabs { font-size:13.5px; margin-top:20px; padding:5px; gap:2px; } .tabs a { padding:9px 9px 9px 7px; gap:4px; } .tabs a u { font-size:14px; }
+    .lead { font-size:15px; }
+    body { font-size:15.5px; } .post h2 { font-size:20px !important; letter-spacing:-.7px; } .post p { font-size:14.5px; } .day b { font-size:38px !important; } .day span { font-size:12.5px; } .tags i { font-size:12px; padding:1px 7px; }
+    .one h2 { font-size:25px !important; } .one p { font-size:15px !important; } .qs summary { font-size:14.5px !important; } .qs .a div { font-size:14px; } .cardi h3, .appi b { font-size:13.5px; }
+    .tabs { display:grid; grid-auto-flow:column; grid-auto-columns:1fr; width:100%; font-size:11.5px; margin-top:20px; padding:5px; gap:2px; border-radius:22px; } /* 폰: 밀지 않아도 메뉴가 다 보이게 · 이모지 위, 이름 아래 */
+    .tabs a { flex-direction:column; justify-content:center; gap:3px; padding:8px 2px 7px; border-radius:17px; letter-spacing:-.4px; white-space:nowrap; } .tabs a u { font-size:19px; line-height:1; }
     main { margin-top:40px; }
     .tl::before { left:8px; }
     .it { grid-template-columns:18px 1fr; column-gap:16px; margin-bottom:54px; }
@@ -207,8 +233,9 @@
     .post { grid-column:2; }
     .post h2 { font-size:24px; }
     .new > button, .new .form { grid-column:2; }
-    .form .tip { display:none; } .form .sel, .form .dt { width:calc(50% - 5px); }
-    .new .dot { width:24px; height:24px; font-size:16px; margin-left:-3px; }
+    dialog .mrow { gap:5px; } dialog .mrow .mk2 { display:none; } dialog .mrow .mb { width:28px; height:34px; } dialog .mrow input:first-child { width:44px; padding:8px 4px; } /* 폰 설정: 메뉴 이름 칸이 좁아지지 않게 */
+    .form .tip { display:none; } .form .emo { flex-wrap:nowrap; overflow-x:auto; scrollbar-width:none; padding-bottom:2px; } .form .emo button { flex:none; } .form .emo span { flex:none; } .form .sel, .form .dt { width:calc(50% - 5px); }
+    .new .dot { width:24px; height:24px; margin-left:-3px; } .new .dot::before, .new .dot::after { width:10px; margin-left:-5px; } .new > .day { display:none; } .new > button:not(.dot), .new .form { grid-column:2; grid-row:1; }
     .chips { flex-wrap:nowrap; overflow-x:auto; scrollbar-width:none; gap:5px; } .chips button { flex:none; padding:5px 12px; }
     .qs summary { font-size:15px; padding:12px 14px; gap:10px; } .qs .a { padding:2px 14px 14px; }
     .one h2 { font-size:28px; } .one p { font-size:16px; }

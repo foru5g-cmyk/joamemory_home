@@ -45,7 +45,8 @@
   async function uploadImage(file) {
     if (file.size > 8 * 1024 * 1024) throw new Error(file.name + ' · 그림 한 장은 8MB까지예요');
     const ext = (file.name.match(/\.(png|jpe?g|gif|webp)$/i) || [, 'png'])[1].toLowerCase();
-    const path = 'img/' + today().replace(/-/g, '') + '-' + Math.random().toString(36).slice(2, 8) + '.' + ext;
+    const kind = (file.name.match(/^(update|guide)-/) || [])[1]; // 그림 만들기로 만든 건 이름 끝에 표시를 남겨요(목록 미리보기를 말풍선 쪽으로 자르려고)
+    const path = 'img/' + today().replace(/-/g, '') + '-' + Math.random().toString(36).slice(2, 8) + (kind ? '-' + kind : '') + '.' + ext;
     await putFile(path, b64(new Uint8Array(await file.arrayBuffer())), '그림 올림');
     fresh[path] = URL.createObjectURL(file); return path;
   }
@@ -66,7 +67,10 @@
     $('barName').textContent = (s.small ? s.small + ' ' : '') + s.title; $('barMenu').textContent = m.name; $('footName').textContent = (s.small ? s.small + ' ' : '') + s.title;
     $('barVer').textContent = (st.ver || s.version) ? '지금 판 ' + (st.ver || s.version) : ''; $('barGet').href = s.installUrl || '#'; $('barGet').hidden = !s.installUrl;
     $('hSmall').textContent = s.small || ''; $('hTitle').textContent = s.title; $('hBubble').textContent = s.bubble || ''; $('hBubble').hidden = !s.bubble; $('hLead').textContent = s.lead || '';
-    $('tabs').innerHTML = s.menus.map(x => `<a href="#${encodeURIComponent(x.id)}"${x.id === m.id ? ' aria-current="page"' : ''}><u>${esc(x.icon)}</u>${esc(x.name)}</a>`).join('');
+    // 메뉴는 바뀌었을 때만 새로 그려요(누를 때마다 다시 그리면 메뉴가 깜빡여요) · 평소엔 '지금 메뉴' 표시만 옮겨요
+    const key = JSON.stringify(s.menus.map(x => [x.id, x.icon, x.name])), tabs = $('tabs');
+    if (tabs.dataset.key !== key) { tabs.dataset.key = key; tabs.innerHTML = s.menus.map(x => `<a href="#${encodeURIComponent(x.id)}" data-id="${esc(x.id)}"><u>${esc(x.icon)}</u>${esc(x.name)}</a>`).join(''); }
+    tabs.querySelectorAll('a').forEach(a => { if (a.dataset.id === m.id) { if (!a.hasAttribute('aria-current')) a.setAttribute('aria-current', 'page'); } else a.removeAttribute('aria-current'); });
     $('ownSet').hidden = !owner(); $('ownBtn').textContent = owner() ? '주인 나가기' : '주인 로그인';
   }
   const dis = () => st.busy ? ' disabled' : '';
@@ -74,15 +78,16 @@
   function postForm(m) {
     const p = st.edit, feeds = site().menus.filter(x => x.kind === 'feed' || x.kind === 'cards');
     return `<form class="form" data-form="post">
-      <div class="row"><input class="ic" name="icon" maxlength="4" value="${esc(p.icon || '')}" aria-label="이모지" placeholder="🙂">
+      <div class="row"><input class="ic" name="icon" maxlength="4" value="${esc(p.icon || '')}" aria-label="제목 앞 이모지" title="제목 앞에 붙는 이모지 · 안 써도 돼요" placeholder="🙂">
         <input class="grow" name="title" required value="${esc(p.title || '')}" placeholder="제목"></div>
+      <div class="emo"><span>제목 앞 이모지</span>${['📮', '✨', '⚡', '🧠', '💞', '🎨', '📸', '🛠', '🐛', '📖', '💬', '🎉', '🌱', '🔥'].map(e => `<button type="button" data-act="emo" data-arg="${e}" aria-pressed="${p.icon === e}">${e}</button>`).join('')}<button type="button" data-act="emo" data-arg="" title="빼기">✕</button></div>
       <textarea name="body" placeholder="내용">${esc(p.body || '')}</textarea>
       <div class="row"><select class="sel" name="menu" aria-label="메뉴">${feeds.map(x => `<option value="${esc(x.id)}"${x.id === (p.menu || m.id) ? ' selected' : ''}>${esc(x.name)}</option>`).join('')}</select>
         <input class="dt" type="date" name="date" required value="${esc(p.date || today())}" aria-label="날짜">
         <input class="grow" name="tags" value="${esc((p.tags || []).join(', '))}" placeholder="꼬리표 (쉼표로 나눠요)"></div>
       <div class="pv">${st.files.map((f, i) => `<span><img src="${esc(typeof f === 'string' ? (fresh[f] || f) : f.url)}" alt=""><button type="button" data-act="rmfile" data-arg="${i}" aria-label="그림 빼기">✕</button></span>`).join('')}</div>
-      <div class="act"><label class="note"><input type="file" accept="image/*" multiple data-pick hidden><button type="button" class="btn ghost" data-act="pick">🖼 그림 고르기</button><span class="tip"> 끌어다 놓거나 붙여 넣어도 돼요</span></label>
-        <button type="button" class="btn ghost" data-act="maker"${dis()}>🎨 소식 그림</button><button type="button" class="btn ghost" data-act="cancel"${dis()}>닫기</button><button class="btn"${dis()}>${st.busy ? '올리는 중…' : p.id ? '고친 대로 올리기' : '올리기'}</button></div>
+      <div class="act"><label class="note"><input type="file" accept="image/*" multiple data-pick hidden><button type="button" class="btn ghost" data-act="pick">🖼️ 그림 고르기</button><span class="tip"> 끌어다 놓거나 붙여 넣어도 돼요</span></label>
+        <button type="button" class="btn ghost" data-act="maker"${dis()}>🎨 그림 만들기</button><button type="button" class="btn ghost" data-act="cancel"${dis()}>닫기</button><button class="btn"${dis()}>${st.busy ? '올리는 중…' : p.id ? '고친 대로 올리기' : '올리기'}</button></div>
     </form>`;
   }
   function renderFeed(m) {
@@ -98,7 +103,7 @@
         <h2><a href="${postUrl(p)}">${p.icon ? `<u>${esc(p.icon)}</u>` : ''}${esc(p.title)}</a>${p.pin ? '<span class="pin">고정</span>' : ''}</h2>
         ${p.body ? `<p class="clip">${linkify(p.body)}</p>` : ''}
         ${(p.tags || []).length ? `<div class="tags">${p.tags.map((t, k) => `<i class="t${k % 5}">${esc(t)}</i>`).join('')}</div>` : ''}
-        ${imgs.length ? `<div class="shots${imgs.length > 1 ? ' many' : ''}">${imgs.map(s => `<a href="${postUrl(p)}"><img${/-update\.png$/.test(s) ? ' class="chat"' : ''} src="${esc(fresh[s] || s)}" alt="${esc(p.title)}" loading="lazy" draggable="false"></a>`).join('')}</div>` : ''}
+        ${imgs.length ? `<div class="shots${imgs.length > 1 ? ' many' : ''}">${imgs.map(s => `<a href="${postUrl(p)}"><img${/-(update|guide)\.png$/.test(s) ? ' class="chat"' : ''} src="${esc(fresh[s] || s)}" alt="${esc(p.title)}" loading="lazy" draggable="false"></a>`).join('')}</div>` : ''}
         ${owner() ? `<div class="tools"><button data-act="edit" data-arg="${esc(p.id)}">고치기</button><button data-act="pin" data-arg="${esc(p.id)}">${p.pin ? '고정 풀기' : '맨 위에 고정'}</button><button data-act="del" data-arg="${esc(p.id)}">지우기</button></div>` : ''}
       </div></article>`;
     });
@@ -134,7 +139,11 @@
   }
   const faqList = list => list.length ? list.map(f => `<details${f.pin ? ' class="pinned"' : ''}><summary><u>${f.pin ? '📌' : 'Q'}</u><b>${esc(f.q)}</b>${f.cat ? `<em class="t${Math.max(0, (site().faqCats || []).indexOf(f.cat)) % 5}">${esc(f.cat)}</em>` : ''}</summary><div class="a"><img src="img/icon-yellow.png" alt=""><div>${linkify(f.a)}${owner() ? `<div class="tools"><button data-act="faqedit" data-arg="${esc(f.id)}">고치기</button><button data-act="faqpin" data-arg="${esc(f.id)}">${f.pin ? '고정 풀기' : '맨 위에 고정'}</button><button data-act="faqdel" data-arg="${esc(f.id)}">지우기</button></div>` : ''}</div></div></details>`).join('') : '<p class="empty">맞는 질문이 없어요. 다른 말로 찾아보세요.</p>';
   function renderPage(m) {
-    main.innerHTML = `<div class="info"><u>${esc(m.icon)}</u><p>${linkify(m.text || '')}</p>${m.linkUrl ? `<a class="btn" href="${esc(m.linkUrl)}" target="_blank" rel="noopener">${esc(m.linkName || '바로 가기')}</a>` : owner() ? '<p class="note">설정에서 이 메뉴의 버튼 주소를 넣으면 버튼이 생겨요.</p>' : ''}</div>`;
+    if (owner() && st.pageEdit === m.id) { main.innerHTML = `<form class="form info-edit" data-form="page"><div class="row"><input class="ic" name="icon" maxlength="4" value="${esc(m.icon)}" aria-label="이모지"><input class="grow" name="name" required value="${esc(m.name)}" aria-label="메뉴 이름"></div>
+      <label>안내 글</label><textarea name="text" placeholder="안내 글">${esc(m.text || '')}</textarea>
+      <div class="row"><input class="grow" name="linkName" value="${esc(m.linkName || '')}" placeholder="버튼 이름 (예: 카페 글로 가기)"><input class="grow" name="linkUrl" value="${esc(m.linkUrl || '')}" placeholder="버튼 주소 (https://…) · 비우면 버튼 없음"></div>
+      <div class="act"><button type="button" class="btn ghost" data-act="pagecancel"${dis()}>닫기</button><button class="btn"${dis()}>${st.busy ? '저장하는 중…' : '저장'}</button></div></form>`; return; }
+    main.innerHTML = `<div class="info"><u>${esc(m.icon)}</u><p>${linkify(m.text || '')}</p>${m.linkUrl ? `<a class="btn" href="${esc(m.linkUrl)}" target="_blank" rel="noopener">${esc(m.linkName || '바로 가기')}</a>` : ''}${owner() ? `<div class="tools" style="justify-content:center"><button data-act="pageedit" data-arg="${esc(m.id)}">고치기</button></div>` : ''}</div>`;
   }
   // 글 한 편: 목록에서 제목이나 그림을 누르면 여기로 와요 · 그림은 잘리지 않고 통째로 보여요
   function renderPost(p, m) {
@@ -144,7 +153,7 @@
       <h2>${p.icon ? `<u>${esc(p.icon)}</u>` : ''}${esc(p.title)}</h2>
       ${(p.tags || []).length ? `<div class="tags">${p.tags.map((t, k) => `<i class="t${k % 5}">${esc(t)}</i>`).join('')}</div>` : ''}
       ${p.body ? `<p>${linkify(p.body)}</p>` : ''}
-      ${(p.images || []).map(s => `<div class="full"><img src="${esc(fresh[s] || s)}" alt="${esc(p.title)}" draggable="false"></div>`).join('')}
+      ${(p.images || []).map(s => `<button type="button" class="full" data-act="zoom" data-arg="${esc(fresh[s] || s)}" aria-label="크게 보기"><img src="${esc(fresh[s] || s)}" alt="${esc(p.title)}" draggable="false"></button>`).join('')}
       ${owner() ? `<div class="tools"><button data-act="edit" data-arg="${esc(p.id)}">고치기</button><button data-act="pin" data-arg="${esc(p.id)}">${p.pin ? '고정 풀기' : '맨 위에 고정'}</button><button data-act="del" data-arg="${esc(p.id)}">지우기</button></div>` : ''}
     </article>`;
   }
@@ -158,15 +167,18 @@
       <div class="act"><button type="button" class="btn ghost" data-act="close">닫기</button><button class="btn">들어가기</button></div></form>`;
     dlg.showModal();
   }
+  const MENU_KIND = { feed: '글', cards: '카드', page: '안내', faq: '질문' };
   function settingsDialog() {
     const s = site(), f = (n, l, v) => `<label>${l}<input name="${n}" value="${esc(v || '')}"></label>`;
     dlg.innerHTML = `<h3>설정</h3><p>바꾼 뒤 저장하면 1분쯤 뒤 모두에게 보여요.</p><form class="form" data-form="site">
       ${f('small', '작은 윗말', s.small)}${f('title', '이름', s.title)}${f('bubble', '말풍선', s.bubble)}${f('lead', '한 줄 소개', s.lead)}${f('version', '지금 판', s.version)}${f('installUrl', '설치 주소', s.installUrl)}
       ${f('faqCats', '질문 갈래 (쉼표로 나눠요)', (s.faqCats || []).join(', '))}
-      <label>메뉴 (이모지 · 이름)</label>
-      ${s.menus.map((m, i) => `<div class="mrow"><input name="mi${i}" value="${esc(m.icon)}" maxlength="4" aria-label="이모지"><input name="mn${i}" value="${esc(m.name)}" required aria-label="메뉴 이름">${m.kind === 'feed' ? `<button type="button" class="btn ghost" data-act="menudel" data-arg="${i}">빼기</button>` : ''}</div>
+      <label>메뉴 (이모지 · 이름 · 종류 · 순서)</label>
+      ${s.menus.map((m, i) => `<div class="mrow"><input name="mi${i}" value="${esc(m.icon)}" maxlength="4" aria-label="이모지"><input name="mn${i}" value="${esc(m.name)}" required aria-label="메뉴 이름"><em class="mk2">${MENU_KIND[m.kind] || ''}</em><button type="button" class="mb" data-act="menumv" data-arg="${i},-1"${i ? '' : ' disabled'} aria-label="위로">↑</button><button type="button" class="mb" data-act="menumv" data-arg="${i},1"${i < s.menus.length - 1 ? '' : ' disabled'} aria-label="아래로">↓</button><button type="button" class="mb" data-act="menudel" data-arg="${i}" aria-label="빼기">✕</button></div>
         ${m.kind === 'page' ? `<textarea name="mt${i}" placeholder="안내 글">${esc(m.text || '')}</textarea><div class="row"><input class="grow" name="ml${i}" value="${esc(m.linkName || '')}" placeholder="버튼 이름"><input class="grow" name="mu${i}" value="${esc(m.linkUrl || '')}" placeholder="버튼 주소"></div>` : ''}`).join('')}
-      <div class="act"><button type="button" class="btn ghost" data-act="menuadd" style="margin-right:auto">+ 글 메뉴 추가</button><button type="button" class="btn ghost" data-act="close">닫기</button><button class="btn">저장</button></div></form>`;
+      <div class="madd"><span>+ 메뉴 추가</span>${[['feed', '📮 글'], ['cards', '🧰 카드'], ['page', '📄 안내'], ...(s.menus.some(m => m.kind === 'faq') ? [] : [['faq', '💬 질문']])].map(([k, n]) => `<button type="button" data-act="menuadd" data-arg="${k}">${n}</button>`).join('')}</div>
+      <p class="hint">글: 날짜 순 게시판 · 카드: 링크 카드 · 안내: 글 한 장과 버튼 · 질문: 자주 묻는 것</p>
+      <div class="act"><button type="button" class="btn ghost" data-act="close">닫기</button><button class="btn">저장</button></div></form>`;
     if (!dlg.open) dlg.showModal();
   }
   const readSite = form => { const g = n => (form.elements[n]?.value || '').trim(), s = JSON.parse(JSON.stringify(site()));
@@ -183,8 +195,12 @@
       case 'more': st.shown += 10; return render();
       case 'write': st.edit = st.edit ? null : {}; st.files = []; return render();
       case 'cancel': st.edit = null; st.files = []; return render();
+      case 'zoom': return zoomOpen(arg);
+      case 'pageedit': st.pageEdit = arg; return render();
+      case 'pagecancel': st.pageEdit = null; return render();
+      case 'emo': { const f = main.querySelector('[data-form="post"]'); if (f) { f.icon.value = arg; f.querySelectorAll('[data-act="emo"]').forEach(b => b.setAttribute('aria-pressed', b.dataset.arg === arg && !!arg)); } return; } // 이모지 고르기: 누르면 왼쪽 칸에 들어가요
       case 'maker': { if (!window.JoaMaker) return toast('그림 만들기를 못 불러왔어요 · 새로고침해 주세요'); keepForm(); // 만든 그림을 글에 붙이고, 비어 있는 제목·내용·이모지·꼬리표는 채워 줘요
-        return window.JoaMaker.open({ version: st.ver || site().version, date: st.edit.date || today() }, r => { if (!st.edit) return; st.files.push({ file: r.file, url: URL.createObjectURL(r.file) });
+        return window.JoaMaker.open({ version: st.ver || site().version, date: st.edit.date || today(), kind: st.edit.menu === 'guide' ? 'guide' : 'news' }, r => { if (!st.edit) return; st.files.push({ file: r.file, url: URL.createObjectURL(r.file) });
           const e = st.edit; if (!e.title) e.title = r.title; if (!e.body) e.body = r.body; if (!e.icon) e.icon = r.icon; e.tags = [...new Set([...(r.tags || []), ...(e.tags || [])])]; render(); toast('그림을 붙였어요 · 올리기를 누르면 같이 올라가요'); }); }
       case 'edit': st.edit = { ...post() }; st.files = [...(st.edit.images || [])]; if (hash().startsWith('p-')) location.hash = '#' + encodeURIComponent(st.edit.menu); render(); return main.querySelector('.new, .cwrite')?.scrollIntoView({ block: 'center' });
       case 'pick': return b.parentElement.querySelector('[data-pick]').click();
@@ -198,8 +214,16 @@
       case 'faqpin': return work(async () => { await saveData('FAQ', data.FAQ.map(f => f.id === arg ? { ...f, pin: !f.pin } : f), '질문 고정 바꿈'); }, '저장했어요');
       case 'faqdel': if (!confirm('"' + q().q + '" 질문을 지울까요?')) return; return work(async () => { await saveData('FAQ', data.FAQ.filter(f => f.id !== arg), '질문 지움'); }, '지웠어요');
       case 'close': return dlg.close();
-      case 'menuadd': { const s = readSite(dlg.querySelector('form')); s.menus.push({ id: 'm' + Date.now().toString(36), icon: '📌', name: '새 메뉴', kind: 'feed' }); data.SITE = s; return settingsDialog(); } // 저장을 눌러야 올라가요
-      case 'menudel': { const s = readSite(dlg.querySelector('form')), m = s.menus[Number(arg)]; if (data.POSTS.some(p => p.menu === m.id)) return toast('이 메뉴에 글이 있어요 · 글을 먼저 옮기거나 지워 주세요'); if (s.menus.filter(x => x.kind === 'feed').length < 2) return toast('글 메뉴는 하나는 있어야 해요'); s.menus.splice(Number(arg), 1); data.SITE = s; return settingsDialog(); }
+      case 'menuadd': { const s = readSite(dlg.querySelector('form')), k = arg || 'feed', base = { feed: ['📌', '새 메뉴'], cards: ['🧰', '새 카드 메뉴'], page: ['📄', '새 안내'], faq: ['💬', '자주 묻는 것'] }[k] || ['📌', '새 메뉴'];
+        if (k === 'faq' && s.menus.some(m => m.kind === 'faq')) return toast('질문 메뉴는 하나만 있어요');
+        s.menus.push({ id: 'm' + Date.now().toString(36), icon: base[0], name: base[1], kind: k, ...(k === 'page' ? { text: '', linkName: '', linkUrl: '' } : {}) }); data.SITE = s; settingsDialog(); return dlg.querySelector('.madd')?.scrollIntoView({ block: 'center' }); } // 저장을 눌러야 올라가요
+      case 'menumv': { const s = readSite(dlg.querySelector('form')), [i, d] = arg.split(',').map(Number), j = i + d; if (j < 0 || j >= s.menus.length) return; [s.menus[i], s.menus[j]] = [s.menus[j], s.menus[i]]; data.SITE = s; return settingsDialog(); }
+      case 'menudel': { const s = readSite(dlg.querySelector('form')), m = s.menus[Number(arg)];
+        if (data.POSTS.some(p => p.menu === m.id)) return toast('이 메뉴에 글이 있어요 · 글을 먼저 옮기거나 지워 주세요');
+        if (!s.menus.some((x, i) => i !== Number(arg) && (x.kind === 'feed' || x.kind === 'cards'))) return toast('글이나 카드 메뉴는 하나는 있어야 해요');
+        if (m.kind === 'faq' && !confirm('질문 메뉴를 뺄까요? 질문들은 지워지지 않고, 다시 추가하면 그대로 나와요.')) return;
+        if (m.kind === 'page' && (m.text || m.linkUrl) && !confirm('"' + m.name + '" 안내를 뺄까요? 안내 글도 같이 없어져요.')) return;
+        s.menus.splice(Number(arg), 1); data.SITE = s; return settingsDialog(); }
     }
   });
   $('ownBtn').addEventListener('click', () => { if (!owner()) return loginDialog(); if (!confirm('이 기기에서 주인 로그인을 풀까요?')) return; store.set(LS.tok, null); for (const n of Object.keys(FILES)) store.set('joa_c_' + n, null); st.edit = st.faqEdit = null; render(); });
@@ -219,6 +243,10 @@
     if (kind === 'login') return (async () => { const old = [repo(), tok()]; store.set(LS.repo, v('repo').replace(/^https?:\/\/github\.com\//, '').replace(/\/$/, '')); store.set(LS.tok, v('tok'));
       try { const r = await gh(''); if (!r.permissions || !r.permissions.push) throw new Error('이 토큰으로는 쓸 수 없어요(Contents 쓰기 권한이 필요해요)'); dlg.close(); toast('주인으로 들어왔어요'); render(); }
       catch (err) { store.set(LS.repo, old[0] || null); store.set(LS.tok, old[1] || null); toast(err.message); } })();
+    if (kind === 'page') { const s = JSON.parse(JSON.stringify(site())), m = s.menus.find(x => x.id === st.pageEdit); if (!m) return;
+      Object.assign(m, { icon: v('icon'), name: v('name') || m.name, text: f.elements.text.value.trim(), linkName: v('linkName'), linkUrl: v('linkUrl') });
+      if (m.linkUrl && !/^https?:\/\//.test(m.linkUrl)) return toast('버튼 주소는 https:// 로 시작해야 해요');
+      return work(async () => { await saveData('SITE', s, '안내 고침: ' + m.name); st.pageEdit = null; }, '저장했어요 · 1분쯤 뒤 모두에게 보여요'); }
     if (kind === 'site') { const s = readSite(f); if (!s.title) return toast('이름을 적어 주세요'); return work(async () => { await saveData('SITE', s, '설정 바꿈'); dlg.close(); }, '저장했어요 · 1분쯤 뒤 모두에게 보여요'); }
     if (kind === 'faq') { const item = { id: st.faqEdit.id || 'f' + Date.now().toString(36), q: v('q'), a: f.elements.a.value.trim(), cat: v('cat'), pin: !!st.faqEdit.pin };
       return work(async () => { const l = st.faqEdit.id ? data.FAQ.map(x => x.id === item.id ? item : x) : [item, ...data.FAQ]; await saveData('FAQ', l, '질문 올림'); st.faqEdit = null; }, '올렸어요 · 1분쯤 뒤 모두에게 보여요'); }
@@ -233,6 +261,12 @@
       while (t.length < 4000) { const { done, value } = await rd.read(); if (done) break; t += dec.decode(value, { stream: true }); }
       rd.cancel().catch(() => {}); const m = t.match(/@version\s+([\w.\-]+)/); if (m) { st.ver = m[1]; renderChrome(); } } catch (_) {} }
   liveVersion();
+  // 그림 크게 보기: 화면 가득 · 두 번 누르면 두 배로 · ✕나 바깥·Esc로 닫기
+  function zoomOpen(src) { const z = document.createElement('div'); z.className = 'zoom'; z.innerHTML = '<button type="button" class="zx" aria-label="닫기">✕</button><div class="zi"><img alt="" draggable="false"></div>'; z.querySelector('img').src = src; document.body.appendChild(z); document.documentElement.style.overflow = 'hidden';
+    const close = () => { z.remove(); document.documentElement.style.overflow = ''; removeEventListener('keydown', esc1); }, esc1 = e => { if (e.key === 'Escape') close(); }; addEventListener('keydown', esc1);
+    z.addEventListener('click', e => { if (e.target === z || e.target.closest('.zx')) close(); });
+    z.querySelector('img').addEventListener('dblclick', e => { z.classList.toggle('big'); e.preventDefault(); });
+    z.addEventListener('contextmenu', e => e.preventDefault()); }
   // 그림 주소를 쉽게 못 가져가게: 글 그림에서는 오른쪽 누르기·길게 누르기 메뉴와 끌기를 막아요(개발자 도구까지 막지는 못해요)
   document.addEventListener('contextmenu', e => { if (e.target.matches('main img')) e.preventDefault(); });
   document.addEventListener('dragstart', e => { if (e.target.matches('main img')) e.preventDefault(); });
@@ -241,7 +275,7 @@
   if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
   const seen = {}; let curH = location.hash, curY = 0;
   addEventListener('scroll', () => { curY = scrollY; }, { passive: true });
-  addEventListener('hashchange', () => { seen[curH] = { y: curY, shown: st.shown }; curH = location.hash;
+  addEventListener('hashchange', () => { seen[curH] = { y: curY, shown: st.shown }; curH = location.hash; st.pageEdit = null;
     const back = seen[curH]; st.shown = back ? back.shown : 10; st.edit = st.faqEdit = null; st.files = []; render();
     const top = $('tabs').getBoundingClientRect().top + scrollY - 64;
     const jump = y => scrollTo({ top: y, behavior: 'instant' }); // 부드럽게 굴러가지 않고 그 자리에 바로

@@ -69,7 +69,16 @@
   .mkd .pv { background:#f6f4fd; overflow:auto; padding:16px; }
   .mkd .pv .scale { transform-origin:top left; }
   .mkd .hint { font-size:12.5px; color:#9b9a97; font-weight:400; line-height:1.5; }
-  @media (max-width:760px) { .mkd .wrap { grid-template-columns:1fr; overflow:auto; } .mkd .pv { order:-1; max-height:44vh; } .mkd .two { grid-template-columns:1fr; } }`;
+  .mkd .pvh { display:none; }
+  @media (max-width:760px) {
+    .mkd { width:100vw; max-width:100vw; height:100dvh; max-height:100dvh; border-radius:0; }
+    .mkd .wrap { grid-template-columns:1fr; height:100dvh; max-height:100dvh; overflow:auto; }
+    .mkd .side { overflow:visible; padding:18px 16px 0; outline:none; }
+    .mkd .two { grid-template-columns:1fr 1fr; }
+    .mkd .pv { padding:12px 16px 90px; } .mkd .pvh { display:block; font-size:13.5px; font-weight:700; color:#9b9a97; margin:0 0 8px; }
+    .mkd .act { position:fixed; left:0; right:0; bottom:0; z-index:2; background:#fffffff2; backdrop-filter:blur(8px); padding:10px 16px calc(10px + env(safe-area-inset-bottom)); border-top:1px solid #ebe7f7; }
+    .mkd .act .btn { flex:1; text-align:center; }
+  }`;
 
   const now = () => { const d = new Date(), h = d.getHours(); return (h < 12 ? '오전 ' : '오후 ') + ((h % 12) || 12) + ':' + String(d.getMinutes()).padStart(2, '0'); };
   const later = t => { const m = t.match(/(\d+):(\d+)$/); if (!m) return t; let mm = +m[2] + 1, hh = +m[1]; if (mm > 59) { mm = 0; hh = hh % 12 + 1; } return t.replace(/\d+:\d+$/, hh + ':' + String(mm).padStart(2, '0')); };
@@ -80,9 +89,10 @@
 
   function chatHtml(d) {
     const T = THEMES[d.theme] || THEMES[0], t1 = d.time || now();
-    const bubbles = lines(d.bubbles).map(pair), cards = lines(d.cards).map(cardLine);
+    const NUM = '①②③④⑤⑥⑦⑧⑨⑩', guide = d.kind === 'guide';
+    const bubbles = lines(d.bubbles).map(pair).map(([a, b], i) => [guide && i < 10 ? NUM[i] + ' ' + a : a, b]), cards = lines(d.cards).map(cardLine);
     return `<div class="mk" style="background:${T.bg}">
-      <div class="top"><span class="back">‹</span><span class="em">💜</span><h1>조아메모리</h1><small>업데이트</small></div>
+      <div class="top"><span class="back">‹</span><span class="em">💜</span><h1>조아메모리</h1><small>${guide ? '쓰는 법' : '업데이트'}</small></div>
       <div class="pill"><i>${esc(d.pill || '소식')}</i></div>
       <div class="row"><div class="av" style="background:${T.avbg}">${T.av}</div><div><div class="who">조아메모리</div>
         <div class="line first"><div class="b art">${art(T.art, T.ch, T.col)}</div>${bubbles.length ? '' : `<div class="t">${t1}</div>`}</div>
@@ -114,38 +124,42 @@
   // open({ version, date }, done({ file, title, body, icon, tags }))
   function open(opt, done) {
     init(); const last = store.get() || {}, dt = String(opt.date || '').split('-').map(Number);
-    const d = { theme: ((last.theme ?? 4) + 1) % THEMES.length, pill: dt[1] ? `${dt[1]}월 ${dt[2]}일 소식` : '소식', ver: opt.version || '', bubbles: '', cards: '', foot: '', me: 'huh', time: now() };
+    const kind = opt.kind === 'guide' ? 'guide' : 'news', pillOf = k => k === 'guide' ? '쓰는 법' : (dt[1] ? `${dt[1]}월 ${dt[2]}일 소식` : '소식');
+    const d = { kind, theme: ((last.theme ?? 4) + 1) % THEMES.length, pill: pillOf(kind), ver: opt.version || '', bubbles: '', cards: '', foot: '', me: kind === 'guide' ? 'Alright.' : 'huh', time: now() };
     const dlg = document.createElement('dialog'); dlg.className = 'mkd'; document.body.appendChild(dlg);
-    dlg.innerHTML = `<div class="wrap"><div class="side">
-      <h3>🎨 소식 그림 만들기</h3>
+    dlg.innerHTML = `<div class="wrap"><div class="side" tabindex="-1">
+      <h3>🎨 그림 만들기</h3>
+      <label>종류<div class="sw">${[['news', '📮 소식'], ['guide', '📖 쓰는 법']].map(([k, n]) => `<button type="button" data-kind="${k}" aria-pressed="${d.kind === k}">${n}</button>`).join('')}</div></label>
       <label>색<div class="sw">${THEMES.map((t, i) => `<button type="button" data-th="${i}" aria-pressed="${i === d.theme}"><i style="background:${t.bg}">${t.av}</i>${t.name}</button>`).join('')}</div></label>
       <div class="two"><label>날짜 줄<input data-k="pill" value="${esc(d.pill)}"></label><label>판 번호<input data-k="ver" value="${esc(d.ver)}" placeholder="5.8.48"></label></div>
-      <label>말풍선 (한 줄에 하나 · 작은 설명은 | 뒤에)<textarea data-k="bubbles" autofocus placeholder="장기기억, 한 번에 지워 줄게. | 설정 › 편의 · 웹 모드&#10;굳은 문장, 더 꼼꼼히 찾을게. | 문장 꼴 · 버릇 말까지"></textarea><span class="hint">말하듯 짧게, 한 줄에 한 가지만 쓰면 예뻐요. 6~7줄이 알맞아요.</span></label>
+      <label><span data-blab>${d.kind === 'guide' ? '순서 (한 줄에 한 단계 · ①②③이 저절로 붙어요 · 작은 설명은 | 뒤에)' : '말풍선 (한 줄에 하나 · 작은 설명은 | 뒤에)'}</span><textarea data-k="bubbles" placeholder="장기기억, 한 번에 지워 줄게. | 설정 › 편의 · 웹 모드&#10;굳은 문장, 더 꼼꼼히 찾을게. | 문장 꼴 · 버릇 말까지"></textarea><span class="hint">말하듯 짧게, 한 줄에 한 가지만 쓰면 예뻐요. 6~7줄이 알맞아요.</span></label>
       <label>내 말풍선<input data-k="me" value="${esc(d.me)}"><div class="chips">${PHRASES.map(p => `<button type="button" data-ph="${esc(p)}">${esc(p)}</button>`).join('')}</div></label>
       <label>아래 상자 (한 줄에 하나 · 이모지 이름 | 내용)<textarea data-k="cards" style="min-height:90px" placeholder="🔧 그 밖에 | ETC용 모델 고르기&#10;🐛 고친 것 | 그 외 오류 수정"></textarea></label>
       <label>맨 아래 한마디 (안 써도 돼요)<input data-k="foot" placeholder="* 지운 카드는 못 되돌려요 🥹"></label>
       <div class="act"><button type="button" class="btn ghost" data-mk="close">닫기</button><button type="button" class="btn ghost" data-mk="save">그림 받기</button><button type="button" class="btn" data-mk="use">글에 넣기</button></div>
-    </div><div class="pv"><div class="scale"></div></div></div>`;
+    </div><div class="pv"><p class="pvh">미리보기</p><div class="scale"></div></div></div>`;
     const pv = dlg.querySelector('.scale'), side = dlg.querySelector('.side');
     const draw = () => { pv.innerHTML = chatHtml(d); const w = dlg.querySelector('.pv').clientWidth - 32, s = Math.min(1, w / 780); pv.style.transform = `scale(${s})`; pv.style.height = (pv.firstElementChild.offsetHeight * s) + 'px'; pv.style.width = (780 * s) + 'px'; };
     side.addEventListener('input', e => { const k = e.target.dataset.k; if (k) { d[k] = e.target.value; draw(); } });
     const busy = on => dlg.querySelectorAll('[data-mk]').forEach(b => { b.disabled = on; });
     side.addEventListener('click', async e => {
-      const th = e.target.closest('[data-th]'), ph = e.target.closest('[data-ph]'), mk = e.target.closest('[data-mk]')?.dataset.mk;
+      const th = e.target.closest('[data-th]'), ph = e.target.closest('[data-ph]'), kd = e.target.closest('[data-kind]'), mk = e.target.closest('[data-mk]')?.dataset.mk;
+      if (kd) { const k = kd.dataset.kind, pi = side.querySelector('[data-k="pill"]'); if (pi.value === pillOf(d.kind)) pi.value = d.pill = pillOf(k); d.kind = k; side.querySelectorAll('[data-kind]').forEach(b => b.setAttribute('aria-pressed', b === kd)); side.querySelector('[data-blab]').textContent = k === 'guide' ? '순서 (한 줄에 한 단계 · ①②③이 저절로 붙어요 · 작은 설명은 | 뒤에)' : '말풍선 (한 줄에 하나 · 작은 설명은 | 뒤에)'; return draw(); }
       if (th) { d.theme = +th.dataset.th; side.querySelectorAll('[data-th]').forEach(b => b.setAttribute('aria-pressed', b === th)); return draw(); }
       if (ph) { d.me = ph.dataset.ph; side.querySelector('[data-k="me"]').value = d.me; return draw(); }
       if (mk === 'close') return dlg.close();
       if (!mk) return;
       if (!lines(d.bubbles).length) return alert('말풍선을 한 줄 이상 써 주세요');
       busy(true); const btn = e.target.closest('[data-mk]'), was = btn.textContent; btn.textContent = '만드는 중…';
-      try { const blob = await shoot(d), name = 'update-' + (String(opt.date || '').replace(/-/g, '') || Date.now()) + '.png';
+      try { const blob = await shoot(d), name = (d.kind === 'guide' ? 'guide-' : 'update-') + (String(opt.date || '').replace(/-/g, '') || Date.now()) + '.png';
         store.set({ theme: d.theme });
         if (mk === 'save') { const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = name; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 4000); }
         else { const b = lines(d.bubbles).map(pair); dlg.close(); done && done({ file: new File([blob], name, { type: 'image/png' }), title: b[0][0].replace(/[.!~]+$/, ''), body: b.slice(0, 3).map(x => x[0]).join(' '), icon: THEMES[d.theme].av, tags: d.ver ? [d.ver] : [] }); }
       } catch (err) { alert(err.message || '그림을 못 만들었어요'); } finally { btn.textContent = was; busy(false); }
     });
     dlg.addEventListener('close', () => dlg.remove());
-    dlg.showModal(); draw(); setTimeout(draw, 300); // 글꼴이 늦게 오면 크기가 바뀌어서 한 번 더
+    dlg.showModal(); draw(); setTimeout(draw, 300);
+    if (matchMedia('(pointer: fine)').matches) side.querySelector('[data-k="bubbles"]').focus(); else dlg.querySelector('.side').focus(); // 폰에선 열자마자 자판이 올라오지 않게 // 글꼴이 늦게 오면 크기가 바뀌어서 한 번 더
   }
   window.JoaMaker = { open, chatHtml, THEMES };
 })();
