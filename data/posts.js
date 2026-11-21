@@ -1,4 +1,4 @@
-window.JOA_POSTS_AT = 1795261291828;
+window.JOA_POSTS_AT = 1795261527942;
 window.JOA_POSTS = [
   {
     "id": "p20261121",
@@ -219,7 +219,9 @@ window.JOA_POSTS = [
     "tags": [
       "확프"
     ],
-    "images": [],
+    "images": [
+      "img/20261121-3w6z6e.png"
+    ],
     "pin": true
   },
   {
