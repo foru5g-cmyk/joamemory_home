@@ -1,4 +1,4 @@
-window.JOA_POSTS_AT = 1795261539029;
+window.JOA_POSTS_AT = 1795261547342;
 window.JOA_POSTS = [
   {
     "id": "p20261121",
@@ -213,15 +213,13 @@ window.JOA_POSTS = [
     "id": "t-joah",
     "menu": "tools",
     "date": "2026-11-21",
-    "icon": "",
+    "icon": "💜",
     "title": "조아메모리",
     "body": "크랙 롤플레이를 대신 기억해 주는 확장 프로그램이에요.\nhttps://raw.githubusercontent.com/foru5g-cmyk/joahmemory/refs/heads/main/joamemory.user.js",
     "tags": [
       "확프"
     ],
-    "images": [
-      "img/20261121-3w6z6e.png"
-    ],
+    "images": [],
     "pin": true
   },
   {
