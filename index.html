@@ -28,7 +28,7 @@
   .bar .sep { color:var(--sub); }
   .bar .r { margin-left:auto; display:flex; gap:14px; align-items:center; }
   .bar .r em { font-style:normal; color:var(--sub); font-size:14px; }
-  .bar .get { background:var(--ink); color:#fff; font-weight:600; border-radius:99px; padding:8px 18px; font-size:14px; }
+  .bar .get { background:var(--ink); color:#fff; font-weight:600; border-radius:99px; padding:6px 14px; font-size:13px; }
   .bar .own { color:var(--sub); font-size:14px; }
 
   .page { max-width:980px; margin:0 auto; padding:14px 20px 110px; }
@@ -48,8 +48,11 @@
   .tabs a u { text-decoration:none; font-size:21px; }
   .tabs a { transition:background .2s, color .2s, transform .2s cubic-bezier(.3,1.6,.6,1), box-shadow .2s; }
   .tabs a u { display:inline-block; transition:transform .25s cubic-bezier(.3,1.6,.6,1); }
-  .tabs a:hover { color:var(--ink); background:#ffffffa6; transform:translateY(-2px); }
-  .tabs a:hover u { transform:rotate(-12deg) scale(1.18); }
+  @media (hover:hover) and (pointer:fine) { /* 마우스가 있을 때만: 폰에선 누른 뒤 떠오른 채로 남아 버벅여 보여서 */
+    .tabs a:hover { color:var(--ink); background:#ffffffa6; transform:translateY(-2px); }
+    .tabs a:hover u { transform:rotate(-12deg) scale(1.18); }
+  }
+  .tabs a { -webkit-tap-highlight-color:transparent; touch-action:manipulation; }
   .tabs a:active { transform:translateY(0) scale(.97); }
   .tabs a[aria-current="page"] u { animation:pop .35s cubic-bezier(.3,1.6,.6,1); }
   @keyframes pop { 0% { transform:scale(.7); } 100% { transform:scale(1); } }
@@ -214,11 +217,11 @@
   .toast { position:fixed; left:50%; bottom:28px; transform:translateX(-50%); background:var(--ink); color:#fff; border-radius:99px; padding:11px 22px; font-size:15px; z-index:50; max-width:calc(100vw - 32px); }
 
   @media (max-width:720px) {
-    .bar { padding:10px 14px; white-space:nowrap; } .bar .r em { display:none; } .bar .sep, #barMenu { display:none; } #barName { overflow:hidden; text-overflow:ellipsis; min-width:0; } /* 폰: 맨 위 줄이 두 줄로 안 넘어가게 */
+    .bar { padding:10px 14px; white-space:nowrap; } .bar .get { padding:5px 12px; font-size:12.5px; } .bar .r em { display:none; } .bar .sep, #barMenu { display:none; } #barName { overflow:hidden; text-overflow:ellipsis; min-width:0; } /* 폰: 맨 위 줄이 두 줄로 안 넘어가게 */
     .page { padding:8px 14px 80px; }
 
-    .head .icon { width:104px; height:104px; border-radius:28px; margin-top:-52px; }
-    h1 { font-size:40px; } h1 small { font-size:18px; } h1 i { font-size:15px; padding:3px 10px 4px; margin-left:6px; top:2px; }
+    .head .icon { width:88px; height:88px; border-radius:24px; margin-top:-44px; box-shadow:0 0 0 5px #fff, 0 10px 22px #7c63de33; }
+    h1 { font-size:33px; margin-top:14px; } h1 small { font-size:15px; margin-bottom:-2px; } h1 i { font-size:15px; padding:3px 10px 4px; margin-left:6px; top:2px; }
     .lead { font-size:15px; }
     body { font-size:15.5px; } .post h2 { font-size:20px !important; letter-spacing:-.7px; } .post p { font-size:14.5px; } .day b { font-size:38px !important; } .day span { font-size:12.5px; } .tags i { font-size:12px; padding:1px 7px; }
     .one h2 { font-size:25px !important; } .one p { font-size:15px !important; } .qs summary { font-size:14.5px !important; } .qs .a div { font-size:14px; } .cardi h3, .appi b { font-size:13.5px; }

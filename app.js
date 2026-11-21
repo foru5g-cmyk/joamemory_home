@@ -54,7 +54,8 @@
   // ── 화면 ──
   const $ = id => document.getElementById(id), main = $('main'), dlg = $('dlg');
   const st = { shown: 10, edit: null, files: [], faqQ: '', faqCat: '', faqEdit: null, busy: false };
-  const site = () => data.SITE, hash = () => decodeURIComponent(location.hash.slice(1));
+  let route = location.hash; // 지금 화면('#faq', '#p-글번호' 같은 꼴 · 주소창에는 안 보여요)
+  const site = () => data.SITE, hash = () => { try { return decodeURIComponent(route.slice(1)); } catch (_) { return route.slice(1); } };
   const curPost = () => hash().startsWith('p-') ? data.POSTS.find(p => p.id === hash().slice(2)) : null; // #p-글번호 = 글 한 편 보기
   const curMenu = () => { const p = curPost(), h = p ? p.menu : hash(); return site().menus.find(m => m.id === h) || site().menus[0]; };
   const postUrl = p => '#p-' + encodeURIComponent(p.id);
@@ -202,11 +203,11 @@
       case 'maker': { if (!window.JoaMaker) return toast('그림 만들기를 못 불러왔어요 · 새로고침해 주세요'); keepForm(); // 만든 그림을 글에 붙이고, 비어 있는 제목·내용·이모지·꼬리표는 채워 줘요
         return window.JoaMaker.open({ version: st.ver || site().version, date: st.edit.date || today(), kind: st.edit.menu === 'guide' ? 'guide' : 'news' }, r => { if (!st.edit) return; st.files.push({ file: r.file, url: URL.createObjectURL(r.file) });
           const e = st.edit; if (!e.title) e.title = r.title; if (!e.body) e.body = r.body; if (!e.icon) e.icon = r.icon; e.tags = [...new Set([...(r.tags || []), ...(e.tags || [])])]; render(); toast('그림을 붙였어요 · 올리기를 누르면 같이 올라가요'); }); }
-      case 'edit': st.edit = { ...post() }; st.files = [...(st.edit.images || [])]; if (hash().startsWith('p-')) location.hash = '#' + encodeURIComponent(st.edit.menu); render(); return main.querySelector('.new, .cwrite')?.scrollIntoView({ block: 'center' });
+      case 'edit': st.edit = { ...post() }; st.files = [...(st.edit.images || [])]; if (hash().startsWith('p-')) go('#' + encodeURIComponent(st.edit.menu)); render(); return main.querySelector('.new, .cwrite')?.scrollIntoView({ block: 'center' });
       case 'pick': return b.parentElement.querySelector('[data-pick]').click();
       case 'rmfile': st.files.splice(Number(arg), 1); return keepForm();
       case 'pin': return work(async () => { const l = data.POSTS.map(p => p.id === arg ? { ...p, pin: !p.pin } : p); await saveData('POSTS', l, '고정 바꿈'); }, '저장했어요');
-      case 'del': { if (!confirm('"' + post().title + '" 글을 지울까요?')) return; const back = '#' + encodeURIComponent(post().menu); return work(async () => { await saveData('POSTS', data.POSTS.filter(p => p.id !== arg), '글 지움'); if (hash().startsWith('p-')) location.hash = back; }, '지웠어요'); }
+      case 'del': { if (!confirm('"' + post().title + '" 글을 지울까요?')) return; const back = '#' + encodeURIComponent(post().menu); return work(async () => { await saveData('POSTS', data.POSTS.filter(p => p.id !== arg), '글 지움'); if (hash().startsWith('p-')) go(back); }, '지웠어요'); }
       case 'faqcat': st.faqCat = arg; return render();
       case 'faqnew': st.faqEdit = {}; return render();
       case 'faqcancel': st.faqEdit = null; return render();
@@ -253,7 +254,7 @@
     if (kind === 'post') { keepForm(); const p = st.edit;
       return work(async () => { const images = []; for (const x of st.files) images.push(typeof x === 'string' ? x : await uploadImage(x.file)); st.files = images; // 중간에 실패해도 이미 올린 그림은 다시 안 올려요
         const item = { id: p.id || 'p' + Date.now().toString(36), menu: p.menu, date: p.date, icon: p.icon, title: p.title, body: p.body, tags: p.tags, images, pin: !!p.pin };
-        await saveData('POSTS', p.id ? data.POSTS.map(x => x.id === item.id ? item : x) : [item, ...data.POSTS], '글 올림: ' + item.title); st.edit = null; st.files = []; location.hash = '#' + encodeURIComponent(item.menu); }, '올렸어요 · 1분쯤 뒤 모두에게 보여요'); }
+        await saveData('POSTS', p.id ? data.POSTS.map(x => x.id === item.id ? item : x) : [item, ...data.POSTS], '글 올림: ' + item.title); st.edit = null; st.files = []; go('#' + encodeURIComponent(item.menu)); }, '올렸어요 · 1분쯤 뒤 모두에게 보여요'); }
   });
   // 지금 판: 설정에 적은 번호 대신 실제 스크립트의 @version을 보여 줘요(머리 부분만 받고 끊어요 · 못 읽으면 설정의 번호 그대로)
   async function liveVersion() { const u = site().installUrl; if (!u || !window.ReadableStream) return;
@@ -273,14 +274,20 @@
   const up = $('up'); addEventListener('scroll', () => { up.hidden = scrollY < 500; }, { passive: true }); up.addEventListener('click', () => scrollTo({ top: 0, behavior: 'smooth' }));
   // 화면마다 보던 자리를 기억해요: 글을 열었다가 뒤로 가면 누르기 전 자리로 돌아가요
   if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
-  const seen = {}; let curH = location.hash, curY = 0;
+  // 주소창은 늘 깨끗하게(joah.vercel.app): 화면 이동은 주소에 #를 붙이지 않고 브라우저 기록에만 남겨요 · 뒤로 가기는 그대로 돼요
+  //   예전 #주소(#faq 등)로 들어와도 그 화면으로 열고 주소창에선 지워요
+  history.replaceState({ r: route }, '', location.pathname + location.search);
+  const seen = {}; let curH = route, curY = 0;
   addEventListener('scroll', () => { curY = scrollY; }, { passive: true });
-  addEventListener('hashchange', () => { seen[curH] = { y: curY, shown: st.shown }; curH = location.hash; st.pageEdit = null;
+  document.addEventListener('click', e => { const a = e.target.closest('a[href^="#"]'); if (!a || e.ctrlKey || e.metaKey || e.shiftKey) return; e.preventDefault(); go(a.getAttribute('href')); }, true);
+  addEventListener('popstate', e => onRoute(e.state && typeof e.state.r === 'string' ? e.state.r : ''));
+  function go(r) { if (r === route) return; history.pushState({ r }, '', location.pathname + location.search); onRoute(r); }
+  function onRoute(r) { route = r; seen[curH] = { y: curY, shown: st.shown }; curH = r; st.pageEdit = null;
     const back = seen[curH]; st.shown = back ? back.shown : 10; st.edit = st.faqEdit = null; st.files = []; render();
     const top = $('tabs').getBoundingClientRect().top + scrollY - 64;
     const jump = y => scrollTo({ top: y, behavior: 'instant' }); // 부드럽게 굴러가지 않고 그 자리에 바로
     if (back) jump(back.y); else if (hash().startsWith('p-') || scrollY > top) jump(top); // 처음 여는 글·메뉴는 메뉴 자리부터
-  });
+  }
   render();
   (document.fonts ? document.fonts.ready : Promise.resolve()).then(() => document.documentElement.classList.remove('wait'));
 })();
