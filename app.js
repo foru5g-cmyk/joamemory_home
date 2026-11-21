@@ -77,11 +77,11 @@
   const dis = () => st.busy ? ' disabled' : '';
 
   function postForm(m) {
-    const p = st.edit, feeds = site().menus.filter(x => x.kind === 'feed' || x.kind === 'cards');
+    const p = st.edit, feeds = site().menus.filter(x => x.kind === 'feed' || x.kind === 'cards' || x.kind === 'stream'), noTitle = (site().menus.find(x => x.id === (p.menu || m.id)) || m).kind === 'stream';
     return `<form class="form" data-form="post">
       <div class="row"><input class="ic" name="icon" maxlength="4" value="${esc(p.icon || '')}" aria-label="제목 앞 이모지" title="제목 앞에 붙는 이모지 · 안 써도 돼요" placeholder="이모지">
-        <input class="grow" name="title" required value="${esc(p.title || '')}" placeholder="제목"></div>
-      <textarea name="body" placeholder="내용">${esc(p.body || '')}</textarea>
+        <input class="grow" name="title"${noTitle ? '' : ' required'} value="${esc(p.title || '')}" placeholder="${noTitle ? '제목 (안 써도 돼요)' : '제목'}"></div>
+      <textarea name="body"${noTitle ? ' required' : ''} placeholder="${noTitle ? '무슨 일이 있었나요? · > 로 시작하면 인용으로 크게 보여요' : '내용'}">${esc(p.body || '')}</textarea>
       <div class="row"><select class="sel" name="menu" aria-label="메뉴">${feeds.map(x => `<option value="${esc(x.id)}"${x.id === (p.menu || m.id) ? ' selected' : ''}>${esc(x.name)}</option>`).join('')}</select>
         <input class="dt" type="date" name="date" required value="${esc(p.date || today())}" aria-label="날짜">
         <input class="grow" name="tags" value="${esc((p.tags || []).join(', '))}" placeholder="꼬리표 (쉼표로 나눠요)"></div>
@@ -109,6 +109,27 @@
     });
     h += '</div>';
     if (list.length > st.shown) h += `<button class="more" data-act="more">지난 글 더 보기</button>`;
+    main.innerHTML = h;
+  }
+  // 피드: 제목 없이 짧은 글·그림 · 언제 썼는지는 '3시간 전'처럼 · 글이 '>'로 시작하면 인용 카드 · 그림 1장은 크게, 2장은 나란히, 3장부터는 격자
+  // 하트: 이 기기에서 누른 글만 기억해요(기기마다 한 번 · 다른 사람 수는 안 세요)
+  const likes = () => { try { return new Set(JSON.parse(localStorage.getItem('joa_like') || '[]')); } catch (_) { return new Set(); } };
+  const ago = d => { const t = Date.parse(d + 'T12:00:00+09:00'), n = Math.round((Date.now() - t) / 864e5); return n <= 0 ? '오늘' : n === 1 ? '어제' : n < 7 ? n + '일 전' : String(d).slice(5).replace('-', '월 ').replace(/^0/, '') + '일'; };
+  function renderStream(m) {
+    const list = sortPosts(data.POSTS.filter(p => p.menu === m.id)), s = site(); let h = `<div class="sf${m.plain ? ' plain' : ''}">`;
+    if (owner() && !st.edit) h += `<div class="sf-opt"><button data-act="sfplain" data-arg="${esc(m.id)}"${dis()}>${m.plain ? '🎨 색 카드로' : '⬜ 색 없이'}</button></div>`; // 글만 쓴 글을 색 카드로 보일지(주인만 · 메뉴마다)
+    if (owner()) h += st.edit ? postForm(m) : `<button class="sf-new" data-act="write"><img src="img/icon.png" alt=""><span>무슨 일이 있었나요?</span></button>`;
+    if (!list.length) h += '<p class="empty">아직 올라온 글이 없어요.</p>';
+    list.slice(0, st.shown).forEach((p, pi) => { const imgs = p.images || [], body = String(p.body || ''), quote = /^\s*>/.test(body);
+      h += `<article class="sf-it${p.pin ? ' pin' : ''}">${(() => { const dd = dayParts(p.date), same = pi > 0 && list[pi - 1].date === p.date; return `<div class="sf-day">${same ? '' : `<b>${dd.d}</b><span>${dd.m}월 · ${dd.w}</span>`}</div>`; })()}<div class="sf-bub"><div class="sf-nm${pi > 0 && list[pi - 1].date === p.date ? ' same' : ''}"><img src="img/icon.png" alt=""><b>${esc(s.title || '조아메모리')}</b><span>${p.pin ? '📌 ' : ''}${p.at ? new Date(p.at).toLocaleTimeString('ko-KR', { hour: 'numeric', minute: '2-digit' }) : ago(p.date)}</span><button class="sf-like" data-act="like" data-arg="${esc(p.id)}" aria-pressed="${likes().has(p.id)}" aria-label="좋아요">${likes().has(p.id) ? '♥' : '♡'}</button></div><div class="sf-cd">
+        ${imgs.length ? `<div class="sf-img n${Math.min(imgs.length, 3)}">${imgs.map(x => `<a href="${postUrl(p)}"><img src="${esc(fresh[x] || x)}" alt="" loading="lazy" draggable="false"></a>`).join('')}</div>` : ''}
+        ${quote ? `<blockquote>${linkify(body.replace(/^\s*>\s?/gm, ''))}</blockquote>` : ''}
+        ${p.title || (body && !quote) ? (() => { const only = !imgs.length, ls = body.split('\n'), head = !p.title && only && ls.length > 1 && ls[0].trim().length <= 40 ? ls.shift() : '', rest = head ? ls.join('\n').replace(/^\n+/, '') : body; // 글만 쓴 글: 첫 줄이 짧으면 머리말로
+          return `<div class="sf-tx${only ? ' only c' + (pi % 5) : ''}">${p.title || head ? `<h3>${p.icon ? esc(p.icon) + ' ' : ''}${esc(p.title || head)}</h3>` : ''}${rest && !quote ? `<p>${linkify(rest)}</p>` : ''}</div>`; })() : ''}
+        ${(p.tags || []).length ? `<div class="sf-tg">${p.tags.map((t, k) => `<i class="t${k % 5}">#${esc(t)}</i>`).join('')}</div>` : ''}
+        ${owner() ? `<div class="sf-ft"><span class="sf-own"><button data-act="edit" data-arg="${esc(p.id)}">고치기</button><button data-act="pin" data-arg="${esc(p.id)}">${p.pin ? '고정 풀기' : '고정'}</button><button data-act="del" data-arg="${esc(p.id)}">지우기</button></span></div>` : ''}
+      </div></div></article>`; });
+    h += '</div>'; if (list.length > st.shown) h += '<button class="more" data-act="more">지난 글 더 보기</button>';
     main.innerHTML = h;
   }
   const faqPick = () => { const q = st.faqQ.trim().toLowerCase(); return data.FAQ.filter(f => (!st.faqCat || f.cat === st.faqCat) && (!q || (f.q + ' ' + f.a).toLowerCase().includes(q))).sort((a, b) => (b.pin ? 1 : 0) - (a.pin ? 1 : 0)); }; // 고정한 질문이 맨 위
@@ -157,7 +178,7 @@
       ${owner() ? `<div class="tools"><button data-act="edit" data-arg="${esc(p.id)}">고치기</button><button data-act="pin" data-arg="${esc(p.id)}">${p.pin ? '고정 풀기' : '맨 위에 고정'}</button><button data-act="del" data-arg="${esc(p.id)}">지우기</button></div>` : ''}
     </article>`;
   }
-  function render() { renderChrome(); const m = curMenu(), p = curPost(); p && !st.edit ? renderPost(p, m) : m.kind === 'faq' ? renderFaq() : m.kind === 'page' ? renderPage(m) : m.kind === 'cards' ? renderCards(m) : renderFeed(m); }
+  function render() { renderChrome(); const m = curMenu(), p = curPost(); p && !st.edit ? renderPost(p, m) : m.kind === 'faq' ? renderFaq() : m.kind === 'page' ? renderPage(m) : m.kind === 'cards' ? renderCards(m) : m.kind === 'stream' ? renderStream(m) : renderFeed(m); }
 
   // ── 주인: 로그인 · 설정 ──
   function loginDialog() {
@@ -167,7 +188,7 @@
       <div class="act"><button type="button" class="btn ghost" data-act="close">닫기</button><button class="btn">들어가기</button></div></form>`;
     dlg.showModal();
   }
-  const MENU_KIND = { feed: '글', cards: '카드', page: '안내', faq: '질문' };
+  const MENU_KIND = { feed: '글', stream: '피드', cards: '카드', page: '안내', faq: '질문' };
   function settingsDialog() {
     const s = site(), f = (n, l, v) => `<label>${l}<input name="${n}" value="${esc(v || '')}"></label>`;
     dlg.innerHTML = `<h3>설정</h3><p>바꾼 뒤 저장하면 1분쯤 뒤 모두에게 보여요.</p><form class="form" data-form="site">
@@ -176,7 +197,7 @@
       <label>메뉴 (이모지 · 이름 · 종류 · 순서)</label>
       ${s.menus.map((m, i) => `<div class="mrow"><input name="mi${i}" value="${esc(m.icon)}" maxlength="4" aria-label="이모지"><input name="mn${i}" value="${esc(m.name)}" required aria-label="메뉴 이름"><em class="mk2">${MENU_KIND[m.kind] || ''}</em><button type="button" class="mb" data-act="menumv" data-arg="${i},-1"${i ? '' : ' disabled'} aria-label="위로">↑</button><button type="button" class="mb" data-act="menumv" data-arg="${i},1"${i < s.menus.length - 1 ? '' : ' disabled'} aria-label="아래로">↓</button><button type="button" class="mb" data-act="menudel" data-arg="${i}" aria-label="빼기">✕</button></div>
         ${m.kind === 'page' ? `<textarea name="mt${i}" placeholder="안내 글">${esc(m.text || '')}</textarea><div class="row"><input class="grow" name="ml${i}" value="${esc(m.linkName || '')}" placeholder="버튼 이름"><input class="grow" name="mu${i}" value="${esc(m.linkUrl || '')}" placeholder="버튼 주소"></div>` : ''}`).join('')}
-      <div class="madd"><span>+ 메뉴 추가</span>${[['feed', '📮 글'], ['cards', '🧰 카드'], ['page', '📄 안내'], ...(s.menus.some(m => m.kind === 'faq') ? [] : [['faq', '💬 질문']])].map(([k, n]) => `<button type="button" data-act="menuadd" data-arg="${k}">${n}</button>`).join('')}</div>
+      <div class="madd"><span>+ 메뉴 추가</span>${[['feed', '📮 글'], ['stream', '🗒️ 피드'], ['cards', '🧰 카드'], ['page', '📄 안내'], ...(s.menus.some(m => m.kind === 'faq') ? [] : [['faq', '💬 질문']])].map(([k, n]) => `<button type="button" data-act="menuadd" data-arg="${k}">${n}</button>`).join('')}</div>
       <p class="hint">글: 날짜 순 게시판 · 카드: 링크 카드 · 안내: 글 한 장과 버튼 · 질문: 자주 묻는 것</p>
       <div class="act"><button type="button" class="btn ghost" data-act="close">닫기</button><button class="btn">저장</button></div></form>`;
     if (!dlg.open) dlg.showModal();
@@ -196,6 +217,8 @@
       case 'write': st.edit = st.edit ? null : {}; st.files = []; return render();
       case 'cancel': st.edit = null; st.files = []; return render();
       case 'zoom': return zoomOpen(arg);
+      case 'like': { const l = likes(); l.has(arg) ? l.delete(arg) : l.add(arg); try { localStorage.setItem('joa_like', JSON.stringify([...l])); } catch (_) {} return render(); }
+      case 'sfplain': { const s = JSON.parse(JSON.stringify(site())), mm = s.menus.find(x => x.id === arg); if (!mm) return; mm.plain = !mm.plain; return work(async () => { await saveData('SITE', s, '피드 색 바꿈: ' + mm.name); }, mm.plain ? '색 없이 보여요' : '색 카드로 보여요'); }
       case 'pageedit': st.pageEdit = arg; return render();
       case 'pagecancel': st.pageEdit = null; return render();
       case 'emo': { const f = main.querySelector('[data-form="post"]'); if (f) { f.icon.value = arg; f.querySelectorAll('[data-act="emo"]').forEach(b => b.setAttribute('aria-pressed', b.dataset.arg === arg && !!arg)); } return; } // 이모지 고르기: 누르면 왼쪽 칸에 들어가요
@@ -214,13 +237,13 @@
       case 'faqpin': return work(async () => { await saveData('FAQ', data.FAQ.map(f => f.id === arg ? { ...f, pin: !f.pin } : f), '질문 고정 바꿈'); }, '저장했어요');
       case 'faqdel': if (!confirm('"' + q().q + '" 질문을 지울까요?')) return; return work(async () => { await saveData('FAQ', data.FAQ.filter(f => f.id !== arg), '질문 지움'); }, '지웠어요');
       case 'close': return dlg.close();
-      case 'menuadd': { const s = readSite(dlg.querySelector('form')), k = arg || 'feed', base = { feed: ['📌', '새 메뉴'], cards: ['🧰', '새 카드 메뉴'], page: ['📄', '새 안내'], faq: ['💬', '자주 묻는 것'] }[k] || ['📌', '새 메뉴'];
+      case 'menuadd': { const s = readSite(dlg.querySelector('form')), k = arg || 'feed', base = { feed: ['📌', '새 메뉴'], stream: ['🗒️', '피드'], cards: ['🧰', '새 카드 메뉴'], page: ['📄', '새 안내'], faq: ['💬', '자주 묻는 것'] }[k] || ['📌', '새 메뉴'];
         if (k === 'faq' && s.menus.some(m => m.kind === 'faq')) return toast('질문 메뉴는 하나만 있어요');
         s.menus.push({ id: 'm' + Date.now().toString(36), icon: base[0], name: base[1], kind: k, ...(k === 'page' ? { text: '', linkName: '', linkUrl: '' } : {}) }); data.SITE = s; settingsDialog(); return dlg.querySelector('.madd')?.scrollIntoView({ block: 'center' }); } // 저장을 눌러야 올라가요
       case 'menumv': { const s = readSite(dlg.querySelector('form')), [i, d] = arg.split(',').map(Number), j = i + d; if (j < 0 || j >= s.menus.length) return; [s.menus[i], s.menus[j]] = [s.menus[j], s.menus[i]]; data.SITE = s; return settingsDialog(); }
       case 'menudel': { const s = readSite(dlg.querySelector('form')), m = s.menus[Number(arg)];
         if (data.POSTS.some(p => p.menu === m.id)) return toast('이 메뉴에 글이 있어요 · 글을 먼저 옮기거나 지워 주세요');
-        if (!s.menus.some((x, i) => i !== Number(arg) && (x.kind === 'feed' || x.kind === 'cards'))) return toast('글이나 카드 메뉴는 하나는 있어야 해요');
+        if (!s.menus.some((x, i) => i !== Number(arg) && (x.kind === 'feed' || x.kind === 'cards' || x.kind === 'stream'))) return toast('글이나 카드 메뉴는 하나는 있어야 해요');
         if (m.kind === 'faq' && !confirm('질문 메뉴를 뺄까요? 질문들은 지워지지 않고, 다시 추가하면 그대로 나와요.')) return;
         if (m.kind === 'page' && (m.text || m.linkUrl) && !confirm('"' + m.name + '" 안내를 뺄까요? 안내 글도 같이 없어져요.')) return;
         s.menus.splice(Number(arg), 1); data.SITE = s; return settingsDialog(); }
@@ -252,8 +275,8 @@
       return work(async () => { const l = st.faqEdit.id ? data.FAQ.map(x => x.id === item.id ? item : x) : [item, ...data.FAQ]; await saveData('FAQ', l, '질문 올림'); st.faqEdit = null; }, '올렸어요 · 1분쯤 뒤 모두에게 보여요'); }
     if (kind === 'post') { keepForm(); const p = st.edit;
       return work(async () => { const images = []; for (const x of st.files) images.push(typeof x === 'string' ? x : await uploadImage(x.file)); st.files = images; // 중간에 실패해도 이미 올린 그림은 다시 안 올려요
-        const item = { id: p.id || 'p' + Date.now().toString(36), menu: p.menu, date: p.date, icon: p.icon, title: p.title, body: p.body, tags: p.tags, images, pin: !!p.pin };
-        await saveData('POSTS', p.id ? data.POSTS.map(x => x.id === item.id ? item : x) : [item, ...data.POSTS], '글 올림: ' + item.title); st.edit = null; st.files = []; go('#' + encodeURIComponent(item.menu)); }, '올렸어요 · 1분쯤 뒤 모두에게 보여요'); }
+        const item = { id: p.id || 'p' + Date.now().toString(36), menu: p.menu, date: p.date, icon: p.icon, title: p.title, body: p.body, tags: p.tags, images, pin: !!p.pin, at: p.at || Date.now() }; // at: 올린 시각(피드에 '오후 11:30'처럼) · 고쳐도 처음 시각 그대로
+        await saveData('POSTS', p.id ? data.POSTS.map(x => x.id === item.id ? item : x) : [item, ...data.POSTS], '글 올림: ' + (item.title || String(item.body || '').slice(0, 30))); st.edit = null; st.files = []; go('#' + encodeURIComponent(item.menu)); }, '올렸어요 · 1분쯤 뒤 모두에게 보여요'); }
   });
   // 지금 판: 설정에 적은 번호 대신 실제 스크립트의 @version을 보여 줘요(머리 부분만 받고 끊어요 · 못 읽으면 설정의 번호 그대로)
   async function liveVersion() { const u = site().installUrl; if (!u || !window.ReadableStream) return;

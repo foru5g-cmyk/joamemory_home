@@ -62,6 +62,33 @@
   .gd .tips { margin-top:20px; border-radius:18px; padding:18px 24px; font-size:19px; line-height:1.75; color:#4a4860; }
   .gd .tips b { color:#1f1b2e; font-weight:800; margin:0 6px 0 4px; }
   .gd .ft { text-align:right; margin-top:16px; color:#9e99b3; font-size:17px; }
+  /* 노션 카드: 흰 바탕 · 큰 제목 · ✓ 목록 · 아래 상자 */
+  .nc { box-sizing:border-box; width:780px; padding:28px; color:#37352f; font-family:'Pretendard Variable','Pretendard','Malgun Gothic','Segoe UI Emoji',sans-serif; word-break:keep-all; letter-spacing:-.3px; line-height:normal; }
+  .nc * { box-sizing:border-box; margin:0; padding:0; }
+  .nc .pg { background:#fff; border-radius:28px; padding:46px 48px 34px; }
+  .nc .ic { font-size:64px; line-height:1; }
+  .nc h1 { font-size:42px; font-weight:800; letter-spacing:-1.2px; line-height:1.25; margin-top:18px; }
+  .nc .meta { font-size:19px; color:#9b9a97; margin-top:10px; }
+  .nc hr { border:0; border-top:2px solid #f1f1ef; margin:26px 0 8px; }
+  .nc .it { display:flex; gap:16px; padding:16px 2px; border-bottom:1.5px solid #f6f6f4; }
+  .nc .it:last-child { border-bottom:0; }
+  .nc .ck { flex:none; width:32px; height:32px; border-radius:9px; color:#fff; font-size:20px; font-weight:800; display:flex; align-items:center; justify-content:center; margin-top:2px; }
+  .nc .it b { display:block; font-size:24px; font-weight:700; line-height:1.4; }
+  .nc .it span { display:block; font-size:19px; color:#8a8884; margin-top:4px; line-height:1.5; }
+  .nc .tip { margin-top:22px; border-radius:16px; padding:18px 22px; font-size:20px; line-height:1.6; }
+  .nc .ft { text-align:right; color:#b4b3af; font-size:16px; margin-top:18px; }
+  /* 공지: 흰 카드 · 왼쪽 색 띠 · 꼬리표 + 날짜 시간 · 큰 제목 */
+  .nt { box-sizing:border-box; width:780px; padding:28px; font-family:'Pretendard Variable','Pretendard','Malgun Gothic','Segoe UI Emoji',sans-serif; letter-spacing:-.5px; word-break:keep-all; }
+  .nt * { box-sizing:border-box; margin:0; padding:0; }
+  .nt .c { background:#fff; border-radius:28px; padding:44px 48px 40px 58px; position:relative; overflow:hidden; min-height:300px; }
+  .nt .c > i { position:absolute; left:0; top:0; bottom:0; width:10px; }
+  .nt .tg { display:inline-flex; align-items:center; gap:10px; font-weight:800; font-size:23px; }
+  .nt .tg b { width:11px; height:11px; border-radius:50%; display:inline-block; }
+  .nt .wh { display:inline-block; margin-left:12px; padding-left:12px; border-left:2px solid #00000014; font-size:21px; font-weight:600; color:#a49b99; vertical-align:middle; }
+  .nt h1 { font-size:62px; font-weight:800; letter-spacing:-2.3px; margin:26px 0 12px; color:#1f1b1b; line-height:1.12; }
+  .nt p { font-size:24px; color:#8a7f7d; line-height:1.55; white-space:pre-wrap; }
+  .nt .ft { display:flex; justify-content:flex-end; align-items:center; gap:12px; margin-top:30px; font-size:20px; font-weight:700; color:#b8aeac; }
+  .nt .ft img { width:44px; height:44px; border-radius:13px; }
   /* 만들기 창 */
   .mkd { border:0; border-radius:22px; padding:0; width:min(1080px, calc(100vw - 24px)); max-height:calc(100dvh - 24px); margin:auto; box-shadow:0 20px 60px #0003; overflow:hidden; }
   .mkd::backdrop { background:#0006; }
@@ -135,7 +162,21 @@
       ${tips.length ? `<div class="tips" style="background:${tipBg}">${tips.map(([e, a, b]) => `${e}<b>${esc(a)}</b>${esc(b)}`).join('<br>')}</div>` : ''}
       <div class="ft">조아메모리ෆ${d.ver ? ' ' + esc(d.ver) : ''}</div></div></div>`;
   }
-  const pageHtml = d => d.kind === 'guide' ? guideHtml(d) : chatHtml(d);
+  // 노션 카드 모양
+  function cardHtml(d) {
+    const acc = d.acc, items = lines(d.citems).map(pair), tips = lines(d.ctip);
+    return `<div class="nc" style="background:${mix(acc, '#ffffff', .88)}"><div class="pg">
+      ${d.cicon ? `<div class="ic">${esc(d.cicon)}</div>` : ''}<h1>${esc(d.ctitle || '제목')}</h1>${d.csub ? `<p class="meta">${esc(d.csub)}</p>` : ''}
+      ${items.length ? '<hr>' + items.map(([a, b]) => `<div class="it"><div class="ck" style="background:${acc}">✓</div><div><b>${esc(a)}</b>${b ? `<span>${esc(b)}</span>` : ''}</div></div>`).join('') : ''}
+      ${tips.length ? `<div class="tip" style="background:${mix(acc, '#ffffff', .9)}">${tips.map(t => esc(t)).join('<br>')}</div>` : ''}
+      <div class="ft">조아메모리ෆ${d.ver ? ' ' + esc(d.ver) : ''}</div></div></div>`;
+  }
+  const NOTICE = [['긴급 공지', '#e5484d', '#fde7e4'], ['점검 안내', '#e8890c', '#fdf0dc'], ['업데이트 예고', '#7b61d9', '#ece8fb'], ['해결 완료', '#2f9e66', '#e2f5ea'], ['알림', '#3d7fc4', '#e2eefa']];
+  const nowText = () => { const d = new Date(), h = d.getHours(); return `${d.getFullYear()}년 ${d.getMonth() + 1}월 ${d.getDate()}일 (${'일월화수목금토'[d.getDay()]}) · ${h < 12 ? '오전' : '오후'} ${(h % 12) || 12}:${String(d.getMinutes()).padStart(2, '0')}`; };
+  function noticeHtml(d) { const [, col, bg] = NOTICE.find(x => x[0] === d.ntag) || [d.ntag, d.acc, mix(d.acc, '#ffffff', .88)];
+    return `<div class="nt" style="background:${bg}"><div class="c"><i style="background:${col}"></i><span class="tg" style="color:${col}"><b style="background:${col}"></b>${esc(d.ntag || '공지')}</span>${d.nwhen ? `<span class="wh">${esc(d.nwhen)}</span>` : ''}
+      <h1>${esc(d.ntitle || '제목')}</h1>${d.nsub ? `<p>${esc(d.nsub)}</p>` : ''}<div class="ft"><img src="img/icon.png" alt="">조아메모리</div></div></div>`; }
+  const pageHtml = d => d.style === 'notice' ? noticeHtml(d) : d.style === 'card' ? cardHtml(d) : d.kind === 'guide' ? guideHtml(d) : chatHtml(d);
 
   let h2c = null; // html2canvas는 처음 그림을 찍을 때 한 번만 받아요
   const loadH2C = () => h2c || (h2c = new Promise((ok, no) => { if (window.html2canvas) return ok(window.html2canvas); const s = document.createElement('script'); s.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js'; s.onload = () => ok(window.html2canvas); s.onerror = () => { h2c = null; no(new Error('그림 도구를 못 받았어요 · 인터넷 연결을 확인해 주세요')); }; document.head.appendChild(s); }));
@@ -180,16 +221,30 @@
       <label>팁 상자 (한 줄에 하나 · 이모지 이름 | 내용)<textarea data-k="tips" style="min-height:80px" placeholder="💡 팁 | 새 모델이 안 보이면 모델 새로고침&#10;⚠️ 주의 | 토큰은 남에게 보내지 마세요">${esc(d.tips)}</textarea></label>
       <label>판 번호 (안 써도 돼요)<input data-k="ver" value="${esc(d.ver)}" placeholder="5.8.48"></label>`;
 
+  const cardForm = d => `
+      <label>색<div class="sw">${ACCS.map(c => `<button type="button" data-acc="${c}" aria-pressed="${d.acc === c}" style="padding:4px"><i style="background:${c};width:24px;height:24px"></i></button>`).join('')}<input type="color" class="cpick" data-k="acc" value="${d.acc}" title="색 직접 고르기"></div></label>
+      <div class="two"><label>맨 위 이모지 (안 써도 돼요)<input data-k="cicon" maxlength="4" value="${esc(d.cicon)}"></label><label>판 번호 (안 써도 돼요)<input data-k="ver" value="${esc(d.ver)}" placeholder="5.8.48"></label></div>
+      <label>제목<input data-k="ctitle" value="${esc(d.ctitle)}" placeholder="5.8.48 업데이트"></label>
+      <label>제목 아래 작은 글씨 (안 써도 돼요)<input data-k="csub" value="${esc(d.csub)}" placeholder="11월 21일 · 조아메모리"></label>
+      <label>목록 (한 줄에 하나 · 작은 설명은 | 뒤에)<textarea data-k="citems" placeholder="장기기억 한 번에 지우기 | 설정 › 편의 · 웹 모드&#10;굳은 문장 더 꼼꼼히 찾기&#10;테마 색 파스텔 추가">${esc(d.citems)}</textarea></label>
+      <label>아래 상자 (안 써도 돼요)<textarea data-k="ctip" style="min-height:70px" placeholder="💡 새 모델이 안 보이면 모델 새로고침">${esc(d.ctip)}</textarea></label>`;
+  const noticeForm = d => `
+      <label>종류<div class="sw">${NOTICE.map(([n, c]) => `<button type="button" data-ntag="${n}" aria-pressed="${d.ntag === n}"><i style="background:${c}"></i>${n}</button>`).join('')}</div></label>
+      <label>날짜·시간 (안 써도 돼요)<input data-k="nwhen" value="${esc(d.nwhen)}"><button type="button" class="add" data-nnow style="padding:6px;margin-top:4px">지금 시각으로</button></label>
+      <label>제목<input data-k="ntitle" value="${esc(d.ntitle)}" placeholder="꼭 확인해 주세요"></label>
+      <label>설명 (안 써도 돼요)<textarea data-k="nsub" style="min-height:70px" placeholder="조아메모리 사용에 영향을 주는 중요한 소식이에요">${esc(d.nsub)}</textarea></label>`;
+  const styleBar = (d, kind) => `<div class="sw" style="margin:-4px 0 4px"><button type="button" data-style="base" aria-pressed="${d.style === 'base'}" style="padding:5px 14px">${kind === 'guide' ? '설명서' : '카톡'} 모양</button><button type="button" data-style="card" aria-pressed="${d.style === 'card'}" style="padding:5px 14px">노션 카드</button><button type="button" data-style="notice" aria-pressed="${d.style === 'notice'}" style="padding:5px 14px">공지</button></div>`;
   // open({ version, date, kind }, done({ file, title, body, icon, tags }))
   function open(opt, done) {
     init(); const last = store.get() || {}, dt = String(opt.date || '').split('-').map(Number), kind = opt.kind === 'guide' ? 'guide' : 'news';
     const P = NEWS[((last.preset ?? NEWS.length - 1) + 1) % NEWS.length]; // 소식 색은 지난번 다음 색부터
     const d = { kind, ver: opt.version || '', time: now(),
       bg: P.bg, acc: P.acc, av: '', pill: dt[1] ? `${dt[1]}월 ${dt[2]}일 소식` : '소식', head: '조아메모리', sub: '업데이트', bubbles: '', me: '', cards: '', foot: '',
-      title: '', lead: '', steps: [{ t: '', p: '', img: '' }, { t: '', p: '', img: '' }], tips: '', errs: '' };
-    if (kind === 'guide') d.acc = last.gacc || ACCS[0];
+      title: '', lead: '', steps: [{ t: '', p: '', img: '' }, { t: '', p: '', img: '' }], tips: '', errs: '',
+      style: ['card', 'notice'].includes(last.style) ? last.style : 'base', ntag: '긴급 공지', nwhen: nowText(), ntitle: '', nsub: '', cicon: '', ctitle: opt.version ? opt.version + ' 업데이트' : '', csub: dt[1] ? `${dt[1]}월 ${dt[2]}일 · 조아메모리` : '조아메모리', citems: '', ctip: '' };
+    if (kind === 'guide' || d.style === 'card') d.acc = last.gacc || ACCS[0];
     const dlg = document.createElement('dialog'); dlg.className = 'mkd'; document.body.appendChild(dlg);
-    const paint = () => { dlg.innerHTML = `<div class="wrap"><div class="side" tabindex="-1"><h3>🎨 ${kind === 'guide' ? '쓰는 법' : '소식'} 그림 만들기</h3>${kind === 'guide' ? guideForm(d) : newsForm(d)}
+    const paint = () => { dlg.innerHTML = `<div class="wrap"><div class="side" tabindex="-1"><h3>🎨 ${kind === 'guide' ? '쓰는 법' : '소식'} 그림 만들기</h3>${styleBar(d, kind)}${d.style === 'notice' ? noticeForm(d) : d.style === 'card' ? cardForm(d) : kind === 'guide' ? guideForm(d) : newsForm(d)}
       <div class="act"><button type="button" class="btn ghost" data-mk="close">닫기</button><button type="button" class="btn ghost" data-mk="save">그림 받기</button><button type="button" class="btn" data-mk="use">글에 넣기</button></div>
     </div><div class="pv"><p class="pvh">미리보기</p><div class="scale"></div></div></div>`; draw(); };
     const draw = () => { const pv = dlg.querySelector('.scale'); if (!pv) return; pv.innerHTML = pageHtml(d); const w = dlg.querySelector('.pv').clientWidth - 32, s = Math.min(1, w / 780); pv.style.transform = `scale(${s})`; pv.style.width = (780 * s) + 'px';
@@ -203,6 +258,9 @@
     const busy = on => dlg.querySelectorAll('[data-mk]').forEach(b => { b.disabled = on; });
     dlg.addEventListener('click', async e => {
       const g = s => e.target.closest(s);
+      if (g('[data-ntag]')) { d.ntag = g('[data-ntag]').dataset.ntag; return repaint(); }
+      if (g('[data-nnow]')) { d.nwhen = nowText(); return repaint(); }
+      if (g('[data-style]')) { d.style = g('[data-style]').dataset.style; if (kind === 'news') d.acc = d.style === 'card' ? (last.gacc || ACCS[0]) : (NEWS.find(t => t.bg === d.bg) || NEWS[0]).acc; return repaint(); }
       if (g('[data-preset]')) { const t = NEWS[+g('[data-preset]').dataset.preset]; Object.assign(d, { bg: t.bg, acc: t.acc }); d.preset = +g('[data-preset]').dataset.preset; return repaint(); }
       if (g('[data-acc]')) { d.acc = g('[data-acc]').dataset.acc; return repaint(); }
       if (g('[data-addstep]')) { d.steps.push({ t: '', p: '', img: '' }); repaint(); return dlg.querySelector('.add')?.scrollIntoView({ block: 'center' }); }
@@ -210,20 +268,24 @@
       if (g('[data-pickshot]')) return dlg.querySelector(`[data-shot="${g('[data-pickshot]').dataset.pickshot}"]`).click();
       if (g('[data-rmshot]')) { d.steps[+g('[data-rmshot]').dataset.rmshot].img = ''; return repaint(); }
       const mk = g('[data-mk]')?.dataset.mk; if (!mk) return; if (mk === 'close') return dlg.close();
-      if (kind === 'news' && !lines(d.bubbles).length) return alert('말풍선을 한 줄 이상 써 주세요');
-      if (kind === 'guide' && (!d.title.trim() || !(d.steps.some(s => s.t || s.p || s.img) || lines(d.errs).length))) return alert('제목과, 단계나 오류 표를 하나 이상 써 주세요');
+      if (d.style === 'card' && !d.ctitle.trim()) return alert('제목을 써 주세요');
+      if (d.style === 'notice' && !d.ntitle.trim()) return alert('제목을 써 주세요');
+      if (d.style === 'base' && kind === 'news' && !lines(d.bubbles).length) return alert('말풍선을 한 줄 이상 써 주세요');
+      if (d.style === 'base' && kind === 'guide' && (!d.title.trim() || !(d.steps.some(s => s.t || s.p || s.img) || lines(d.errs).length))) return alert('제목과, 단계나 오류 표를 하나 이상 써 주세요');
       busy(true); const btn = g('[data-mk]'), was = btn.textContent; btn.textContent = '만드는 중…';
       try { const blob = await shoot(d), name = (kind === 'guide' ? 'guide-' : 'update-') + (String(opt.date || '').replace(/-/g, '') || Date.now()) + '.png';
-        store.set(Object.assign(last, kind === 'guide' ? { gacc: d.acc } : { preset: d.preset ?? NEWS.findIndex(t => t.bg === d.bg) }));
+        store.set(Object.assign(last, { style: d.style }, kind === 'guide' || d.style === 'card' ? { gacc: d.acc } : { preset: d.preset ?? NEWS.findIndex(t => t.bg === d.bg) }));
         if (mk === 'save') { const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = name; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 4000); }
         else { dlg.close(); const file = new File([blob], name, { type: 'image/png' });
-          if (kind === 'guide') done && done({ file, title: d.title.trim(), body: d.lead.trim(), icon: '📖', tags: [] });
+          if (d.style === 'notice') done && done({ file, title: d.ntitle.trim(), body: d.nsub.trim(), icon: '', tags: [d.ntag] });
+          else if (d.style === 'card') { const it = lines(d.citems).map(pair); done && done({ file, title: d.ctitle.trim(), body: it.slice(0, 3).map(x => x[0]).join(' · '), icon: d.cicon || '', tags: d.ver ? [d.ver] : [] }); }
+          else if (kind === 'guide') done && done({ file, title: d.title.trim(), body: d.lead.trim(), icon: '📖', tags: [] });
           else { const b = lines(d.bubbles).map(pair); done && done({ file, title: b[0][0].replace(/[.!~]+$/, ''), body: b.slice(0, 3).map(x => x[0]).join(' '), icon: d.av || '', tags: d.ver ? [d.ver] : [] }); } }
       } catch (err) { alert(err.message || '그림을 못 만들었어요'); } finally { btn.textContent = was; busy(false); }
     });
     dlg.addEventListener('close', () => dlg.remove());
     paint(); dlg.showModal(); draw(); setTimeout(draw, 300); // 글꼴이 늦게 오면 크기가 바뀌어서 한 번 더
-    if (matchMedia('(pointer: fine)').matches) dlg.querySelector(kind === 'guide' ? '[data-k="title"]' : '[data-k="bubbles"]')?.focus(); else dlg.querySelector('.side')?.focus(); // 폰에선 열자마자 자판이 올라오지 않게
+    if (matchMedia('(pointer: fine)').matches) dlg.querySelector(d.style === 'notice' ? '[data-k="ntitle"]' : d.style === 'card' ? '[data-k="ctitle"]' : kind === 'guide' ? '[data-k="title"]' : '[data-k="bubbles"]')?.focus(); else dlg.querySelector('.side')?.focus(); // 폰에선 열자마자 자판이 올라오지 않게
   }
-  window.JoaMaker = { open, chatHtml, guideHtml, NEWS };
+  window.JoaMaker = { open, chatHtml, guideHtml, cardHtml, noticeHtml, NEWS };
 })();
