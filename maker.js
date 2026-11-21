@@ -110,15 +110,16 @@
   .mkd .stp .shot img { width:56px; height:40px; object-fit:cover; border-radius:6px; border:1px solid #ebe7f7; }
   .mkd .stp .shot button { border:1px solid #ebe7f7; background:#fff; border-radius:99px; padding:4px 12px; font-size:13px; color:#37352f; }
   .mkd .add { border:1px dashed #cbbcf7; background:#fff; color:#7c63de; border-radius:12px; padding:10px; font-size:14px; font-weight:700; }
-  .mkd .act { display:flex; gap:8px; justify-content:flex-end; flex-wrap:wrap; padding-top:4px; }
+  .mkd .act { display:flex; gap:8px; justify-content:flex-end; flex-wrap:wrap; position:sticky; bottom:-24px; z-index:2; background:#fff; margin:0 -24px -24px; padding:12px 24px 20px; border-top:1px solid #ebe7f7; } /* 닫기·글에 넣기는 늘 창 아래에 보이게 */
   .mkd .pv { background:#f6f4fd; overflow:auto; padding:16px; }
+  .mkd .side, .mkd .pv { max-height:calc(100dvh - 24px); } /* 칸이 길어도 창 안에서 내려가게(격자 줄은 내용만큼 커져서 창 밖으로 잘렸음) */
   .mkd .pv .scale { transform-origin:top left; }
   .mkd .hint { font-size:12.5px; color:#9b9a97; font-weight:400; line-height:1.5; }
   .mkd .pvh { display:none; }
   @media (max-width:760px) {
     .mkd { width:100vw; max-width:100vw; height:100dvh; max-height:100dvh; border-radius:0; }
-    .mkd .wrap { grid-template-columns:1fr; height:100dvh; max-height:100dvh; overflow:auto; }
-    .mkd .side { overflow:visible; padding:18px 16px 0; }
+    .mkd .wrap { grid-template-columns:minmax(0, 1fr); height:100dvh; max-height:100dvh; overflow:auto; }
+    .mkd .side { overflow:visible; padding:18px 16px 0; } .mkd .side, .mkd .pv { max-height:none; overflow:visible; } /* 폰: 창 하나만 내려가게(미리보기 안에 따로 스크롤이 생기지 않게) */
     .mkd .pv { padding:12px 16px 90px; } .mkd .pvh { display:block; font-size:13.5px; font-weight:700; color:#9b9a97; margin:0 0 8px; }
     .mkd .act { position:fixed; left:0; right:0; bottom:0; z-index:2; background:#fffffff2; backdrop-filter:blur(8px); padding:10px 16px calc(10px + env(safe-area-inset-bottom)); border-top:1px solid #ebe7f7; }
     .mkd .act .btn { flex:1; text-align:center; }
