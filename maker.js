@@ -121,8 +121,8 @@
     .mkd .wrap { grid-template-columns:minmax(0, 1fr); height:100dvh; max-height:100dvh; overflow:auto; }
     .mkd .side { overflow:visible; padding:18px 16px 0; } .mkd .side, .mkd .pv { max-height:none; overflow:visible; } /* 폰: 창 하나만 내려가게(미리보기 안에 따로 스크롤이 생기지 않게) */
     .mkd .pv { padding:12px 16px 90px; } .mkd .pvh { display:block; font-size:13.5px; font-weight:700; color:#9b9a97; margin:0 0 8px; }
-    .mkd .act { position:fixed; left:0; right:0; bottom:0; z-index:2; background:#fffffff2; backdrop-filter:blur(8px); padding:10px 16px calc(10px + env(safe-area-inset-bottom)); border-top:1px solid #ebe7f7; }
-    .mkd .act .btn { flex:1; text-align:center; }
+    .mkd .act { position:fixed; left:0; right:0; bottom:0; z-index:2; margin:0; display:grid; grid-template-columns:1fr 1fr 1.3fr; background:#fffffff2; backdrop-filter:blur(8px); padding:10px 16px calc(10px + env(safe-area-inset-bottom)); border-top:1px solid #ebe7f7; }
+    .mkd .act .btn { flex:1; text-align:center; white-space:nowrap; padding-left:8px; padding-right:8px; }
   }`;
 
   const now = () => { const d = new Date(), h = d.getHours(); return (h < 12 ? '오전 ' : '오후 ') + ((h % 12) || 12) + ':' + String(d.getMinutes()).padStart(2, '0'); };

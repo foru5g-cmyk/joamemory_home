@@ -175,7 +175,9 @@
   .qs .a img { flex:none; width:26px; height:26px; border-radius:8px; }
   .qs .a div { flex:1; min-width:0; background:var(--soft); border-radius:4px 14px 14px 14px; padding:10px 14px; font-size:14.5px; color:#4b4a47; white-space:pre-wrap; overflow-wrap:anywhere; }
   .qs .a a { color:var(--acc); text-decoration:underline; }
-  .qs .a .tools { white-space:normal; }
+  .qs .a .tools, .qs details.pinned .a .tools { white-space:normal; background:none; box-shadow:none; border:0; padding:0; margin-top:12px; gap:6px; } /* 답 말풍선 칸 모양(.a div)이 버튼 줄에 묻지 않게 */
+  .qs .a .tools button { border:1px solid var(--line); background:#fff; border-radius:99px; padding:4px 12px; font-size:13px; color:var(--sub); }
+  .qs .a .tools button:hover { color:var(--ink); border-color:#d8d2ea; }
   .qs details.pinned { background:#fffdf2; border-color:#f6ecc4; } /* 고정: 노랑 하나로(안의 동그라미·꼬리표·화살표도 노랑 계열) */
   .qs details.pinned:hover, .qs details.pinned[open] { border-color:#efdf9f; box-shadow:0 6px 20px #c9a23a12; }
   .qs details.pinned summary em { background:#fff !important; color:#5c4a12 !important; box-shadow:0 0 0 1px #f0e2ad; }
@@ -239,6 +241,14 @@
     dialog .mrow { gap:5px; } dialog .mrow .mk2 { display:none; } dialog .mrow .mb { width:28px; height:34px; } dialog .mrow input:first-child { width:44px; padding:8px 4px; } /* 폰 설정: 메뉴 이름 칸이 좁아지지 않게 */
     .form .tip { display:none; } .form .emo { flex-wrap:nowrap; overflow-x:auto; scrollbar-width:none; padding-bottom:2px; } .form .emo button { flex:none; } .form .emo span { flex:none; } .form .sel, .form .dt { width:calc(50% - 5px); }
     .new .dot { width:24px; height:24px; margin-left:-3px; } .new .dot::before, .new .dot::after { width:10px; margin-left:-5px; } .new > .day { display:none; } .new > button:not(.dot), .new .form { grid-column:2; grid-row:1; }
+    /* 폰 글쓰기: 화면 전체로 열고 버튼은 아래에 붙여 둠(목록 사이 좁은 칸에서 쓰기 불편해서) */
+    .form[data-form="post"] { position:fixed; inset:0; z-index:60; border-radius:0; background:#fff; overflow-y:auto; overscroll-behavior:contain; padding:16px 16px 0; align-content:start; gap:12px; }
+    .form[data-form="post"]::before { content:"✏️ 글쓰기"; font-size:19px; font-weight:800; padding:2px 2px 4px; }
+    .form[data-form="post"] textarea { min-height:38dvh; }
+    .form[data-form="post"] .act { position:sticky; bottom:0; margin:auto -16px 0; padding:10px 16px calc(10px + env(safe-area-inset-bottom)); background:#fffffff2; backdrop-filter:blur(8px); border-top:1px solid var(--line); display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+    .form[data-form="post"] .act > * { width:100%; text-align:center; } .form[data-form="post"] .act .note .btn { width:100%; }
+    body:has(.form[data-form="post"]) { overflow:hidden; }
+    .new:has(.form) .dot { display:none; } /* 글쓰기가 열리면 + 동그라미가 위에 떠 있지 않게 */
     .chips { flex-wrap:nowrap; overflow-x:auto; scrollbar-width:none; gap:5px; } .chips button { flex:none; padding:5px 12px; }
     .qs summary { font-size:15px; padding:12px 14px; gap:10px; } .qs .a { padding:2px 14px 14px; }
     .one h2 { font-size:28px; } .one p { font-size:16px; }
