@@ -1,19 +1,5 @@
-window.JOA_POSTS_AT = 1795317467580;
+window.JOA_POSTS_AT = 1795317495159;
 window.JOA_POSTS = [
-  {
-    "id": "pmwr9hm21",
-    "menu": "mmwr932h5",
-    "date": "2026-11-22",
-    "icon": "",
-    "title": "",
-    "body": "",
-    "tags": [],
-    "images": [
-      "img/20261122-gluzos-update.png"
-    ],
-    "pin": false,
-    "at": 1795317169897
-  },
   {
     "id": "p20261121",
     "menu": "news",
