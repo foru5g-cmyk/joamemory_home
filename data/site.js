@@ -1,4 +1,4 @@
-window.JOA_SITE_AT = 1795315166740;
+window.JOA_SITE_AT = 1795315262475;
 window.JOA_SITE = {
   "small": "랙시들의",
   "title": "조아메모리",
@@ -37,15 +37,6 @@ window.JOA_SITE = {
       "icon": "💬",
       "name": "자주 묻는 것",
       "kind": "faq"
-    },
-    {
-      "id": "mmwr8a7kz",
-      "icon": "📄",
-      "name": "알려진 오류",
-      "kind": "page",
-      "text": "",
-      "linkName": "",
-      "linkUrl": ""
     },
     {
       "id": "bug",
