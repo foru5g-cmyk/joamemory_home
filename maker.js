@@ -173,8 +173,16 @@
   }
   const NOTICE = [['긴급 공지', '#e8707c', '#ffdfe3', '🚨'], ['점검 안내', '#e59a4c', '#ffe9cc', '🛠️'], ['업데이트 예고', '#8f7be6', '#e6dffd', '🎁'], ['해결 완료', '#4fb589', '#d6f2e3', '✨'], ['알림', '#5a9bdc', '#d8eafb', '💌'], ['알려진 오류', '#e072a4', '#fddfec', '🐞']]; // 글자색 · 파스텔 바탕 · 기본 이모지(칸에서 바꾸거나 지울 수 있어요)
   const nowText = () => { const d = new Date(), h = d.getHours(); return `${d.getFullYear()}년 ${d.getMonth() + 1}월 ${d.getDate()}일 (${'일월화수목금토'[d.getDay()]}) · ${h < 12 ? '오전' : '오후'} ${(h % 12) || 12}:${String(d.getMinutes()).padStart(2, '0')}`; };
+  // 고양이 말풍선을 PNG로 그려 둬요(SVG 그림은 아이폰에서 그림으로 찍을 때 빠져서) · 색마다 한 번만
+  const catCache = {};
+  const catPng = c => catCache[c] || (catCache[c] = (() => { const cv = document.createElement('canvas'); cv.width = cv.height = 800; const x = cv.getContext('2d'); x.scale(8, 8);
+    x.fillStyle = c; x.fill(new Path2D('M20 30 L25 9 L42 23 H58 L75 9 L80 30 Q91 36 91 51 Q91 76 63 78 H45 L27 93 L29 76 Q9 71 9 51 Q9 36 20 30 Z'));
+    x.fillStyle = '#fff'; for (const cx of [38, 62]) { x.beginPath(); x.arc(cx, 48, 4.2, 0, 7); x.fill(); }
+    x.fillStyle = '#ffb3c7'; for (const cx of [28, 72]) { x.beginPath(); x.ellipse(cx, 57, 5.5, 3.4, 0, 0, 7); x.fill(); }
+    x.strokeStyle = '#fff'; x.lineWidth = 3; x.lineCap = 'round'; x.beginPath(); x.moveTo(45, 55); x.quadraticCurveTo(50, 60, 55, 55); x.stroke();
+    return cv.toDataURL('image/png'); })());
   function noticeHtml(d) { const [, col, bg, emo] = NOTICE.find(x => x[0] === d.ntag) || [d.ntag, d.acc, mix(d.acc, '#ffffff', .8), ''], e = d.nemo == null ? emo : d.nemo;
-    const cat = (c, s) => `<img style="${s}" alt="" src="data:image/svg+xml,${encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><path fill="${c}" d="M20 30 L25 9 L42 23 H58 L75 9 L80 30 Q91 36 91 51 Q91 76 63 78 H45 L27 93 L29 76 Q9 71 9 51 Q9 36 20 30 Z"/><circle cx="38" cy="48" r="4.2" fill="#fff"/><circle cx="62" cy="48" r="4.2" fill="#fff"/><ellipse cx="28" cy="57" rx="5.5" ry="3.4" fill="#ffb3c7"/><ellipse cx="72" cy="57" rx="5.5" ry="3.4" fill="#ffb3c7"/><path d="M45 55 Q50 60 55 55" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round"/></svg>`)}">`;
+    const cat = (c, s) => `<img style="${s}" alt="" src="${catPng(c)}">`;
     const pals = ['#b7a6f2', '#f7b8cf', '#a9d3ee', '#f6d48a', '#a8dcc0'].filter(c => mix(c, col, .5) !== c), k = Math.max(0, NOTICE.findIndex(x => x[0] === d.ntag));
     return `<div class="nt" style="background:linear-gradient(140deg,${bg},${mix(bg, '#ffffff', .45)})">
       <span class="sp" style="left:392px;top:36px;font-size:30px">✦</span><span class="sp" style="left:560px;top:150px;font-size:20px">✦</span><span class="sp" style="left:330px;top:318px;font-size:22px">✦</span><span class="sp" style="left:716px;top:60px;font-size:16px">✦</span>
@@ -184,11 +192,47 @@
       <div class="tx"><span class="tg" style="color:${col}">${esc(d.ntag || '공지')}</span>
       <h1>${esc(d.ntitle || '제목')}</h1>${d.nsub ? `<p>${esc(d.nsub)}</p>` : ''}</div>
       <div class="ft" style="color:${mix(col, '#4a4266', .45)}"><img src="img/icon.png" alt="">조아메모리${d.nwhen ? `<i>${esc(d.nwhen)}</i>` : ''}</div></div>`; }
+  // 공지 그림은 화면을 찍지 않고 캔버스에 바로 그려요(html2canvas는 흐림·그림자·SVG를 번지게 그려서) · 미리보기(noticeHtml)와 같은 자리·색
+  async function noticeCanvas(d, S = 3) {
+    const [, col, bg, emo] = NOTICE.find(x => x[0] === d.ntag) || [d.ntag, d.acc, mix(d.acc, '#ffffff', .8), ''], e = d.nemo == null ? emo : d.nemo;
+    const pals = ['#b7a6f2', '#f7b8cf', '#a9d3ee', '#f6d48a', '#a8dcc0'].filter(c => mix(c, col, .5) !== c), k = Math.max(0, NOTICE.findIndex(x => x[0] === d.ntag));
+    const W = 780, F = "'Pretendard Variable','Pretendard','Malgun Gothic',sans-serif", cv = document.createElement('canvas'), x = cv.getContext('2d');
+    const font = (w, s) => { x.font = `${w} ${s}px ${F}`; };
+    const wrap = (t, max) => { const out = []; for (const para of String(t).split('\n')) { let line = '';
+      for (const w of para.split(/(\s+)/)) { const tryL = line + w; if (x.measureText(tryL.trimEnd()).width <= max || !line.trim()) { line = tryL; continue; } out.push(line.trimEnd()); line = w.trimStart(); }
+      // 한 낱말이 칸보다 길면 글자로 나눠요
+      while (x.measureText(line).width > max) { let n = line.length; while (n > 1 && x.measureText(line.slice(0, n)).width > max) n--; out.push(line.slice(0, n)); line = line.slice(n); }
+      out.push(line.trimEnd()); } return out; };
+    const TX = 50, TW = 440;
+    font(800, 58); const tl = wrap(d.ntitle || '제목', TW); font(500, 23); const sl = d.nsub ? wrap(d.nsub, TW) : [];
+    const H = Math.max(410, 46 + 39 + 26 + tl.length * 67 + 14 + sl.length * 37 + 96);
+    cv.width = W * S; cv.height = H * S; x.scale(S, S); x.textBaseline = 'alphabetic';
+    const g = x.createLinearGradient(0, 0, W, H); g.addColorStop(0, bg); g.addColorStop(1, mix(bg, '#ffffff', .45)); x.fillStyle = g; x.fillRect(0, 0, W, H);
+    x.fillStyle = '#fff'; for (const [l, t, s] of [[392, 36, 30], [560, 150, 20], [330, 318, 22], [716, 60, 16]]) { font(400, s); x.fillText('✦', l, t + s * .85); }
+    const img = src => new Promise(ok => { const i = new Image(); i.onload = () => ok(i); i.onerror = () => ok(null); i.src = src; });
+    const cat = async (c, cx, cy, w, deg) => { const i = await img(catPng(c)); if (!i) return; x.save(); x.translate(cx, cy); x.rotate(deg * Math.PI / 180); x.drawImage(i, -w / 2, -w / 2, w, w); x.restore(); };
+    await cat(pals[k % pals.length], W - 226 - 32, 40 + 32, 64, -12); await cat(pals[(k + 2) % pals.length], W - 34 - 43, 26 + 43, 86, 10);
+    await cat(mix(col, '#ffffff', .28), W - 22 - 125, H + 34 - 125, 250, -7);
+    if (e) { const cx = W - 196 - 48, cy = H - 150 - 48; x.save(); x.shadowColor = '#4a426622'; x.shadowBlur = 24; x.shadowOffsetY = 10; x.fillStyle = '#fff'; x.beginPath(); x.arc(cx, cy, 48, 0, 7); x.fill(); x.restore();
+      font(400, 52); x.textAlign = 'center'; x.textBaseline = 'middle'; x.fillText(e, cx, cy + 2); x.textAlign = 'left'; x.textBaseline = 'alphabetic'; }
+    // 종류 알약(살짝 기울임)
+    font(800, 21); const tag = d.ntag || '공지', tw = x.measureText(tag).width + 40; x.save(); x.translate(TX, 46); x.rotate(-2 * Math.PI / 180);
+    x.save(); x.shadowColor = '#4a426614'; x.shadowBlur = 16; x.shadowOffsetY = 6; x.fillStyle = '#fff'; x.beginPath(); x.roundRect(0, 0, tw, 39, 19.5); x.fill(); x.restore();
+    x.fillStyle = col; x.fillText(tag, 20, 27); x.restore();
+    let y = 46 + 39 + 26; font(800, 58); x.fillStyle = '#3a3350'; for (const l of tl) { x.fillText(l, TX, y + 52); y += 67; }
+    y += 14; font(500, 23); x.fillStyle = '#6f6886'; for (const l of sl) { x.fillText(l, TX, y + 26); y += 37; }
+    // 아래: 아이콘 · 조아메모리 · 날짜
+    const ic = await img('img/icon.png'), fy = H - 38 - 36; if (ic) { x.save(); x.beginPath(); x.roundRect(TX, fy, 36, 36, 11); x.clip(); x.drawImage(ic, TX, fy, 36, 36); x.restore(); }
+    x.fillStyle = mix(col, '#4a4266', .45); font(700, 18); x.fillText('조아메모리', TX + 46, fy + 24);
+    if (d.nwhen) { const wx = TX + 46 + x.measureText('조아메모리').width + 14; font(500, 18); x.globalAlpha = .8; x.fillText(d.nwhen, wx, fy + 24); x.globalAlpha = 1; }
+    return new Promise((ok, no) => cv.toBlob(b => b ? ok(b) : no(new Error('그림을 못 만들었어요')), 'image/png'));
+  }
   const pageHtml = d => d.style === 'notice' ? noticeHtml(d) : d.style === 'card' ? cardHtml(d) : d.kind === 'guide' ? guideHtml(d) : chatHtml(d);
 
   let h2c = null; // html2canvas는 처음 그림을 찍을 때 한 번만 받아요
   const loadH2C = () => h2c || (h2c = new Promise((ok, no) => { if (window.html2canvas) return ok(window.html2canvas); const s = document.createElement('script'); s.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js'; s.onload = () => ok(window.html2canvas); s.onerror = () => { h2c = null; no(new Error('그림 도구를 못 받았어요 · 인터넷 연결을 확인해 주세요')); }; document.head.appendChild(s); }));
   async function shoot(d) {
+    if (d.style === 'notice') { if (document.fonts) { await document.fonts.load("800 58px 'Pretendard Variable'", (d.ntitle || '') + (d.ntag || '')); await document.fonts.load("500 23px 'Pretendard Variable'", (d.nsub || '') + '조아메모리' + (d.nwhen || '')); await document.fonts.ready; } return noticeCanvas(d); }
     const H = await loadH2C(), box = document.createElement('div');
     box.style.cssText = 'position:fixed;left:-10000px;top:0;'; box.innerHTML = pageHtml(d); document.body.appendChild(box);
     try { if (document.fonts) { await document.fonts.load("25px 'Jua'"); await document.fonts.load("25px 'Gowun Dodum'"); await document.fonts.load("800 25px 'Pretendard Variable'", box.textContent); await document.fonts.ready; }
@@ -296,5 +340,5 @@
     paint(); dlg.showModal(); draw(); setTimeout(draw, 300); // 글꼴이 늦게 오면 크기가 바뀌어서 한 번 더
     if (matchMedia('(pointer: fine)').matches) dlg.querySelector(d.style === 'notice' ? '[data-k="ntitle"]' : d.style === 'card' ? '[data-k="ctitle"]' : kind === 'guide' ? '[data-k="title"]' : '[data-k="bubbles"]')?.focus(); else dlg.querySelector('.side')?.focus(); // 폰에선 열자마자 자판이 올라오지 않게
   }
-  window.JoaMaker = { open, chatHtml, guideHtml, cardHtml, noticeHtml, NEWS };
+  window.JoaMaker = { open, chatHtml, guideHtml, cardHtml, noticeHtml, noticeCanvas, NEWS };
 })();

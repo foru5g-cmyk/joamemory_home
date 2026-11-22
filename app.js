@@ -121,13 +121,13 @@
     if (owner()) h += st.edit ? postForm(m) : `<button class="sf-new" data-act="write"><img src="img/icon.png" alt=""><span>무슨 일이 있었나요?</span></button>`;
     if (!list.length) h += '<p class="empty">아직 올라온 글이 없어요.</p>';
     list.slice(0, st.shown).forEach((p, pi) => { const imgs = p.images || [], body = String(p.body || ''), quote = /^\s*>/.test(body);
-      h += `<article class="sf-it${p.pin ? ' pin' : ''}">${(() => { const dd = dayParts(p.date), same = pi > 0 && list[pi - 1].date === p.date; return `<div class="sf-day">${same ? '' : `<b>${dd.d}</b><span>${dd.m}월 · ${dd.w}</span>`}</div>`; })()}<div class="sf-bub"><div class="sf-nm${pi > 0 && list[pi - 1].date === p.date ? ' same' : ''}"><img src="img/icon.png" alt=""><b>${esc(s.title || '조아메모리')}</b><span>${p.pin ? '📌 ' : ''}${p.at ? new Date(p.at).toLocaleTimeString('ko-KR', { hour: 'numeric', minute: '2-digit' }) : ago(p.date)}</span><button class="sf-like" data-act="like" data-arg="${esc(p.id)}" aria-pressed="${likes().has(p.id)}" aria-label="좋아요">${likes().has(p.id) ? '♥' : '♡'}</button></div><div class="sf-cd">
+      h += `<article class="sf-it${p.pin ? ' pin' : ''}">${(() => { const dd = dayParts(p.date), same = pi > 0 && list[pi - 1].date === p.date; return `<div class="sf-day">${same ? '' : `<b>${dd.d}</b><span>${dd.m}월 · ${dd.w}</span>`}</div>`; })()}<div class="sf-bub"><div class="sf-nm${pi > 0 && list[pi - 1].date === p.date ? ' same' : ''}"><img src="img/icon.png" alt=""><b>${esc(s.title || '조아메모리')}</b><span>${p.pin ? '📌 ' : ''}${p.at ? new Date(p.at).toLocaleTimeString('ko-KR', { hour: 'numeric', minute: '2-digit' }) : ago(p.date)}</span><button class="sf-like" data-act="like" data-arg="${esc(p.id)}" aria-pressed="${likes().has(p.id)}" aria-label="좋아요">${likes().has(p.id) ? '♥' : '♡'}</button></div><div class="sf-cd">${p.fixed ? `<span class="sf-fix"><img src="img/icon.png" alt="">수정 완료<b>${esc(String(p.fixed).slice(5).replace('-', '.'))}</b></span>` : ''}
         ${imgs.length ? `<div class="sf-img n${Math.min(imgs.length, 3)}">${imgs.map(x => `<a href="${postUrl(p)}"><img src="${esc(fresh[x] || x)}" alt="" loading="lazy" draggable="false"></a>`).join('')}</div>` : ''}
         ${quote ? `<blockquote>${linkify(body.replace(/^\s*>\s?/gm, ''))}</blockquote>` : ''}
         ${p.title || (body && !quote) ? (() => { const only = !imgs.length, ls = body.split('\n'), head = !p.title && only && ls.length > 1 && ls[0].trim().length <= 40 ? ls.shift() : '', rest = head ? ls.join('\n').replace(/^\n+/, '') : body; // 글만 쓴 글: 첫 줄이 짧으면 머리말로
           return `<div class="sf-tx${only ? ' only c' + (pi % 5) : ''}">${p.title || head ? `<h3>${p.icon ? esc(p.icon) + ' ' : ''}${esc(p.title || head)}</h3>` : ''}${rest && !quote ? `<p>${linkify(rest)}</p>` : ''}</div>`; })() : ''}
         ${(p.tags || []).length ? `<div class="sf-tg">${p.tags.map((t, k) => `<i class="t${k % 5}">${esc(t)}</i>`).join('')}</div>` : ''}
-        ${owner() ? `<div class="sf-ft"><span class="sf-own"><button data-act="edit" data-arg="${esc(p.id)}">고치기</button><button data-act="pin" data-arg="${esc(p.id)}">${p.pin ? '고정 풀기' : '고정'}</button><button data-act="del" data-arg="${esc(p.id)}">지우기</button></span></div>` : ''}
+        ${owner() ? `<div class="sf-ft"><span class="sf-own"><button data-act="fixed" data-arg="${esc(p.id)}">${p.fixed ? '수정 완료 풀기' : '✅ 수정 완료'}</button><button data-act="edit" data-arg="${esc(p.id)}">고치기</button><button data-act="pin" data-arg="${esc(p.id)}">${p.pin ? '고정 풀기' : '고정'}</button><button data-act="del" data-arg="${esc(p.id)}">지우기</button></span></div>` : ''}
       </div></div></article>`; });
     h += '</div>'; if (list.length > st.shown) h += '<button class="more" data-act="more">지난 글 더 보기</button>';
     main.innerHTML = h;
@@ -228,6 +228,7 @@
       case 'edit': st.edit = { ...post() }; st.files = [...(st.edit.images || [])]; if (hash().startsWith('p-')) go('#' + encodeURIComponent(st.edit.menu)); render(); return main.querySelector('.new, .cwrite')?.scrollIntoView({ block: 'center' });
       case 'pick': return b.parentElement.querySelector('[data-pick]').click();
       case 'rmfile': st.files.splice(Number(arg), 1); return keepForm();
+      case 'fixed': return work(async () => { const l = data.POSTS.map(p => p.id === arg ? (p.fixed ? (({ fixed, ...q }) => q)(p) : { ...p, fixed: today() }) : p); await saveData('POSTS', l, '수정 완료 표시'); }, '저장했어요'); // 알려진 오류를 고치면 카드에 '수정 완료 · 날짜'
       case 'pin': return work(async () => { const l = data.POSTS.map(p => p.id === arg ? { ...p, pin: !p.pin } : p); await saveData('POSTS', l, '고정 바꿈'); }, '저장했어요');
       case 'del': { if (!confirm('"' + post().title + '" 글을 지울까요?')) return; const back = '#' + encodeURIComponent(post().menu); return work(async () => { await saveData('POSTS', data.POSTS.filter(p => p.id !== arg), '글 지움'); if (hash().startsWith('p-')) go(back); }, '지웠어요'); }
       case 'faqcat': st.faqCat = arg; return render();
@@ -275,7 +276,7 @@
       return work(async () => { const l = st.faqEdit.id ? data.FAQ.map(x => x.id === item.id ? item : x) : [item, ...data.FAQ]; await saveData('FAQ', l, '질문 올림'); st.faqEdit = null; }, '올렸어요 · 1분쯤 뒤 모두에게 보여요'); }
     if (kind === 'post') { keepForm(); const p = st.edit; if (!p.title && !String(p.body || '').trim() && !st.files.length) return toast('글이나 그림 중 하나는 넣어 주세요');
       return work(async () => { const images = []; for (const x of st.files) images.push(typeof x === 'string' ? x : await uploadImage(x.file)); st.files = images; // 중간에 실패해도 이미 올린 그림은 다시 안 올려요
-        const item = { id: p.id || 'p' + Date.now().toString(36), menu: p.menu, date: p.date, icon: p.icon, title: p.title, body: p.body, tags: p.tags, images, pin: !!p.pin, at: p.at || Date.now() }; // at: 올린 시각(피드에 '오후 11:30'처럼) · 고쳐도 처음 시각 그대로
+        const item = { id: p.id || 'p' + Date.now().toString(36), menu: p.menu, date: p.date, icon: p.icon, title: p.title, body: p.body, tags: p.tags, images, pin: !!p.pin, ...(p.fixed ? { fixed: p.fixed } : {}), at: p.at || Date.now() }; // at: 올린 시각(피드에 '오후 11:30'처럼) · 고쳐도 처음 시각 그대로
         await saveData('POSTS', p.id ? data.POSTS.map(x => x.id === item.id ? item : x) : [item, ...data.POSTS], '글 올림: ' + (item.title || String(item.body || '').slice(0, 30))); st.edit = null; st.files = []; go('#' + encodeURIComponent(item.menu)); }, '올렸어요 · 1분쯤 뒤 모두에게 보여요'); }
   });
   // 지금 판: 설정에 적은 번호 대신 실제 스크립트의 @version을 보여 줘요(머리 부분만 받고 끊어요 · 못 읽으면 설정의 번호 그대로)
