@@ -1,4 +1,4 @@
-window.JOA_POSTS_AT = 1795328318975;
+window.JOA_POSTS_AT = 1795328353173;
 window.JOA_POSTS = [
   {
     "id": "pmwrfxs7q",
@@ -6,7 +6,7 @@ window.JOA_POSTS = [
     "date": "2026-11-22",
     "icon": "",
     "title": "",
-    "body": "",
+    "body": "아이폰(STAY)에서 시간 안에 못 보내던 문제예요.",
     "tags": [],
     "images": [
       "img/20261122-cll4li-update.png"
@@ -54,9 +54,9 @@ window.JOA_POSTS = [
       }
     },
     "pin": false,
-    "at": 1795328002070,
     "fixed": "2026-11-22",
-    "fixedVer": "5.8.64"
+    "fixedVer": "5.8.64",
+    "at": 1795328002070
   },
   {
     "id": "pmwrapne5",
