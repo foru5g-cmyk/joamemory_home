@@ -1,5 +1,61 @@
-window.JOA_POSTS_AT = 1795319199189;
+window.JOA_POSTS_AT = 1795319224493;
 window.JOA_POSTS = [
+  {
+    "id": "pmwrapne5",
+    "menu": "mmwr932h5",
+    "date": "2026-11-22",
+    "icon": "",
+    "title": "",
+    "body": "",
+    "tags": [],
+    "images": [
+      "img/20261122-8x3rxw-update.png"
+    ],
+    "specs": {
+      "img/20261122-8x3rxw-update.png": {
+        "kind": "news",
+        "ver": "5.8.58",
+        "bg": "#cfe0f1",
+        "acc": "#3d7fc4",
+        "av": "",
+        "pill": "11월 22일 소식",
+        "head": "조아메모리",
+        "sub": "업데이트",
+        "bubbles": "",
+        "me": "",
+        "cards": "",
+        "foot": "",
+        "title": "",
+        "lead": "",
+        "steps": [
+          {
+            "t": "",
+            "p": "",
+            "img": ""
+          },
+          {
+            "t": "",
+            "p": "",
+            "img": ""
+          }
+        ],
+        "tips": "",
+        "errs": "",
+        "style": "notice",
+        "ntag": "알려진 오류",
+        "nwhen": "2026년 11월 22일 (일) · 오후 12:46",
+        "ntitle": "타임라인이 멈춰있어요",
+        "nsub": "기억엔 지장 없어요.",
+        "cicon": "",
+        "ctitle": "5.8.58 업데이트",
+        "csub": "11월 22일 · 조아메모리",
+        "citems": "",
+        "ctip": ""
+      }
+    },
+    "pin": false,
+    "at": 1795319224493
+  },
   {
     "id": "p20261121",
     "menu": "news",
