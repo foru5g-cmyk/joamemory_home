@@ -1,21 +1,5 @@
-window.JOA_POSTS_AT = 1795315471247;
+window.JOA_POSTS_AT = 1795315904011;
 window.JOA_POSTS = [
-  {
-    "id": "pmwr8gkh8",
-    "menu": "mmwr8eeje",
-    "date": "2026-11-22",
-    "icon": "",
-    "title": "",
-    "body": "📢 알려진 오류",
-    "tags": [
-      "알려진 오류"
-    ],
-    "images": [
-      "img/20261122-0iv8hx-update.png"
-    ],
-    "pin": false,
-    "at": 1795315441580
-  },
   {
     "id": "p20261121",
     "menu": "news",
