@@ -1,5 +1,19 @@
-window.JOA_POSTS_AT = 1795317495159;
+window.JOA_POSTS_AT = 1795317523823;
 window.JOA_POSTS = [
+  {
+    "id": "pmwr9p75b",
+    "menu": "mmwr932h5",
+    "date": "2026-11-22",
+    "icon": "",
+    "title": "",
+    "body": "",
+    "tags": [],
+    "images": [
+      "img/20261122-m7bva6-update.png"
+    ],
+    "pin": false,
+    "at": 1795317523823
+  },
   {
     "id": "p20261121",
     "menu": "news",
