@@ -171,7 +171,7 @@
       ${tips.length ? `<div class="tip" style="background:${mix(acc, '#ffffff', .9)}">${tips.map(t => esc(t)).join('<br>')}</div>` : ''}
       <div class="ft">조아메모리ෆ${d.ver ? ' ' + esc(d.ver) : ''}</div></div></div>`;
   }
-  const NOTICE = [['긴급 공지', '#e5484d', '#fde7e4'], ['점검 안내', '#e8890c', '#fdf0dc'], ['업데이트 예고', '#7b61d9', '#ece8fb'], ['해결 완료', '#2f9e66', '#e2f5ea'], ['알림', '#3d7fc4', '#e2eefa']];
+  const NOTICE = [['긴급 공지', '#e5484d', '#fde7e4'], ['점검 안내', '#e8890c', '#fdf0dc'], ['업데이트 예고', '#7b61d9', '#ece8fb'], ['해결 완료', '#2f9e66', '#e2f5ea'], ['알림', '#3d7fc4', '#e2eefa'], ['알려진 오류', '#d6457f', '#fce4ee']];
   const nowText = () => { const d = new Date(), h = d.getHours(); return `${d.getFullYear()}년 ${d.getMonth() + 1}월 ${d.getDate()}일 (${'일월화수목금토'[d.getDay()]}) · ${h < 12 ? '오전' : '오후'} ${(h % 12) || 12}:${String(d.getMinutes()).padStart(2, '0')}`; };
   function noticeHtml(d) { const [, col, bg] = NOTICE.find(x => x[0] === d.ntag) || [d.ntag, d.acc, mix(d.acc, '#ffffff', .88)];
     return `<div class="nt" style="background:${bg}"><div class="c"><i style="background:${col}"></i><span class="tg" style="color:${col}"><b style="background:${col}"></b>${esc(d.ntag || '공지')}</span>${d.nwhen ? `<span class="wh">${esc(d.nwhen)}</span>` : ''}
