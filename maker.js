@@ -83,12 +83,13 @@
   .nt > img { position:absolute; }
   .nt .sp { position:absolute; color:#fff; line-height:1; }
   .nt .em { position:absolute; right:196px; bottom:150px; width:96px; height:96px; border-radius:50%; background:#fff; font-size:52px; line-height:1; display:flex; align-items:center; justify-content:center; box-shadow:0 10px 24px #4a426622; }
+  .nt .fx { position:absolute; right:30px; top:30px; display:inline-flex; align-items:center; gap:8px; background:#fff; border-radius:99px; padding:8px 20px 8px 10px; font-size:22px; font-weight:800; color:#3c9a6c; box-shadow:0 8px 20px #3c9a6c22; } .nt .fx img { width:40px; height:40px; } .nt .fx b { font-weight:700; color:#8ccaa8; margin-left:2px; } /* 수정 완료 스티커 */
   .nt .tx { position:relative; max-width:440px; }
   .nt .tg { display:inline-block; background:#fff; font-weight:800; font-size:21px; padding:9px 20px; border-radius:99px; transform:rotate(-2deg); box-shadow:0 6px 16px #4a426614; }
   .nt h1 { font-size:58px; font-weight:800; letter-spacing:-2.2px; margin:26px 0 14px; color:#3a3350; line-height:1.16; }
-  .nt p { font-size:23px; font-weight:500; color:#6f6886; line-height:1.6; white-space:pre-wrap; }
+  .nt p { font-size:23px; font-weight:600; color:#4f4866; line-height:1.6; white-space:pre-wrap; }
   .nt .ft { position:absolute; left:50px; bottom:38px; display:flex; align-items:center; gap:10px; font-size:18px; font-weight:700; }
-  .nt .ft img { width:36px; height:36px; border-radius:11px; } .nt .ft i { font-style:normal; font-weight:500; opacity:.8; margin-left:4px; }
+  .nt .ft img { width:36px; height:36px; border-radius:11px; } .nt .ft i { font-style:normal; font-weight:600; margin-left:4px; }
   /* 만들기 창 */
   .mkd { border:0; border-radius:22px; padding:0; width:min(1080px, calc(100vw - 24px)); max-height:calc(100dvh - 24px); margin:auto; box-shadow:0 20px 60px #0003; overflow:hidden; }
   .mkd::backdrop { background:#0006; }
@@ -186,12 +187,12 @@
     const pals = ['#b7a6f2', '#f7b8cf', '#a9d3ee', '#f6d48a', '#a8dcc0'].filter(c => mix(c, col, .5) !== c), k = Math.max(0, NOTICE.findIndex(x => x[0] === d.ntag));
     return `<div class="nt" style="background:linear-gradient(140deg,${bg},${mix(bg, '#ffffff', .45)})">
       <span class="sp" style="left:392px;top:36px;font-size:30px">✦</span><span class="sp" style="left:560px;top:150px;font-size:20px">✦</span><span class="sp" style="left:330px;top:318px;font-size:22px">✦</span><span class="sp" style="left:716px;top:60px;font-size:16px">✦</span>
-      ${cat(pals[k % pals.length], 'right:226px;top:40px;width:64px;transform:rotate(-12deg)')}${cat(pals[(k + 2) % pals.length], 'right:34px;top:26px;width:86px;transform:rotate(10deg)')}
+      ${d.fixed ? `<span class="fx"><img src="${catPng('#8fd3b0')}" alt="">고쳤어요!<b>${esc((f => +f[1] + '.' + +f[2])(String(d.fixed).split('-')))}</b></span>` : cat(pals[k % pals.length], 'right:226px;top:40px;width:64px;transform:rotate(-12deg)') + cat(pals[(k + 2) % pals.length], 'right:34px;top:26px;width:86px;transform:rotate(10deg)')}
       ${cat(mix(col, '#ffffff', .28), 'right:22px;bottom:-34px;width:250px;transform:rotate(-7deg)')}
       ${e ? `<span class="em">${esc(e)}</span>` : ''}
       <div class="tx"><span class="tg" style="color:${col}">${esc(d.ntag || '공지')}</span>
       <h1>${esc(d.ntitle || '제목')}</h1>${d.nsub ? `<p>${esc(d.nsub)}</p>` : ''}</div>
-      <div class="ft" style="color:${mix(col, '#4a4266', .45)}"><img src="img/icon.png" alt="">조아메모리${d.nwhen ? `<i>${esc(d.nwhen)}</i>` : ''}</div></div>`; }
+      <div class="ft" style="color:${mix(col, '#2f2a40', .6)}"><img src="img/icon.png" alt="">조아메모리${d.nwhen ? `<i>${esc(d.nwhen)}</i>` : ''}</div></div>`; }
   // 공지 그림은 화면을 찍지 않고 캔버스에 바로 그려요(html2canvas는 흐림·그림자·SVG를 번지게 그려서) · 미리보기(noticeHtml)와 같은 자리·색
   async function noticeCanvas(d, S = 3) {
     const [, col, bg, emo] = NOTICE.find(x => x[0] === d.ntag) || [d.ntag, d.acc, mix(d.acc, '#ffffff', .8), ''], e = d.nemo == null ? emo : d.nemo;
@@ -342,5 +343,5 @@
     paint(); dlg.showModal(); draw(); setTimeout(draw, 300); // 글꼴이 늦게 오면 크기가 바뀌어서 한 번 더
     if (matchMedia('(pointer: fine)').matches) dlg.querySelector(d.style === 'notice' ? '[data-k="ntitle"]' : d.style === 'card' ? '[data-k="ctitle"]' : kind === 'guide' ? '[data-k="title"]' : '[data-k="bubbles"]')?.focus(); else dlg.querySelector('.side')?.focus(); // 폰에선 열자마자 자판이 올라오지 않게
   }
-  window.JoaMaker = { open, chatHtml, guideHtml, cardHtml, noticeHtml, noticeCanvas, NEWS };
+  window.JoaMaker = { open, init, chatHtml, guideHtml, cardHtml, noticeHtml, noticeCanvas, NEWS };
 })();

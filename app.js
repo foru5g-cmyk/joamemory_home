@@ -122,16 +122,15 @@
     if (!list.length) h += '<p class="empty">아직 올라온 글이 없어요.</p>';
     list.slice(0, st.shown).forEach((p, pi) => { const imgs = p.images || [], body = String(p.body || ''), quote = /^\s*>/.test(body);
       h += `<article class="sf-it${p.pin ? ' pin' : ''}">${(() => { const dd = dayParts(p.date), same = pi > 0 && list[pi - 1].date === p.date; return `<div class="sf-day">${same ? '' : `<b>${dd.d}</b><span>${dd.m}월 · ${dd.w}</span>`}</div>`; })()}<div class="sf-bub"><div class="sf-nm${pi > 0 && list[pi - 1].date === p.date ? ' same' : ''}"><img src="img/icon.png" alt=""><b>${esc(s.title || '조아메모리')}</b><span>${p.pin ? '📌 ' : ''}${p.at ? new Date(p.at).toLocaleTimeString('ko-KR', { hour: 'numeric', minute: '2-digit' }) : ago(p.date)}</span><button class="sf-like" data-act="like" data-arg="${esc(p.id)}" aria-pressed="${likes().has(p.id)}" aria-label="좋아요">${likes().has(p.id) ? '♥' : '♡'}</button></div><div class="sf-cd">
-        ${imgs.length ? `<div class="sf-img n${Math.min(imgs.length, 3)}">${imgs.map(x => `<a href="${postUrl(p)}"><img src="${esc(fresh[x] || x)}" alt="" loading="lazy" draggable="false"></a>`).join('')}</div>` : ''}
+        ${imgs.length ? `<div class="sf-img n${Math.min(imgs.length, 3)}">${p.fixed && !(imgs.length === 1 && ((p.specs || {})[imgs[0]] || OLD_SPECS[imgs[0]])?.style === 'notice') ? `<span class="sf-fix">💚 고쳤어요!<b>${(d => +d[1] + '.' + +d[2])(String(p.fixed).split('-'))}</b></span>` : ''}${imgs.map(x => { const sp = (p.specs || {})[x] || OLD_SPECS[x]; return sp?.style === 'notice' && imgs.length === 1 && window.JoaMaker?.noticeHtml ? (window.JoaMaker.init(), `<a href="${postUrl(p)}" class="sf-live">${window.JoaMaker.noticeHtml({ ...sp, fixed: p.fixed || '' })}</a>`) : `<a href="${postUrl(p)}"><img src="${esc(fresh[x] || x)}" alt="" loading="lazy" draggable="false"></a>`; }).join('')}</div>` : ''}
         ${quote ? `<blockquote>${linkify(body.replace(/^\s*>\s?/gm, ''))}</blockquote>` : ''}
         ${p.title || (body && !quote) ? (() => { const only = !imgs.length, ls = body.split('\n'), head = !p.title && only && ls.length > 1 && ls[0].trim().length <= 40 ? ls.shift() : '', rest = head ? ls.join('\n').replace(/^\n+/, '') : body; // 글만 쓴 글: 첫 줄이 짧으면 머리말로
           return `<div class="sf-tx${only ? ' only c' + (pi % 5) : ''}">${p.title || head ? `<h3>${p.icon ? esc(p.icon) + ' ' : ''}${esc(p.title || head)}</h3>` : ''}${rest && !quote ? `<p>${linkify(rest)}</p>` : ''}</div>`; })() : ''}
-        ${p.fixed ? `<div class="sf-fix"><img src="img/icon.png" alt=""><b>고쳤어요!</b><span>${(d => +d[1] + '월 ' + +d[2] + '일')(String(p.fixed).split('-'))}</span><i>💚</i></div>` : ''}
         ${(p.tags || []).length ? `<div class="sf-tg">${p.tags.map((t, k) => `<i class="t${k % 5}">${esc(t)}</i>`).join('')}</div>` : ''}
         ${owner() ? `<div class="sf-ft"><span class="sf-own"><button data-act="fixed" data-arg="${esc(p.id)}">${p.fixed ? '수정 완료 풀기' : '✅ 수정 완료'}</button><button data-act="edit" data-arg="${esc(p.id)}">고치기</button><button data-act="pin" data-arg="${esc(p.id)}">${p.pin ? '고정 풀기' : '고정'}</button><button data-act="del" data-arg="${esc(p.id)}">지우기</button></span></div>` : ''}
       </div></div></article>`; });
     h += '</div>'; if (list.length > st.shown) h += '<button class="more" data-act="more">지난 글 더 보기</button>';
-    main.innerHTML = h;
+    main.innerHTML = h; fitLive();
   }
   const faqPick = () => { const q = st.faqQ.trim().toLowerCase(); return data.FAQ.filter(f => (!st.faqCat || f.cat === st.faqCat) && (!q || (f.q + ' ' + f.a).toLowerCase().includes(q))).sort((a, b) => (b.pin ? 1 : 0) - (a.pin ? 1 : 0)); }; // 고정한 질문이 맨 위
   // 카드 게시판(만든 것): 날짜 없이 카드로 · 글 안 첫 주소는 [열기] 버튼이 돼요
@@ -181,6 +180,8 @@
   }
   // shortcut: 칸 값 저장(specs) 전에 만든 알림판 그림 한 장은 글자를 여기 적어 둬요 · 그 그림을 다시 만들면 지워도 돼요
   const OLD_SPECS = { 'img/20261122-m7bva6-update.png': { kind: 'news', style: 'notice', ntag: '알려진 오류', nemo: '🐞', ntitle: '타임라인이 멈춰있어요', nsub: '기억은 잘 따라와요.', nwhen: '2026년 11월 22일 (일) · 오후 12:18' } };
+  const fitLive = () => main.querySelectorAll('.sf-live').forEach(el => { const nt = el.firstElementChild; if (nt) nt.style.zoom = el.clientWidth / 780; });
+  addEventListener('resize', () => fitLive());
   function render() { renderChrome(); const m = curMenu(), p = curPost(); p && !st.edit ? renderPost(p, m) : m.kind === 'faq' ? renderFaq() : m.kind === 'page' ? renderPage(m) : m.kind === 'cards' ? renderCards(m) : m.kind === 'stream' ? renderStream(m) : renderFeed(m); }
 
   // ── 주인: 로그인 · 설정 ──
