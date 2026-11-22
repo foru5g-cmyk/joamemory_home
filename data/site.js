@@ -1,10 +1,10 @@
-window.JOA_SITE_AT = 1795316512146;
+window.JOA_SITE_AT = 1795316786416;
 window.JOA_SITE = {
   "small": "랙시들의",
   "title": "조아메모리",
   "bubble": "huh",
   "lead": "크랙 롤플레이를 대신 기억해 주는 작은 도우미",
-  "version": "5.8.48",
+  "version": "5.8.58",
   "installUrl": "https://raw.githubusercontent.com/foru5g-cmyk/joahmemory/refs/heads/main/joamemory.user.js",
   "faqCats": [
     "처음",
