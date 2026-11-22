@@ -83,7 +83,7 @@
   .nt > img { position:absolute; }
   .nt .sp { position:absolute; color:#fff; line-height:1; }
   .nt .em { position:absolute; right:196px; bottom:150px; width:96px; height:96px; border-radius:50%; background:#fff; font-size:52px; line-height:1; display:flex; align-items:center; justify-content:center; box-shadow:0 10px 24px #4a426622; }
-  .nt .fx { position:absolute; right:30px; top:30px; display:inline-flex; align-items:center; gap:8px; background:#fff; border-radius:99px; padding:8px 20px 8px 10px; font-size:22px; font-weight:800; color:#3c9a6c; box-shadow:0 8px 20px #3c9a6c22; } .nt .fx img { width:40px; height:40px; } .nt .fx b { font-weight:700; color:#8ccaa8; margin-left:2px; } /* 수정 완료 스티커 */
+  .nt .fx { position:absolute; right:30px; top:34px; display:inline-flex; align-items:center; gap:6px; background:#fff; border-radius:99px; padding:6px 16px 6px 7px; font-size:18px; font-weight:800; color:#3a3350; box-shadow:0 6px 16px #4a426614; } .nt .fx img { width:28px; height:28px; } .nt .fx b { font-size:15px; font-weight:600; color:#8d88a3; margin-left:4px; } /* 수정 완료 스티커: 종류 알약처럼 흰 알약 · 진한 글씨 */
   .nt .tx { position:relative; max-width:440px; }
   .nt .tg { display:inline-block; background:#fff; font-weight:800; font-size:21px; padding:9px 20px; border-radius:99px; transform:rotate(-2deg); box-shadow:0 6px 16px #4a426614; }
   .nt h1 { font-size:58px; font-weight:800; letter-spacing:-2.2px; margin:26px 0 14px; color:#3a3350; line-height:1.16; }
