@@ -295,6 +295,8 @@
       bg: P.bg, acc: P.acc, av: '', pill: dt[1] ? `${dt[1]}월 ${dt[2]}일 소식` : '소식', head: '조아메모리', sub: '업데이트', bubbles: '', me: '', cards: '', foot: '',
       title: '', lead: '', steps: [{ t: '', p: '', img: '' }, { t: '', p: '', img: '' }], tips: '', errs: '',
       style: ['card', 'notice'].includes(last.style) ? last.style : 'base', ntag: '긴급 공지', nwhen: nowText(), ntitle: '', nsub: '', cicon: '', ctitle: opt.version ? opt.version + ' 업데이트' : '', csub: dt[1] ? `${dt[1]}월 ${dt[2]}일 · 조아메모리` : '조아메모리', citems: '', ctip: '' };
+    if (opt.spec) Object.assign(d, opt.spec); // 올린 그림 다시 고치기: 그때 칸 값 그대로
+    const fin = res => done && done({ ...res, spec: (t => t.length < 20000 ? JSON.parse(t) : null)(JSON.stringify({ ...d, time: undefined })) }); // 칸 값도 같이 넘겨 글에 저장(나중에 다시 고치려고 · 그림 넣은 쓰는 법처럼 큰 건 빼요)
     if (kind === 'guide' || d.style === 'card') d.acc = last.gacc || ACCS[0];
     const dlg = document.createElement('dialog'); dlg.className = 'mkd'; document.body.appendChild(dlg);
     const paint = () => { dlg.innerHTML = `<div class="wrap"><div class="side" tabindex="-1"><h3>🎨 ${kind === 'guide' ? '쓰는 법' : '소식'} 그림 만들기</h3>${styleBar(d, kind)}${d.style === 'notice' ? noticeForm(d) : d.style === 'card' ? cardForm(d) : kind === 'guide' ? guideForm(d) : newsForm(d)}
@@ -330,10 +332,10 @@
         store.set(Object.assign(last, { style: d.style }, kind === 'guide' || d.style === 'card' ? { gacc: d.acc } : { preset: d.preset ?? NEWS.findIndex(t => t.bg === d.bg) }));
         if (mk === 'save') { const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = name; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 4000); }
         else { dlg.close(); const file = new File([blob], name, { type: 'image/png' });
-          if (d.style === 'notice') done && done({ file, title: d.ntitle.trim(), body: d.nsub.trim(), icon: '', tags: [] });
-          else if (d.style === 'card') { const it = lines(d.citems).map(pair); done && done({ file, title: d.ctitle.trim(), body: it.slice(0, 3).map(x => x[0]).join(' · '), icon: d.cicon || '', tags: d.ver ? [d.ver] : [] }); }
-          else if (kind === 'guide') done && done({ file, title: d.title.trim(), body: d.lead.trim(), icon: '📖', tags: [] });
-          else { const b = lines(d.bubbles).map(pair); done && done({ file, title: b[0][0].replace(/[.!~]+$/, ''), body: b.slice(0, 3).map(x => x[0]).join(' '), icon: d.av || '', tags: d.ver ? [d.ver] : [] }); } }
+          if (d.style === 'notice') fin({ file, title: d.ntitle.trim(), body: d.nsub.trim(), icon: '', tags: [] });
+          else if (d.style === 'card') { const it = lines(d.citems).map(pair); fin({ file, title: d.ctitle.trim(), body: it.slice(0, 3).map(x => x[0]).join(' · '), icon: d.cicon || '', tags: d.ver ? [d.ver] : [] }); }
+          else if (kind === 'guide') fin({ file, title: d.title.trim(), body: d.lead.trim(), icon: '📖', tags: [] });
+          else { const b = lines(d.bubbles).map(pair); fin({ file, title: b[0][0].replace(/[.!~]+$/, ''), body: b.slice(0, 3).map(x => x[0]).join(' '), icon: d.av || '', tags: d.ver ? [d.ver] : [] }); } }
       } catch (err) { alert(err.message || '그림을 못 만들었어요'); } finally { btn.textContent = was; busy(false); }
     });
     dlg.addEventListener('close', () => dlg.remove());

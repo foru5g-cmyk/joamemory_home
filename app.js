@@ -85,7 +85,7 @@
       <div class="row"><select class="sel" name="menu" aria-label="메뉴">${feeds.map(x => `<option value="${esc(x.id)}"${x.id === (p.menu || m.id) ? ' selected' : ''}>${esc(x.name)}</option>`).join('')}</select>
         <input class="dt" type="date" name="date" required value="${esc(p.date || today())}" aria-label="날짜">
         <input class="grow" name="tags" value="${esc((p.tags || []).join(', '))}" placeholder="꼬리표 (쉼표로 나눠요)"></div>
-      <div class="pv">${st.files.map((f, i) => `<span><img src="${esc(typeof f === 'string' ? (fresh[f] || f) : f.url)}" alt=""><button type="button" data-act="rmfile" data-arg="${i}" aria-label="그림 빼기">✕</button></span>`).join('')}</div>
+      <div class="pv">${st.files.map((f, i) => `<span><img src="${esc(typeof f === 'string' ? (fresh[f] || f) : f.url)}" alt="">${(typeof f === 'string' ? (p.specs || {})[f] : f.spec) ? `<button type="button" class="re" data-act="remake" data-arg="${i}" aria-label="그림 다시 고치기">✏️</button>` : ''}<button type="button" data-act="rmfile" data-arg="${i}" aria-label="그림 빼기">✕</button></span>`).join('')}</div>
       <div class="act"><label class="note"><input type="file" accept="image/*" multiple data-pick hidden><button type="button" class="btn ghost" data-act="pick">🖼️ 그림 고르기</button><span class="tip"> 끌어다 놓거나 붙여 넣어도 돼요</span></label>
         <button type="button" class="btn ghost" data-act="maker"${dis()}>🎨 그림 만들기</button><button type="button" class="btn ghost" data-act="cancel"${dis()}>닫기</button><button class="btn"${dis()}>${st.busy ? '올리는 중…' : p.id ? '고친 대로 올리기' : '올리기'}</button></div>
     </form>`;
@@ -223,10 +223,12 @@
       case 'pagecancel': st.pageEdit = null; return render();
       case 'emo': { const f = main.querySelector('[data-form="post"]'); if (f) { f.icon.value = arg; f.querySelectorAll('[data-act="emo"]').forEach(b => b.setAttribute('aria-pressed', b.dataset.arg === arg && !!arg)); } return; } // 이모지 고르기: 누르면 왼쪽 칸에 들어가요
       case 'maker': { if (!window.JoaMaker) return toast('그림 만들기를 못 불러왔어요 · 새로고침해 주세요'); keepForm(); // 만든 그림을 글에 붙이고, 비어 있는 제목·내용·이모지·꼬리표는 채워 줘요
-        return window.JoaMaker.open({ version: st.ver || site().version, date: st.edit.date || today(), kind: st.edit.menu === 'guide' ? 'guide' : 'news' }, r => { if (!st.edit) return; st.files.push({ file: r.file, url: URL.createObjectURL(r.file) });
+        return window.JoaMaker.open({ version: st.ver || site().version, date: st.edit.date || today(), kind: st.edit.menu === 'guide' ? 'guide' : 'news' }, r => { if (!st.edit) return; st.files.push({ file: r.file, url: URL.createObjectURL(r.file), spec: r.spec });
           const e = st.edit; if ((site().menus.find(x => x.id === e.menu) || {}).kind === 'stream') { render(); return toast('그림을 붙였어요 · 올리기를 누르면 같이 올라가요'); } if (!e.title) e.title = r.title; if (!e.body) e.body = r.body; if (!e.icon) e.icon = r.icon; e.tags = [...new Set([...(r.tags || []), ...(e.tags || [])])]; render(); toast('그림을 붙였어요 · 올리기를 누르면 같이 올라가요'); }); }
       case 'edit': st.edit = { ...post() }; st.files = [...(st.edit.images || [])]; if (hash().startsWith('p-')) go('#' + encodeURIComponent(st.edit.menu)); render(); return main.querySelector('.new, .cwrite')?.scrollIntoView({ block: 'center' });
       case 'pick': return b.parentElement.querySelector('[data-pick]').click();
+      case 'remake': { if (!window.JoaMaker) return; keepForm(); const i = Number(arg), f = st.files[i], spec = typeof f === 'string' ? (st.edit.specs || {})[f] : f?.spec; if (!spec) return; // 그림 만들기로 만든 그림을 그때 칸 값으로 다시 열어 고쳐요
+        return window.JoaMaker.open({ version: st.ver || site().version, date: st.edit.date || today(), kind: spec.kind, spec }, r => { if (!st.edit) return; st.files[i] = { file: r.file, url: URL.createObjectURL(r.file), spec: r.spec }; render(); toast('그림을 고쳤어요 · 올리기를 누르면 바뀌어요'); }); }
       case 'rmfile': st.files.splice(Number(arg), 1); return keepForm();
       case 'fixed': return work(async () => { const l = data.POSTS.map(p => p.id === arg ? (p.fixed ? (({ fixed, ...q }) => q)(p) : { ...p, fixed: today() }) : p); await saveData('POSTS', l, '수정 완료 표시'); }, '저장했어요'); // 알려진 오류를 고치면 카드에 '수정 완료 · 날짜'
       case 'pin': return work(async () => { const l = data.POSTS.map(p => p.id === arg ? { ...p, pin: !p.pin } : p); await saveData('POSTS', l, '고정 바꿈'); }, '저장했어요');
@@ -275,8 +277,8 @@
     if (kind === 'faq') { const item = { id: st.faqEdit.id || 'f' + Date.now().toString(36), q: v('q'), a: f.elements.a.value.trim(), cat: v('cat'), pin: !!st.faqEdit.pin };
       return work(async () => { const l = st.faqEdit.id ? data.FAQ.map(x => x.id === item.id ? item : x) : [item, ...data.FAQ]; await saveData('FAQ', l, '질문 올림'); st.faqEdit = null; }, '올렸어요 · 1분쯤 뒤 모두에게 보여요'); }
     if (kind === 'post') { keepForm(); const p = st.edit; if (!p.title && !String(p.body || '').trim() && !st.files.length) return toast('글이나 그림 중 하나는 넣어 주세요');
-      return work(async () => { const images = []; for (const x of st.files) images.push(typeof x === 'string' ? x : await uploadImage(x.file)); st.files = images; // 중간에 실패해도 이미 올린 그림은 다시 안 올려요
-        const item = { id: p.id || 'p' + Date.now().toString(36), menu: p.menu, date: p.date, icon: p.icon, title: p.title, body: p.body, tags: p.tags, images, pin: !!p.pin, ...(p.fixed ? { fixed: p.fixed } : {}), at: p.at || Date.now() }; // at: 올린 시각(피드에 '오후 11:30'처럼) · 고쳐도 처음 시각 그대로
+      return work(async () => { const images = [], specs = {}; for (const x of st.files) { const path = typeof x === 'string' ? x : await uploadImage(x.file); images.push(path); const sp = typeof x === 'string' ? (p.specs || {})[x] : x.spec; if (sp) specs[path] = sp; } st.files = images; p.specs = specs; // 중간에 실패해 다시 올려도 칸 값이 남게 // 중간에 실패해도 이미 올린 그림은 다시 안 올려요
+        const item = { id: p.id || 'p' + Date.now().toString(36), menu: p.menu, date: p.date, icon: p.icon, title: p.title, body: p.body, tags: p.tags, images, ...(Object.keys(specs).length ? { specs } : {}), pin: !!p.pin, ...(p.fixed ? { fixed: p.fixed } : {}), at: p.at || Date.now() }; // at: 올린 시각(피드에 '오후 11:30'처럼) · 고쳐도 처음 시각 그대로
         await saveData('POSTS', p.id ? data.POSTS.map(x => x.id === item.id ? item : x) : [item, ...data.POSTS], '글 올림: ' + (item.title || String(item.body || '').slice(0, 30))); st.edit = null; st.files = []; go('#' + encodeURIComponent(item.menu)); }, '올렸어요 · 1분쯤 뒤 모두에게 보여요'); }
   });
   // 지금 판: 설정에 적은 번호 대신 실제 스크립트의 @version을 보여 줘요(머리 부분만 받고 끊어요 · 못 읽으면 설정의 번호 그대로)
