@@ -189,7 +189,7 @@
     const pals = ['#b7a6f2', '#f7b8cf', '#a9d3ee', '#f6d48a', '#a8dcc0'].filter(c => mix(c, col, .5) !== c), k = Math.max(0, NOTICE.findIndex(x => x[0] === d.ntag));
     return `<div class="nt" style="background:linear-gradient(140deg,${bg},${mix(bg, '#ffffff', .45)})">
       <span class="sp" style="left:392px;top:36px;font-size:30px">✦</span><span class="sp" style="left:560px;top:150px;font-size:20px">✦</span><span class="sp" style="left:330px;top:318px;font-size:22px">✦</span><span class="sp" style="left:716px;top:60px;font-size:16px">✦</span>
-      ${d.fixed ? `<span class="fx"><img src="${catPng('#8fd3b0')}" alt="">고쳤어요!<b>${esc((f => +f[1] + '.' + +f[2])(String(d.fixed).split('-')))}</b></span>` : cat(pals[k % pals.length], 'right:226px;top:40px;width:64px;transform:rotate(-12deg)') + cat(pals[(k + 2) % pals.length], 'right:34px;top:26px;width:86px;transform:rotate(10deg)')}
+      ${d.fixed ? `<span class="fx"><img src="${catPng('#8fd3b0')}" alt="">고쳤어요!<b>${d.fixedVer ? esc(d.fixedVer) + ' · ' : ''}${esc((f => +f[1] + '.' + +f[2])(String(d.fixed).split('-')))}</b></span>` : cat(pals[k % pals.length], 'right:226px;top:40px;width:64px;transform:rotate(-12deg)') + cat(pals[(k + 2) % pals.length], 'right:34px;top:26px;width:86px;transform:rotate(10deg)')}
       ${cat(mix(col, '#ffffff', .28), 'right:22px;bottom:-34px;width:250px;transform:rotate(-7deg)')}
       ${e ? `<span class="em">${esc(e)}</span>` : ''}
       <div class="tx"><span class="tg" style="color:${col}">${esc(d.ntag || '공지')}</span>
