@@ -81,7 +81,7 @@
     return `<form class="form" data-form="post">
       <div class="row"><input class="ic" name="icon" maxlength="4" value="${esc(p.icon || '')}" aria-label="제목 앞 이모지" title="제목 앞에 붙는 이모지 · 안 써도 돼요" placeholder="이모지">
         <input class="grow" name="title"${noTitle ? '' : ' required'} value="${esc(p.title || '')}" placeholder="${noTitle ? '제목 (안 써도 돼요)' : '제목'}"></div>
-      <textarea name="body"${noTitle ? ' required' : ''} placeholder="${noTitle ? '무슨 일이 있었나요? · > 로 시작하면 인용으로 크게 보여요' : '내용'}">${esc(p.body || '')}</textarea>
+      <textarea name="body" placeholder="${noTitle ? '무슨 일이 있었나요? · > 로 시작하면 인용으로 크게 보여요' : '내용'}">${esc(p.body || '')}</textarea>
       <div class="row"><select class="sel" name="menu" aria-label="메뉴">${feeds.map(x => `<option value="${esc(x.id)}"${x.id === (p.menu || m.id) ? ' selected' : ''}>${esc(x.name)}</option>`).join('')}</select>
         <input class="dt" type="date" name="date" required value="${esc(p.date || today())}" aria-label="날짜">
         <input class="grow" name="tags" value="${esc((p.tags || []).join(', '))}" placeholder="꼬리표 (쉼표로 나눠요)"></div>
@@ -126,7 +126,7 @@
         ${quote ? `<blockquote>${linkify(body.replace(/^\s*>\s?/gm, ''))}</blockquote>` : ''}
         ${p.title || (body && !quote) ? (() => { const only = !imgs.length, ls = body.split('\n'), head = !p.title && only && ls.length > 1 && ls[0].trim().length <= 40 ? ls.shift() : '', rest = head ? ls.join('\n').replace(/^\n+/, '') : body; // 글만 쓴 글: 첫 줄이 짧으면 머리말로
           return `<div class="sf-tx${only ? ' only c' + (pi % 5) : ''}">${p.title || head ? `<h3>${p.icon ? esc(p.icon) + ' ' : ''}${esc(p.title || head)}</h3>` : ''}${rest && !quote ? `<p>${linkify(rest)}</p>` : ''}</div>`; })() : ''}
-        ${(p.tags || []).length ? `<div class="sf-tg">${p.tags.map((t, k) => `<i class="t${k % 5}">#${esc(t)}</i>`).join('')}</div>` : ''}
+        ${(p.tags || []).length ? `<div class="sf-tg">${p.tags.map((t, k) => `<i class="t${k % 5}">${esc(t)}</i>`).join('')}</div>` : ''}
         ${owner() ? `<div class="sf-ft"><span class="sf-own"><button data-act="edit" data-arg="${esc(p.id)}">고치기</button><button data-act="pin" data-arg="${esc(p.id)}">${p.pin ? '고정 풀기' : '고정'}</button><button data-act="del" data-arg="${esc(p.id)}">지우기</button></span></div>` : ''}
       </div></div></article>`; });
     h += '</div>'; if (list.length > st.shown) h += '<button class="more" data-act="more">지난 글 더 보기</button>';
@@ -217,14 +217,14 @@
       case 'write': st.edit = st.edit ? null : {}; st.files = []; return render();
       case 'cancel': st.edit = null; st.files = []; return render();
       case 'zoom': return zoomOpen(arg);
-      case 'like': { const l = likes(); l.has(arg) ? l.delete(arg) : l.add(arg); try { localStorage.setItem('joa_like', JSON.stringify([...l])); } catch (_) {} return render(); }
+      case 'like': { const l = likes(); l.has(arg) ? l.delete(arg) : l.add(arg); try { localStorage.setItem('joa_like', JSON.stringify([...l])); } catch (_) {} const b = e.target.closest('[data-act="like"]'); if (!b) return render(); b.setAttribute('aria-pressed', l.has(arg)); b.textContent = l.has(arg) ? '♥' : '♡'; return; } // 그 하트만 바꿔요(화면을 다시 그리면 그림이 깜빡여요)
       case 'sfplain': { const s = JSON.parse(JSON.stringify(site())), mm = s.menus.find(x => x.id === arg); if (!mm) return; mm.plain = !mm.plain; return work(async () => { await saveData('SITE', s, '피드 색 바꿈: ' + mm.name); }, mm.plain ? '색 없이 보여요' : '색 카드로 보여요'); }
       case 'pageedit': st.pageEdit = arg; return render();
       case 'pagecancel': st.pageEdit = null; return render();
       case 'emo': { const f = main.querySelector('[data-form="post"]'); if (f) { f.icon.value = arg; f.querySelectorAll('[data-act="emo"]').forEach(b => b.setAttribute('aria-pressed', b.dataset.arg === arg && !!arg)); } return; } // 이모지 고르기: 누르면 왼쪽 칸에 들어가요
       case 'maker': { if (!window.JoaMaker) return toast('그림 만들기를 못 불러왔어요 · 새로고침해 주세요'); keepForm(); // 만든 그림을 글에 붙이고, 비어 있는 제목·내용·이모지·꼬리표는 채워 줘요
         return window.JoaMaker.open({ version: st.ver || site().version, date: st.edit.date || today(), kind: st.edit.menu === 'guide' ? 'guide' : 'news' }, r => { if (!st.edit) return; st.files.push({ file: r.file, url: URL.createObjectURL(r.file) });
-          const e = st.edit; if (!e.title) e.title = r.title; if (!e.body) e.body = r.body; if (!e.icon) e.icon = r.icon; e.tags = [...new Set([...(r.tags || []), ...(e.tags || [])])]; render(); toast('그림을 붙였어요 · 올리기를 누르면 같이 올라가요'); }); }
+          const e = st.edit; if ((site().menus.find(x => x.id === e.menu) || {}).kind === 'stream') { render(); return toast('그림을 붙였어요 · 올리기를 누르면 같이 올라가요'); } if (!e.title) e.title = r.title; if (!e.body) e.body = r.body; if (!e.icon) e.icon = r.icon; e.tags = [...new Set([...(r.tags || []), ...(e.tags || [])])]; render(); toast('그림을 붙였어요 · 올리기를 누르면 같이 올라가요'); }); }
       case 'edit': st.edit = { ...post() }; st.files = [...(st.edit.images || [])]; if (hash().startsWith('p-')) go('#' + encodeURIComponent(st.edit.menu)); render(); return main.querySelector('.new, .cwrite')?.scrollIntoView({ block: 'center' });
       case 'pick': return b.parentElement.querySelector('[data-pick]').click();
       case 'rmfile': st.files.splice(Number(arg), 1); return keepForm();
@@ -273,7 +273,7 @@
     if (kind === 'site') { const s = readSite(f); if (!s.title) return toast('이름을 적어 주세요'); return work(async () => { await saveData('SITE', s, '설정 바꿈'); dlg.close(); }, '저장했어요 · 1분쯤 뒤 모두에게 보여요'); }
     if (kind === 'faq') { const item = { id: st.faqEdit.id || 'f' + Date.now().toString(36), q: v('q'), a: f.elements.a.value.trim(), cat: v('cat'), pin: !!st.faqEdit.pin };
       return work(async () => { const l = st.faqEdit.id ? data.FAQ.map(x => x.id === item.id ? item : x) : [item, ...data.FAQ]; await saveData('FAQ', l, '질문 올림'); st.faqEdit = null; }, '올렸어요 · 1분쯤 뒤 모두에게 보여요'); }
-    if (kind === 'post') { keepForm(); const p = st.edit;
+    if (kind === 'post') { keepForm(); const p = st.edit; if (!p.title && !String(p.body || '').trim() && !st.files.length) return toast('글이나 그림 중 하나는 넣어 주세요');
       return work(async () => { const images = []; for (const x of st.files) images.push(typeof x === 'string' ? x : await uploadImage(x.file)); st.files = images; // 중간에 실패해도 이미 올린 그림은 다시 안 올려요
         const item = { id: p.id || 'p' + Date.now().toString(36), menu: p.menu, date: p.date, icon: p.icon, title: p.title, body: p.body, tags: p.tags, images, pin: !!p.pin, at: p.at || Date.now() }; // at: 올린 시각(피드에 '오후 11:30'처럼) · 고쳐도 처음 시각 그대로
         await saveData('POSTS', p.id ? data.POSTS.map(x => x.id === item.id ? item : x) : [item, ...data.POSTS], '글 올림: ' + (item.title || String(item.body || '').slice(0, 30))); st.edit = null; st.files = []; go('#' + encodeURIComponent(item.menu)); }, '올렸어요 · 1분쯤 뒤 모두에게 보여요'); }

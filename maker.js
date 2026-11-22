@@ -77,18 +77,18 @@
   .nc .it span { display:block; font-size:19px; color:#8a8884; margin-top:4px; line-height:1.5; }
   .nc .tip { margin-top:22px; border-radius:16px; padding:18px 22px; font-size:20px; line-height:1.6; }
   .nc .ft { text-align:right; color:#b4b3af; font-size:16px; margin-top:18px; }
-  /* 공지: 흰 카드 · 왼쪽 색 띠 · 꼬리표 + 날짜 시간 · 큰 제목 */
-  .nt { box-sizing:border-box; width:780px; padding:28px; font-family:'Pretendard Variable','Pretendard','Malgun Gothic','Segoe UI Emoji',sans-serif; letter-spacing:-.5px; word-break:keep-all; }
+  /* 공지: 파스텔 포스터 · 고양이 말풍선 · 이모지 스티커 · 큰 제목 */
+  .nt { box-sizing:border-box; position:relative; overflow:hidden; width:780px; min-height:410px; padding:46px 50px 96px; font-family:'Pretendard Variable','Pretendard','Malgun Gothic','Segoe UI Emoji',sans-serif; letter-spacing:-.5px; word-break:keep-all; }
   .nt * { box-sizing:border-box; margin:0; padding:0; }
-  .nt .c { background:#fff; border-radius:28px; padding:44px 48px 40px 58px; position:relative; overflow:hidden; min-height:300px; }
-  .nt .c > i { position:absolute; left:0; top:0; bottom:0; width:10px; }
-  .nt .tg { display:inline-flex; align-items:center; gap:10px; font-weight:800; font-size:23px; }
-  .nt .tg b { width:11px; height:11px; border-radius:50%; display:inline-block; }
-  .nt .wh { display:inline-block; margin-left:12px; padding-left:12px; border-left:2px solid #00000014; font-size:21px; font-weight:600; color:#a49b99; vertical-align:middle; }
-  .nt h1 { font-size:62px; font-weight:800; letter-spacing:-2.3px; margin:26px 0 12px; color:#1f1b1b; line-height:1.12; }
-  .nt p { font-size:24px; color:#8a7f7d; line-height:1.55; white-space:pre-wrap; }
-  .nt .ft { display:flex; justify-content:flex-end; align-items:center; gap:12px; margin-top:30px; font-size:20px; font-weight:700; color:#b8aeac; }
-  .nt .ft img { width:44px; height:44px; border-radius:13px; }
+  .nt > img { position:absolute; }
+  .nt .sp { position:absolute; color:#fff; line-height:1; }
+  .nt .em { position:absolute; right:196px; bottom:150px; width:96px; height:96px; border-radius:50%; background:#fff; font-size:52px; line-height:96px; text-align:center; transform:rotate(-9deg); box-shadow:0 10px 24px #4a426622; }
+  .nt .tx { position:relative; max-width:440px; }
+  .nt .tg { display:inline-block; background:#fff; font-weight:800; font-size:21px; padding:9px 20px; border-radius:99px; transform:rotate(-2deg); box-shadow:0 6px 16px #4a426614; }
+  .nt h1 { font-size:58px; font-weight:800; letter-spacing:-2.2px; margin:26px 0 14px; color:#3a3350; line-height:1.16; }
+  .nt p { font-size:23px; font-weight:500; color:#6f6886; line-height:1.6; white-space:pre-wrap; }
+  .nt .ft { position:absolute; left:50px; bottom:38px; display:flex; align-items:center; gap:10px; font-size:18px; font-weight:700; }
+  .nt .ft img { width:36px; height:36px; border-radius:11px; } .nt .ft i { font-style:normal; font-weight:500; opacity:.8; margin-left:4px; }
   /* 만들기 창 */
   .mkd { border:0; border-radius:22px; padding:0; width:min(1080px, calc(100vw - 24px)); max-height:calc(100dvh - 24px); margin:auto; box-shadow:0 20px 60px #0003; overflow:hidden; }
   .mkd::backdrop { background:#0006; }
@@ -171,11 +171,19 @@
       ${tips.length ? `<div class="tip" style="background:${mix(acc, '#ffffff', .9)}">${tips.map(t => esc(t)).join('<br>')}</div>` : ''}
       <div class="ft">조아메모리ෆ${d.ver ? ' ' + esc(d.ver) : ''}</div></div></div>`;
   }
-  const NOTICE = [['긴급 공지', '#e5484d', '#fde7e4'], ['점검 안내', '#e8890c', '#fdf0dc'], ['업데이트 예고', '#7b61d9', '#ece8fb'], ['해결 완료', '#2f9e66', '#e2f5ea'], ['알림', '#3d7fc4', '#e2eefa'], ['알려진 오류', '#d6457f', '#fce4ee']];
+  const NOTICE = [['긴급 공지', '#e8707c', '#ffdfe3', '🚨'], ['점검 안내', '#e59a4c', '#ffe9cc', '🛠️'], ['업데이트 예고', '#8f7be6', '#e6dffd', '🎁'], ['해결 완료', '#4fb589', '#d6f2e3', '✨'], ['알림', '#5a9bdc', '#d8eafb', '💌'], ['알려진 오류', '#e072a4', '#fddfec', '🐞']]; // 글자색 · 파스텔 바탕 · 기본 이모지(칸에서 바꾸거나 지울 수 있어요)
   const nowText = () => { const d = new Date(), h = d.getHours(); return `${d.getFullYear()}년 ${d.getMonth() + 1}월 ${d.getDate()}일 (${'일월화수목금토'[d.getDay()]}) · ${h < 12 ? '오전' : '오후'} ${(h % 12) || 12}:${String(d.getMinutes()).padStart(2, '0')}`; };
-  function noticeHtml(d) { const [, col, bg] = NOTICE.find(x => x[0] === d.ntag) || [d.ntag, d.acc, mix(d.acc, '#ffffff', .88)];
-    return `<div class="nt" style="background:${bg}"><div class="c"><i style="background:${col}"></i><span class="tg" style="color:${col}"><b style="background:${col}"></b>${esc(d.ntag || '공지')}</span>${d.nwhen ? `<span class="wh">${esc(d.nwhen)}</span>` : ''}
-      <h1>${esc(d.ntitle || '제목')}</h1>${d.nsub ? `<p>${esc(d.nsub)}</p>` : ''}<div class="ft"><img src="img/icon.png" alt="">조아메모리</div></div></div>`; }
+  function noticeHtml(d) { const [, col, bg, emo] = NOTICE.find(x => x[0] === d.ntag) || [d.ntag, d.acc, mix(d.acc, '#ffffff', .8), ''], e = d.nemo == null ? emo : d.nemo;
+    const cat = (c, s) => `<img style="${s}" alt="" src="data:image/svg+xml,${encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><path fill="${c}" d="M20 30 L25 9 L42 23 H58 L75 9 L80 30 Q91 36 91 51 Q91 76 63 78 H45 L27 93 L29 76 Q9 71 9 51 Q9 36 20 30 Z"/><circle cx="38" cy="48" r="4.2" fill="#fff"/><circle cx="62" cy="48" r="4.2" fill="#fff"/><ellipse cx="28" cy="57" rx="5.5" ry="3.4" fill="#ffb3c7"/><ellipse cx="72" cy="57" rx="5.5" ry="3.4" fill="#ffb3c7"/><path d="M45 55 Q50 60 55 55" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round"/></svg>`)}">`;
+    const pals = ['#b7a6f2', '#f7b8cf', '#a9d3ee', '#f6d48a', '#a8dcc0'].filter(c => mix(c, col, .5) !== c), k = Math.max(0, NOTICE.findIndex(x => x[0] === d.ntag));
+    return `<div class="nt" style="background:linear-gradient(140deg,${bg},${mix(bg, '#ffffff', .45)})">
+      <span class="sp" style="left:392px;top:36px;font-size:30px">✦</span><span class="sp" style="left:560px;top:150px;font-size:20px">✦</span><span class="sp" style="left:330px;top:318px;font-size:22px">✦</span><span class="sp" style="left:716px;top:60px;font-size:16px">✦</span>
+      ${cat(pals[k % pals.length], 'right:226px;top:40px;width:64px;transform:rotate(-12deg)')}${cat(pals[(k + 2) % pals.length], 'right:34px;top:26px;width:86px;transform:rotate(10deg)')}
+      ${cat(mix(col, '#ffffff', .28), 'right:22px;bottom:-34px;width:250px;transform:rotate(-7deg)')}
+      ${e ? `<span class="em">${esc(e)}</span>` : ''}
+      <div class="tx"><span class="tg" style="color:${col}">${esc(d.ntag || '공지')}</span>
+      <h1>${esc(d.ntitle || '제목')}</h1>${d.nsub ? `<p>${esc(d.nsub)}</p>` : ''}</div>
+      <div class="ft" style="color:${mix(col, '#4a4266', .45)}"><img src="img/icon.png" alt="">조아메모리${d.nwhen ? `<i>${esc(d.nwhen)}</i>` : ''}</div></div>`; }
   const pageHtml = d => d.style === 'notice' ? noticeHtml(d) : d.style === 'card' ? cardHtml(d) : d.kind === 'guide' ? guideHtml(d) : chatHtml(d);
 
   let h2c = null; // html2canvas는 처음 그림을 찍을 때 한 번만 받아요
@@ -185,7 +193,7 @@
     box.style.cssText = 'position:fixed;left:-10000px;top:0;'; box.innerHTML = pageHtml(d); document.body.appendChild(box);
     try { if (document.fonts) { await document.fonts.load("25px 'Jua'"); await document.fonts.load("25px 'Gowun Dodum'"); await document.fonts.load("800 25px 'Pretendard Variable'", box.textContent); await document.fonts.ready; }
       await Promise.all([...box.querySelectorAll('img')].map(i => i.decode().catch(() => {})));
-      const c = await H(box.firstElementChild, { scale: 1, backgroundColor: null, useCORS: true, logging: false });
+      const c = await H(box.firstElementChild, { scale: d.style === 'notice' ? 3 : 2, backgroundColor: null, useCORS: true, logging: false });
       return await new Promise((ok, no) => c.toBlob(b => b ? ok(b) : no(new Error('그림을 못 만들었어요')), 'image/png'));
     } finally { box.remove(); }
   }
@@ -231,6 +239,7 @@
   const noticeForm = d => `
       <label>종류<div class="sw">${NOTICE.map(([n, c]) => `<button type="button" data-ntag="${n}" aria-pressed="${d.ntag === n}"><i style="background:${c}"></i>${n}</button>`).join('')}</div></label>
       <label>날짜·시간 (안 써도 돼요)<input data-k="nwhen" value="${esc(d.nwhen)}"><button type="button" class="add" data-nnow style="padding:6px;margin-top:4px">지금 시각으로</button></label>
+      <label>이모지 (바꾸거나 지워도 돼요)<input data-k="nemo" value="${esc(d.nemo == null ? (NOTICE.find(x => x[0] === d.ntag) || [])[3] || '' : d.nemo)}" maxlength="4"></label>
       <label>제목<input data-k="ntitle" value="${esc(d.ntitle)}" placeholder="꼭 확인해 주세요"></label>
       <label>설명 (안 써도 돼요)<textarea data-k="nsub" style="min-height:70px" placeholder="조아메모리 사용에 영향을 주는 중요한 소식이에요">${esc(d.nsub)}</textarea></label>`;
   const styleBar = (d, kind) => `<div class="sw" style="margin:-4px 0 4px"><button type="button" data-style="base" aria-pressed="${d.style === 'base'}" style="padding:5px 14px">${kind === 'guide' ? '설명서' : '카톡'} 모양</button><button type="button" data-style="card" aria-pressed="${d.style === 'card'}" style="padding:5px 14px">노션 카드</button><button type="button" data-style="notice" aria-pressed="${d.style === 'notice'}" style="padding:5px 14px">공지</button></div>`;
@@ -277,7 +286,7 @@
         store.set(Object.assign(last, { style: d.style }, kind === 'guide' || d.style === 'card' ? { gacc: d.acc } : { preset: d.preset ?? NEWS.findIndex(t => t.bg === d.bg) }));
         if (mk === 'save') { const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = name; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 4000); }
         else { dlg.close(); const file = new File([blob], name, { type: 'image/png' });
-          if (d.style === 'notice') done && done({ file, title: d.ntitle.trim(), body: d.nsub.trim(), icon: '', tags: [d.ntag] });
+          if (d.style === 'notice') done && done({ file, title: d.ntitle.trim(), body: d.nsub.trim(), icon: '', tags: [] });
           else if (d.style === 'card') { const it = lines(d.citems).map(pair); done && done({ file, title: d.ctitle.trim(), body: it.slice(0, 3).map(x => x[0]).join(' · '), icon: d.cicon || '', tags: d.ver ? [d.ver] : [] }); }
           else if (kind === 'guide') done && done({ file, title: d.title.trim(), body: d.lead.trim(), icon: '📖', tags: [] });
           else { const b = lines(d.bubbles).map(pair); done && done({ file, title: b[0][0].replace(/[.!~]+$/, ''), body: b.slice(0, 3).map(x => x[0]).join(' '), icon: d.av || '', tags: d.ver ? [d.ver] : [] }); } }

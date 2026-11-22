@@ -185,6 +185,16 @@
   .sf-nm b { font-weight:700; color:#37352f; } .sf-nm span { color:#a9a6b2; }
   .sf-cd { padding-bottom:16px; } .sf-cd:has(.sf-ft) { padding-bottom:0; } .sf-cd > .sf-img:last-child { margin-bottom:-16px; } /* 방문자 화면: 아래 줄이 없어도 글이 카드 끝에 붙지 않게 */
 
+  /* 피드 다듬기: 테두리 대신 옅은 그림자 · 부드러운 글자색 · 그림만 올린 글은 그림이 곧 카드 */
+  .sf-cd, .sf-it.pin .sf-cd, .sf-cd:has(.sf-tx.only), .sf.plain .sf-cd:has(.sf-tx.only) { border:1px solid #f1eff8 !important; border-radius:22px; box-shadow:0 8px 26px #7c63de12; }
+  .sf-bub .sf-cd { border-top-left-radius:22px; }
+  .sf-tx h3, .sf-tx.only h3 { color:#35313f; font-size:19px; letter-spacing:-.5px; } .sf-tx p, .sf-tx.only p { color:#6a6779; font-size:15.5px; line-height:1.8; }
+  .sf-cd blockquote { color:#35313f; }
+  .sf-day b { color:#35313f; } .sf-day span, .sf-nm span { color:#b9b5c6 !important; } .sf-nm b { color:#4a4658 !important; }
+  .sf-tg i { color:#a79fd0 !important; font-weight:600; } .sf-tg i + i::before { content:'· '; color:#d5d1e2; }
+  .sf-like[aria-pressed="true"] { color:#ff8fab; }
+  .sf-img.n1 img { max-height:none; }
+  .sf-cd:has(> .sf-img:only-child) { padding:0 !important; border:0 !important; background:none !important; } .sf-cd > .sf-img:only-child { margin:0 !important; background:none; }
   .sf-opt { display:flex; justify-content:flex-end; margin-bottom:-6px; } .sf-opt button { font-size:13px; color:var(--sub); border:1px solid var(--line); background:#fff; border-radius:99px; padding:4px 12px; }
   .sf.plain .sf-tx.only { border-top-color:transparent; padding-top:18px; } /* 색 없이: 띠도 없이 흰 카드만 */
   .hero2 { max-width:720px; margin:0 auto; display:flex; align-items:center; gap:18px; padding:22px 24px; border-radius:28px; background:linear-gradient(120deg,#ece6ff 0%,#fde7f0 60%,#e3f1fb 100%); }
