@@ -83,7 +83,7 @@
   .nt > img { position:absolute; }
   .nt .sp { position:absolute; color:#fff; line-height:1; }
   .nt .em { position:absolute; right:196px; bottom:150px; width:96px; height:96px; border-radius:50%; background:#fff; font-size:52px; line-height:1; display:flex; align-items:center; justify-content:center; box-shadow:0 10px 24px #4a426622; }
-  .nt .fx { position:absolute; right:30px; top:34px; display:inline-flex; align-items:center; gap:6px; background:#fff; border-radius:99px; padding:6px 16px 6px 7px; font-size:18px; font-weight:800; color:#3a3350; box-shadow:0 6px 16px #4a426614; } .nt .fx img { width:28px; height:28px; } .nt .fx b { font-size:15px; font-weight:600; color:#8d88a3; margin-left:4px; } /* 수정 완료 스티커: 종류 알약처럼 흰 알약 · 진한 글씨 */
+  .nt .fx { position:absolute; z-index:1; right:115px; top:46px; display:inline-flex; align-items:center; gap:5px; background:#fff; border-radius:16px; padding:5px 13px 5px 6px; font-size:15px; font-weight:800; color:#3a3350; box-shadow:0 6px 16px #4a426614; } .nt .fx img { width:26px; height:26px; } .nt .fx > span { display:flex; flex-direction:column; line-height:1.15; } .nt .fx b { font-size:11px; font-weight:600; color:#8d88a3; } /* 수정 완료 스티커: 두 고양이 사이 · 판 번호와 날짜는 아랫줄 */
   .nt .tx { position:relative; max-width:440px; }
   .nt .tg { display:inline-block; background:#fff; font-weight:800; font-size:21px; padding:9px 20px; border-radius:99px; transform:rotate(-2deg); box-shadow:0 6px 16px #4a426614; }
   .nt h1 { font-size:58px; font-weight:800; letter-spacing:-2.2px; margin:26px 0 14px; color:#3a3350; line-height:1.16; }
@@ -172,7 +172,7 @@
       ${tips.length ? `<div class="tip" style="background:${mix(acc, '#ffffff', .9)}">${tips.map(t => esc(t)).join('<br>')}</div>` : ''}
       <div class="ft">조아메모리ෆ${d.ver ? ' ' + esc(d.ver) : ''}</div></div></div>`;
   }
-  const NOTICE = [['긴급 공지', '#e8707c', '#ffdfe3', '🚨'], ['점검 안내', '#e59a4c', '#ffe9cc', '🛠️'], ['업데이트 예고', '#8f7be6', '#e6dffd', '🎁'], ['해결 완료', '#4fb589', '#d6f2e3', '✨'], ['알림', '#5a9bdc', '#d8eafb', '💌'], ['알려진 오류', '#e072a4', '#fddfec', '🐞']]; // 글자색 · 파스텔 바탕 · 기본 이모지(칸에서 바꾸거나 지울 수 있어요)
+  const NOTICE = [['긴급 공지', '#e8707c', '#ffdfe3', '🚨'], ['점검 안내', '#e59a4c', '#ffe9cc', '🛠️'], ['업데이트 예고', '#8f7be6', '#e6dffd', '🎁'], ['해결 완료', '#4fb589', '#d6f2e3', '✨'], ['알림', '#5a9bdc', '#d8eafb', '💌'], ['알려진 오류', '#e072a4', '#fddfec', '🐞'], ['권장 사항', '#3a9fae', '#d4eef2', '💡']]; // 글자색 · 파스텔 바탕 · 기본 이모지(칸에서 바꾸거나 지울 수 있어요)
   const NT_ICON = { '긴급 공지': 'pink', '점검 안내': 'peach', '업데이트 예고': '', '해결 완료': 'mint', '알림': 'blue', '알려진 오류': 'pink' };
   const ntIcon = tag => (c => c ? `img/icon-${c}.png` : 'img/icon.png')(NT_ICON[tag] ?? 'sky'); // 종류마다 색 고양이(업데이트 예고는 원래 보라)
   const nowText = () => { const d = new Date(), h = d.getHours(); return `${d.getFullYear()}년 ${d.getMonth() + 1}월 ${d.getDate()}일 (${'일월화수목금토'[d.getDay()]}) · ${h < 12 ? '오전' : '오후'} ${(h % 12) || 12}:${String(d.getMinutes()).padStart(2, '0')}`; };
@@ -189,7 +189,7 @@
     const pals = ['#b7a6f2', '#f7b8cf', '#a9d3ee', '#f6d48a', '#a8dcc0'].filter(c => mix(c, col, .5) !== c), k = Math.max(0, NOTICE.findIndex(x => x[0] === d.ntag));
     return `<div class="nt" style="background:linear-gradient(140deg,${bg},${mix(bg, '#ffffff', .45)})">
       <span class="sp" style="left:392px;top:36px;font-size:30px">✦</span><span class="sp" style="left:560px;top:150px;font-size:20px">✦</span><span class="sp" style="left:330px;top:318px;font-size:22px">✦</span><span class="sp" style="left:716px;top:60px;font-size:16px">✦</span>
-      ${d.fixed ? `<span class="fx"><img src="${catPng('#8fd3b0')}" alt="">고쳤어요!<b>${d.fixedVer ? esc(d.fixedVer) + ' · ' : ''}${esc((f => +f[1] + '.' + +f[2])(String(d.fixed).split('-')))}</b></span>` : cat(pals[k % pals.length], 'right:226px;top:40px;width:64px;transform:rotate(-12deg)') + cat(pals[(k + 2) % pals.length], 'right:34px;top:26px;width:86px;transform:rotate(10deg)')}
+      ${d.fixed ? `<span class="fx"><img src="${catPng('#8fd3b0')}" alt=""><span>고쳤어요!<b>${d.fixedVer ? esc(d.fixedVer) + ' · ' : ''}${esc((f => +f[1] + '.' + +f[2])(String(d.fixed).split('-')))}</b></span></span>` : ''}${d.fixed ? cat(pals[k % pals.length], 'right:236px;top:36px;width:64px;transform:rotate(-12deg)') + cat(pals[(k + 2) % pals.length], 'right:24px;top:24px;width:78px;transform:rotate(10deg)') : cat(pals[k % pals.length], 'right:226px;top:40px;width:64px;transform:rotate(-12deg)') + cat(pals[(k + 2) % pals.length], 'right:34px;top:26px;width:86px;transform:rotate(10deg)')}
       ${cat(mix(col, '#ffffff', .28), 'right:22px;bottom:-34px;width:250px;transform:rotate(-7deg)')}
       ${e ? `<span class="em">${esc(e)}</span>` : ''}
       <div class="tx"><span class="tg" style="color:${col}">${esc(d.ntag || '공지')}</span>
