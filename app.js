@@ -53,7 +53,7 @@
 
   // ── 화면 ──
   const $ = id => document.getElementById(id), main = $('main'), dlg = $('dlg');
-  const st = { shown: 10, edit: null, files: [], faqQ: '', faqCat: '', faqEdit: null, busy: false };
+  const st = { shown: 10, page: 1, edit: null, files: [], faqQ: '', faqCat: '', faqEdit: null, busy: false };
   let route = location.hash; // 지금 화면('#faq', '#p-글번호' 같은 꼴 · 주소창에는 안 보여요)
   const site = () => data.SITE, hash = () => { try { return decodeURIComponent(route.slice(1)); } catch (_) { return route.slice(1); } };
   const curPost = () => hash().startsWith('p-') ? data.POSTS.find(p => p.id === hash().slice(2)) : null; // #p-글번호 = 글 한 편 보기
@@ -117,13 +117,20 @@
   const iconFor = id => ICONS[[...String(id)].reduce((h, c) => (h * 31 + c.charCodeAt(0)) >>> 0, 7) % ICONS.length]; // 글마다 색 고양이(같은 글은 늘 같은 색)
   const likes = () => { try { return new Set(JSON.parse(localStorage.getItem('joa_like') || '[]')); } catch (_) { return new Set(); } };
   const ago = d => { const t = Date.parse(d + 'T12:00:00+09:00'), n = Math.round((Date.now() - t) / 864e5); return n <= 0 ? '오늘' : n === 1 ? '어제' : n < 7 ? n + '일 전' : String(d).slice(5).replace('-', '월 ').replace(/^0/, '') + '일'; };
+  // 알림판 페이지: 고정 글은 1페이지 맨 위에만 · 나머지 8개씩 · 번호는 1 … 앞뒤 … 끝
+  const pageOf = (list, n) => { const pins = list.filter(p => p.pin), rest = list.filter(p => !p.pin), pages = Math.max(1, Math.ceil(rest.length / n)); st.page = Math.min(Math.max(1, st.page), pages); return { items: [...(st.page === 1 ? pins : []), ...rest.slice((st.page - 1) * n, st.page * n)], pages }; };
+  const pager = pages => { if (pages < 2) return ''; const c = st.page, nums = [...new Set([1, c - 1, c, c + 1, pages])].filter(n => n >= 1 && n <= pages).sort((x, y) => x - y);
+    let s = `<nav class="pager" aria-label="페이지"><button data-act="page" data-arg="${c - 1}"${c === 1 ? ' disabled' : ''} aria-label="이전 페이지">‹</button>`;
+    nums.forEach((n, i) => { if (i && n - nums[i - 1] > 1) s += '<span>…</span>'; s += `<button data-act="page" data-arg="${n}"${n === c ? ' aria-current="page"' : ''}>${n}</button>`; });
+    return s + `<button data-act="page" data-arg="${c + 1}"${c === pages ? ' disabled' : ''} aria-label="다음 페이지">›</button></nav>`; };
   function renderStream(m) {
     const list = sortPosts(data.POSTS.filter(p => p.menu === m.id)), s = site(); let h = `<div class="sf${m.plain ? ' plain' : ''}">`;
     if (owner() && !st.edit) h += `<div class="sf-opt"><button data-act="sfplain" data-arg="${esc(m.id)}"${dis()}>${m.plain ? '🎨 색 카드로' : '⬜ 색 없이'}</button></div>`; // 글만 쓴 글을 색 카드로 보일지(주인만 · 메뉴마다)
     if (owner()) h += st.edit ? postForm(m) : `<button class="sf-new" data-act="write"><img src="${iconFor(Date.now() >> 16)}" alt=""><span>무슨 일이 있었나요?</span></button>`;
     if (!list.length) h += '<p class="empty">아직 올라온 글이 없어요.</p>';
-    list.slice(0, st.shown).forEach((p, pi) => { const imgs = p.images || [], body = String(p.body || ''), quote = /^\s*>/.test(body);
-      h += `<article class="sf-it${p.pin ? ' pin' : ''}">${(() => { const dd = dayParts(p.date), same = pi > 0 && list[pi - 1].date === p.date; return `<div class="sf-day">${same ? '' : `<b>${dd.d}</b><span>${dd.m}월 · ${dd.w}</span>`}</div>`; })()}<div class="sf-bub"><div class="sf-nm${pi > 0 && list[pi - 1].date === p.date ? ' same' : ''}"><img src="${iconFor(p.id)}" alt=""><b>${esc(s.title || '조아메모리')}</b><span>${p.pin ? '📌 ' : ''}${p.at ? new Date(p.at).toLocaleTimeString('ko-KR', { hour: 'numeric', minute: '2-digit' }) : ago(p.date)}</span><button class="sf-like" data-act="like" data-arg="${esc(p.id)}" aria-pressed="${likes().has(p.id)}" aria-label="좋아요">${likes().has(p.id) ? '♥' : '♡'}</button></div><div class="sf-cd">
+    const pg = pageOf(list, 8), L = pg.items;
+    L.forEach((p, pi) => { const imgs = p.images || [], body = String(p.body || ''), quote = /^\s*>/.test(body);
+      h += `<article class="sf-it${p.pin ? ' pin' : ''}">${(() => { const dd = dayParts(p.date), same = pi > 0 && L[pi - 1].date === p.date; return `<div class="sf-day">${same ? '' : `<b>${dd.d}</b><span>${dd.m}월 · ${dd.w}</span>`}</div>`; })()}<div class="sf-bub"><div class="sf-nm${pi > 0 && L[pi - 1].date === p.date ? ' same' : ''}"><img src="${iconFor(p.id)}" alt=""><b>${esc(s.title || '조아메모리')}</b><span>${p.pin ? '📌 ' : ''}${p.at ? new Date(p.at).toLocaleTimeString('ko-KR', { hour: 'numeric', minute: '2-digit' }) : ago(p.date)}</span><button class="sf-like" data-act="like" data-arg="${esc(p.id)}" aria-pressed="${likes().has(p.id)}" aria-label="좋아요">${likes().has(p.id) ? '♥' : '♡'}</button></div><div class="sf-cd">
         ${imgs.length ? `<div class="sf-img n${Math.min(imgs.length, 3)}">${p.fixed && !(imgs.length === 1 && ((p.specs || {})[imgs[0]] || OLD_SPECS[imgs[0]])?.style === 'notice') ? `<span class="sf-fix">💚 고쳤어요!<b>${p.fixedVer ? esc(p.fixedVer) + ' · ' : ''}${(d => +d[1] + '.' + +d[2])(String(p.fixed).split('-'))}</b></span>` : ''}${imgs.map(x => { const sp = (p.specs || {})[x] || OLD_SPECS[x]; return sp?.style === 'notice' && imgs.length === 1 && window.JoaMaker?.noticeHtml ? (window.JoaMaker.init(), `<a href="${postUrl(p)}" class="sf-live">${window.JoaMaker.noticeHtml({ ...sp, fixed: p.fixed || '', fixedVer: p.fixedVer || '' })}</a>`) : `<a href="${postUrl(p)}"><img src="${esc(fresh[x] || x)}" alt="" loading="lazy" draggable="false"></a>`; }).join('')}</div>` : ''}
         ${quote ? `<blockquote>${linkify(body.replace(/^\s*>\s?/gm, ''))}</blockquote>` : ''}
         ${p.title || (body && !quote) ? (() => { const only = !imgs.length, ls = body.split('\n'), head = !p.title && only && ls.length > 1 && ls[0].trim().length <= 40 ? ls.shift() : '', rest = head ? ls.join('\n').replace(/^\n+/, '') : body; // 글만 쓴 글: 첫 줄이 짧으면 머리말로
@@ -131,7 +138,7 @@
         ${(p.tags || []).length ? `<div class="sf-tg">${p.tags.map((t, k) => `<i class="t${k % 5}">${esc(t)}</i>`).join('')}</div>` : ''}
         ${owner() ? `<div class="sf-ft"><span class="sf-own"><button data-act="fixed" data-arg="${esc(p.id)}">${p.fixed ? '수정 완료 풀기' : '✅ 수정 완료'}</button><button data-act="edit" data-arg="${esc(p.id)}">고치기</button><button data-act="pin" data-arg="${esc(p.id)}">${p.pin ? '고정 풀기' : '고정'}</button><button data-act="del" data-arg="${esc(p.id)}">지우기</button></span></div>` : ''}
       </div></div></article>`; });
-    h += '</div>'; if (list.length > st.shown) h += '<button class="more" data-act="more">지난 글 더 보기</button>';
+    h += '</div>' + pager(pg.pages);
     main.innerHTML = h; fitLive();
   }
   const faqPick = () => { const q = st.faqQ.trim().toLowerCase(); return data.FAQ.filter(f => (!st.faqCat || f.cat === st.faqCat) && (!q || (f.q + ' ' + f.a).toLowerCase().includes(q))).sort((a, b) => (b.pin ? 1 : 0) - (a.pin ? 1 : 0)); }; // 고정한 질문이 맨 위
@@ -223,6 +230,7 @@
     const post = () => data.POSTS.find(p => p.id === arg), q = () => data.FAQ.find(f => f.id === arg);
     switch (act) {
       case 'more': st.shown += 10; return render();
+      case 'page': { st.page = Number(arg) || 1; render(); return scrollTo({ top: $('tabs').getBoundingClientRect().top + scrollY - 64, behavior: 'instant' }); } // 알림판: 넘기면 목록 맨 위로
       case 'write': st.edit = st.edit ? null : {}; st.files = []; return render();
       case 'cancel': st.edit = null; st.files = []; return render();
       case 'zoom': return zoomOpen(arg);
@@ -318,8 +326,8 @@
   document.addEventListener('click', e => { const a = e.target.closest('a[href^="#"]'); if (!a || e.ctrlKey || e.metaKey || e.shiftKey) return; e.preventDefault(); go(a.getAttribute('href')); }, true);
   addEventListener('popstate', e => onRoute(e.state && typeof e.state.r === 'string' ? e.state.r : ''));
   function go(r) { if (r === route) return; history.pushState({ r }, '', location.pathname + location.search); onRoute(r); }
-  function onRoute(r) { route = r; seen[curH] = { y: curY, shown: st.shown }; curH = r; st.pageEdit = null;
-    const back = seen[curH]; st.shown = back ? back.shown : 10; st.edit = st.faqEdit = null; st.files = []; render();
+  function onRoute(r) { route = r; seen[curH] = { y: curY, shown: st.shown, page: st.page }; curH = r; st.pageEdit = null;
+    const back = seen[curH]; st.shown = back ? back.shown : 10; st.page = back ? back.page || 1 : 1; st.edit = st.faqEdit = null; st.files = []; render();
     const top = $('tabs').getBoundingClientRect().top + scrollY - 64;
     const jump = y => scrollTo({ top: y, behavior: 'instant' }); // 부드럽게 굴러가지 않고 그 자리에 바로
     if (back) jump(back.y); else if (hash().startsWith('p-') || scrollY > top) jump(top); // 처음 여는 글·메뉴는 메뉴 자리부터
