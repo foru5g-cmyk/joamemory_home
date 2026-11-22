@@ -176,13 +176,16 @@
       <h2>${p.icon ? `<u>${esc(p.icon)}</u>` : ''}${esc(p.title)}</h2>
       ${(p.tags || []).length ? `<div class="tags">${p.tags.map((t, k) => `<i class="t${k % 5}">${esc(t)}</i>`).join('')}</div>` : ''}
       ${p.body ? `<p>${linkify(p.body)}</p>` : ''}
-      ${(p.images || []).map(s => `<button type="button" class="full" data-act="zoom" data-arg="${esc(fresh[s] || s)}" aria-label="크게 보기"><img src="${esc(fresh[s] || s)}" alt="${esc(p.title)}" draggable="false"></button>`).join('')}
+      ${(p.images || []).map(s => (sp => sp ? (window.JoaMaker.init(), `<button type="button" class="full sf-live" data-act="zoom" data-arg="${esc(s)}" aria-label="크게 보기">${window.JoaMaker.noticeHtml(sp)}</button>`) : `<button type="button" class="full" data-act="zoom" data-arg="${esc(fresh[s] || s)}" aria-label="크게 보기"><img src="${esc(fresh[s] || s)}" alt="${esc(p.title)}" draggable="false"></button>`)(liveSpec(s))).join('')}
       ${owner() ? `<div class="tools"><button data-act="edit" data-arg="${esc(p.id)}">고치기</button><button data-act="pin" data-arg="${esc(p.id)}">${p.pin ? '고정 풀기' : '맨 위에 고정'}</button><button data-act="del" data-arg="${esc(p.id)}">지우기</button></div>` : ''}
-    </article>`;
+    </article>`; fitLive();
   }
   // shortcut: 칸 값 저장(specs) 전에 만든 알림판 그림 한 장은 글자를 여기 적어 둬요 · 그 그림을 다시 만들면 지워도 돼요
   const OLD_SPECS = { 'img/20261122-m7bva6-update.png': { kind: 'news', style: 'notice', ntag: '알려진 오류', nemo: '🐞', ntitle: '타임라인이 멈춰있어요', nsub: '기억은 잘 따라와요.', nwhen: '2026년 11월 22일 (일) · 오후 12:18' } };
-  const fitLive = () => main.querySelectorAll('.sf-live').forEach(el => { const nt = el.firstElementChild; if (nt) nt.style.zoom = el.clientWidth / 780; });
+  // 공지 판: 카드 너비에 맞추고, 글꼴 조각을 다 받은 뒤에 보여요(받는 사이 다른 글꼴로 떴다 바뀌며 글자가 움직이지 않게)
+  const liveSpec = src => { for (const p of data.POSTS) if ((p.images || []).includes(src)) { const sp = (p.specs || {})[src] || OLD_SPECS[src]; return sp?.style === 'notice' && window.JoaMaker?.noticeHtml ? { ...sp, fixed: p.fixed || '' } : null; } return null; };
+  const fitLive = () => main.querySelectorAll('.sf-live').forEach(el => { const nt = el.firstElementChild; if (!nt) return; nt.style.zoom = el.clientWidth / 780; if (el.dataset.ok) return;
+    const t = el.textContent, F = "'Pretendard Variable'"; Promise.race([Promise.all(['800 58px', '800 21px', '500 23px', '700 18px', '500 18px'].map(w => document.fonts ? document.fonts.load(w + ' ' + F, t) : 0)), new Promise(ok => setTimeout(ok, 1500))]).then(() => { el.dataset.ok = 1; el.classList.add('on'); }); });
   addEventListener('resize', () => fitLive());
   function render() { renderChrome(); const m = curMenu(), p = curPost(); p && !st.edit ? renderPost(p, m) : m.kind === 'faq' ? renderFaq() : m.kind === 'page' ? renderPage(m) : m.kind === 'cards' ? renderCards(m) : m.kind === 'stream' ? renderStream(m) : renderFeed(m); }
 
@@ -294,10 +297,11 @@
       rd.cancel().catch(() => {}); const m = t.match(/@version\s+([\w.\-]+)/); if (m) { st.ver = m[1]; renderChrome(); } } catch (_) {} }
   liveVersion();
   // 그림 크게 보기: 화면 가득 · 두 번 누르면 두 배로 · ✕나 바깥·Esc로 닫기
-  function zoomOpen(src) { const z = document.createElement('div'); z.className = 'zoom'; z.innerHTML = '<button type="button" class="zx" aria-label="닫기">✕</button><div class="zi"><img alt="" draggable="false"></div>'; z.querySelector('img').src = src; document.body.appendChild(z); document.documentElement.style.overflow = 'hidden';
-    const close = () => { z.remove(); document.documentElement.style.overflow = ''; removeEventListener('keydown', esc1); }, esc1 = e => { if (e.key === 'Escape') close(); }; addEventListener('keydown', esc1);
+  function zoomOpen(src) { const z = document.createElement('div'); z.className = 'zoom'; z.innerHTML = '<button type="button" class="zx" aria-label="닫기">✕</button><div class="zi"><img alt="" draggable="false"></div>'; const sp = liveSpec(src); if (sp) { z.querySelector('.zi').innerHTML = `<div class="sf-live on">${window.JoaMaker.noticeHtml(sp)}</div>`; } else z.querySelector('img').src = src; document.body.appendChild(z); document.documentElement.style.overflow = 'hidden';
+    const zfit = () => { const el = z.querySelector('.sf-live'); if (el && el.firstElementChild) el.firstElementChild.style.zoom = el.clientWidth / 780; }; zfit(); addEventListener('resize', zfit);
+    const close = () => { z.remove(); document.documentElement.style.overflow = ''; removeEventListener('keydown', esc1); removeEventListener('resize', zfit); }, esc1 = e => { if (e.key === 'Escape') close(); }; addEventListener('keydown', esc1);
     z.addEventListener('click', e => { if (e.target === z || e.target.closest('.zx')) close(); });
-    z.querySelector('img').addEventListener('dblclick', e => { z.classList.toggle('big'); e.preventDefault(); });
+    z.querySelector('.zi').addEventListener('dblclick', e => { z.classList.toggle('big'); zfit(); e.preventDefault(); });
     z.addEventListener('contextmenu', e => e.preventDefault()); }
   // 그림 주소를 쉽게 못 가져가게: 글 그림에서는 오른쪽 누르기·길게 누르기 메뉴와 끌기를 막아요(개발자 도구까지 막지는 못해요)
   document.addEventListener('contextmenu', e => { if (e.target.matches('main img')) e.preventDefault(); });

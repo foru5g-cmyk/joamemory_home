@@ -87,9 +87,9 @@
   .nt .tx { position:relative; max-width:440px; }
   .nt .tg { display:inline-block; background:#fff; font-weight:800; font-size:21px; padding:9px 20px; border-radius:99px; transform:rotate(-2deg); box-shadow:0 6px 16px #4a426614; }
   .nt h1 { font-size:58px; font-weight:800; letter-spacing:-2.2px; margin:26px 0 14px; color:#3a3350; line-height:1.16; }
-  .nt p { font-size:23px; font-weight:600; color:#4f4866; line-height:1.6; white-space:pre-wrap; }
+  .nt p { font-size:23px; font-weight:500; color:#6f6886; line-height:1.6; white-space:pre-wrap; }
   .nt .ft { position:absolute; left:50px; bottom:38px; display:flex; align-items:center; gap:10px; font-size:18px; font-weight:700; }
-  .nt .ft img { width:36px; height:36px; border-radius:11px; } .nt .ft i { font-style:normal; font-weight:600; margin-left:4px; }
+  .nt .ft img { width:36px; height:36px; border-radius:11px; } .nt .ft i { font-style:normal; font-weight:500; opacity:.8; margin-left:4px; }
   /* 만들기 창 */
   .mkd { border:0; border-radius:22px; padding:0; width:min(1080px, calc(100vw - 24px)); max-height:calc(100dvh - 24px); margin:auto; box-shadow:0 20px 60px #0003; overflow:hidden; }
   .mkd::backdrop { background:#0006; }
@@ -194,7 +194,7 @@
       ${e ? `<span class="em">${esc(e)}</span>` : ''}
       <div class="tx"><span class="tg" style="color:${col}">${esc(d.ntag || '공지')}</span>
       <h1>${esc(d.ntitle || '제목')}</h1>${d.nsub ? `<p>${esc(d.nsub)}</p>` : ''}</div>
-      <div class="ft" style="color:${mix(col, '#2f2a40', .6)}"><img src="${ntIcon(d.ntag)}" alt="">조아메모리${d.nwhen ? `<i>${esc(d.nwhen)}</i>` : ''}</div></div>`; }
+      <div class="ft" style="color:${mix(col, '#4a4266', .45)}"><img src="${ntIcon(d.ntag)}" alt="">조아메모리${d.nwhen ? `<i>${esc(d.nwhen)}</i>` : ''}</div></div>`; }
   // 공지 그림은 화면을 찍지 않고 캔버스에 바로 그려요(html2canvas는 흐림·그림자·SVG를 번지게 그려서) · 미리보기(noticeHtml)와 같은 자리·색
   async function noticeCanvas(d, S = 3) {
     const [, col, bg, emo] = NOTICE.find(x => x[0] === d.ntag) || [d.ntag, d.acc, mix(d.acc, '#ffffff', .8), ''], e = d.nemo == null ? emo : d.nemo;
@@ -223,11 +223,11 @@
     x.save(); x.shadowColor = '#4a426614'; x.shadowBlur = 16; x.shadowOffsetY = 6; x.fillStyle = '#fff'; x.beginPath(); x.roundRect(0, 0, tw, 39, 19.5); x.fill(); x.restore();
     x.fillStyle = col; x.fillText(tag, 20, 27); x.restore();
     let y = 46 + 39 + 26; font(800, 58); x.fillStyle = '#3a3350'; for (const l of tl) { x.fillText(l, TX, y + 52); y += 67; }
-    y += 14; font(600, 23); x.fillStyle = '#4f4866'; for (const l of sl) { x.fillText(l, TX, y + 26); y += 37; }
+    y += 14; font(500, 23); x.fillStyle = '#6f6886'; for (const l of sl) { x.fillText(l, TX, y + 26); y += 37; }
     // 아래: 아이콘 · 조아메모리 · 날짜
     const ic = await img(ntIcon(d.ntag)), fy = H - 38 - 36; if (ic) { x.save(); x.beginPath(); x.roundRect(TX, fy, 36, 36, 11); x.clip(); x.drawImage(ic, TX, fy, 36, 36); x.restore(); }
-    x.fillStyle = mix(col, '#2f2a40', .6); font(700, 18); x.fillText('조아메모리', TX + 46, fy + 24);
-    if (d.nwhen) { const wx = TX + 46 + x.measureText('조아메모리').width + 14; font(600, 18); x.fillText(d.nwhen, wx, fy + 24); }
+    x.fillStyle = mix(col, '#4a4266', .45); font(700, 18); x.fillText('조아메모리', TX + 46, fy + 24);
+    if (d.nwhen) { const wx = TX + 46 + x.measureText('조아메모리').width + 14; font(500, 18); x.globalAlpha = .8; x.fillText(d.nwhen, wx, fy + 24); x.globalAlpha = 1; }
     return new Promise((ok, no) => cv.toBlob(b => b ? ok(b) : no(new Error('그림을 못 만들었어요')), 'image/png'));
   }
   const pageHtml = d => d.style === 'notice' ? noticeHtml(d) : d.style === 'card' ? cardHtml(d) : d.kind === 'guide' ? guideHtml(d) : chatHtml(d);
