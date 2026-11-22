@@ -1,4 +1,4 @@
-window.JOA_POSTS_AT = 1795317464221;
+window.JOA_POSTS_AT = 1795317467580;
 window.JOA_POSTS = [
   {
     "id": "pmwr9hm21",
@@ -12,8 +12,7 @@ window.JOA_POSTS = [
       "img/20261122-gluzos-update.png"
     ],
     "pin": false,
-    "at": 1795317169897,
-    "fixed": "2026-11-22"
+    "at": 1795317169897
   },
   {
     "id": "p20261121",
