@@ -1,4 +1,4 @@
-window.JOA_FAQ_AT = 1795316479810;
+window.JOA_FAQ_AT = 1795318542093;
 window.JOA_FAQ = [
   {
     "id": "f45",
@@ -41,9 +41,10 @@ window.JOA_FAQ = [
   },
   {
     "id": "f41",
-    "cat": "처음",
     "q": "정리는 어떤 AI(모델)로 하는 게 좋아요?",
-    "a": "설정 › 정리 › AI에서 회사와 모델을 골라요. 처음엔 기본값(Gemini 3.8 Flash)으로 시작하면 돼요.\n\n■ 고르는 기준\n· 싸고 빠르게: Gemini Flash 계열, Claude Haiku\n· 꼼꼼하게: Claude Fable·Sonnet, Gemini 4 Carbon·Neon 같은 큰 모델 (더 비싸고 느려요)\n· 키 없이: ChatGPT 구독 연결, 또는 정리 창의 '다른 AI · 키 없이'(파일로 맡기기)\n\n■ 알아 두기\n· 모델마다 넣는 키가 달라요. Gemini 모델엔 구글 키, Claude 모델엔 Anthropic 키예요.\n· 무료 키는 하루 한도가 작고 바쁜 시간에 자주 실패해요.\n· 같은 회사라도 모델마다 안전 필터 기준이 달라서, 한 모델에서 막히면 다른 모델로 바꿔 보세요.\n· 커뮤·폰 같은 ETC는 설정에서 모델을 따로 고를 수 있어요."
+    "a": "설정 › 정리 › AI에서 회사와 모델을 골라요. 처음엔 기본값(Gemini 3.8 Flash)으로 시작하면 돼요.\n\n■ 고르는 기준\n· 싸고 빠르게: Gemini Flash 계열, Claude Haiku\n· 꼼꼼하게: Claude Fable·Sonnet, Gemini 4 Carbon·Neon 같은 큰 모델 (더 비싸고 느려요)\n· 키 없이: ChatGPT 구독 연결(GPT는 길게 쓰기 때문에 날짜로그가 과하게 길어질 수 있어요), 또는 정리 창의 '다른 AI · 키 없이'(파일로 맡기기)\n\n■ 알아 두기\n· 모델마다 넣는 키가 달라요. Gemini 모델엔 구글 키, Claude 모델엔 Anthropic 키예요.\n· 무료 키는 하루 한도가 작고 바쁜 시간에 자주 실패해요.\n· 같은 회사라도 모델마다 안전 필터 기준이 달라서, 한 모델에서 막히면 다른 모델로 바꿔 보세요.\n· 커뮤·폰 같은 ETC는 설정에서 모델을 따로 고를 수 있어요.",
+    "cat": "처음",
+    "pin": false
   },
   {
     "id": "f42",
