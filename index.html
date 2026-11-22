@@ -273,6 +273,7 @@
   .up[hidden] { display:grid !important; opacity:0; pointer-events:none; transform:translateY(8px); }
   .toast { position:fixed; left:50%; bottom:28px; transform:translateX(-50%); background:var(--ink); color:#fff; border-radius:99px; padding:11px 22px; font-size:15px; z-index:50; max-width:calc(100vw - 32px); }
 
+  @media (min-width:721px) { .tl { left:-72px; } } /* 컴: 날짜 칸만큼 왼쪽으로 · 글 칸이 화면 가운데 오게 */
   @media (max-width:720px) {
     .bar { padding:10px 14px; white-space:nowrap; } .bar .get { padding:5px 12px; font-size:12.5px; } .bar .r em { font-size:11.5px; } .bar .sep, #barMenu { display:none; } #barName { overflow:hidden; text-overflow:ellipsis; min-width:0; } /* 폰: 맨 위 줄이 두 줄로 안 넘어가게 */
     .page { padding:8px 14px 80px; }
