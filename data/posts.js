@@ -1,5 +1,61 @@
-window.JOA_POSTS_AT = 1795320756660;
+window.JOA_POSTS_AT = 1795328002070;
 window.JOA_POSTS = [
+  {
+    "id": "pmwrfxs7q",
+    "menu": "mmwr932h5",
+    "date": "2026-11-22",
+    "icon": "",
+    "title": "",
+    "body": "",
+    "tags": [],
+    "images": [
+      "img/20261122-cll4li-update.png"
+    ],
+    "specs": {
+      "img/20261122-cll4li-update.png": {
+        "kind": "news",
+        "ver": "5.8.63",
+        "bg": "#f1e6c2",
+        "acc": "#c9971a",
+        "av": "",
+        "pill": "11월 22일 소식",
+        "head": "조아메모리",
+        "sub": "업데이트",
+        "bubbles": "",
+        "me": "",
+        "cards": "",
+        "foot": "",
+        "title": "",
+        "lead": "",
+        "steps": [
+          {
+            "t": "",
+            "p": "",
+            "img": ""
+          },
+          {
+            "t": "",
+            "p": "",
+            "img": ""
+          }
+        ],
+        "tips": "",
+        "errs": "",
+        "style": "notice",
+        "ntag": "알려진 오류",
+        "nwhen": "2026년 11월 22일 (일) · 오후 3:07",
+        "ntitle": "수동 클라우드 백업(아이폰)",
+        "nsub": "수동으로 클라우드 백업 시 오류가 떠요. (턴 수가 큰 방만 해당)",
+        "cicon": "",
+        "ctitle": "5.8.63 업데이트",
+        "csub": "11월 22일 · 조아메모리",
+        "citems": "",
+        "ctip": ""
+      }
+    },
+    "pin": false,
+    "at": 1795328002070
+  },
   {
     "id": "pmwrapne5",
     "menu": "mmwr932h5",
