@@ -244,7 +244,7 @@
       case 'pin': return work(async () => { const l = data.POSTS.map(p => p.id === arg ? { ...p, pin: !p.pin } : p); await saveData('POSTS', l, '고정 바꿈'); }, '저장했어요');
       case 'del': { if (!confirm('"' + post().title + '" 글을 지울까요?')) return; const back = '#' + encodeURIComponent(post().menu); return work(async () => { await saveData('POSTS', data.POSTS.filter(p => p.id !== arg), '글 지움'); if (hash().startsWith('p-')) go(back); }, '지웠어요'); }
       case 'faqcat': st.faqCat = arg; return render();
-      case 'faqnew': st.faqEdit = {}; return render();
+      case 'faqnew': st.faqEdit = st.faqCat ? { cat: st.faqCat } : {}; return render(); // 고른 갈래(예: 기억)를 보고 있었으면 새 질문도 그 갈래로
       case 'faqcancel': st.faqEdit = null; return render();
       case 'faqedit': st.faqEdit = { ...q() }; render(); return main.querySelector('form')?.scrollIntoView({ block: 'center' });
       case 'faqpin': return work(async () => { await saveData('FAQ', data.FAQ.map(f => f.id === arg ? { ...f, pin: !f.pin } : f), '질문 고정 바꿈'); }, '저장했어요');
