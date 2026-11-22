@@ -1,5 +1,66 @@
-window.JOA_POSTS_AT = 1795333272867;
+window.JOA_POSTS_AT = 1795349251653;
 window.JOA_POSTS = [
+  {
+    "id": "pmwrsl8hw",
+    "menu": "mmwr8eeje",
+    "date": "2026-11-22",
+    "icon": "",
+    "title": "",
+    "body": "",
+    "tags": [],
+    "images": [
+      "img/20261122-fjy2eq-update.png"
+    ],
+    "specs": {
+      "img/20261122-fjy2eq-update.png": {
+        "kind": "news",
+        "ver": "5.8.69",
+        "bg": "#dcdde2",
+        "acc": "#5f6070",
+        "av": "",
+        "pill": "11월 22일 소식",
+        "head": "조아메모리",
+        "sub": "업데이트",
+        "bubbles": "",
+        "me": "",
+        "cards": "",
+        "foot": "",
+        "title": "",
+        "lead": "",
+        "steps": [
+          {
+            "t": "",
+            "p": "",
+            "img": ""
+          },
+          {
+            "t": "",
+            "p": "",
+            "img": ""
+          }
+        ],
+        "tips": "",
+        "errs": "",
+        "style": "notice",
+        "ntag": "권장 사항",
+        "nwhen": "2026년 11월 22일 (일) · 오후 9:04",
+        "ntitle": "클라우드 백업",
+        "nsub": "설정 › 백업 › 구글 드라이브 연결하기\n⚠️ 인터넷(사파리) 기록을 지우면 기억이 모두 사라져요! 클라우드는 필수로 연결해 주세요!",
+        "cicon": "",
+        "ctitle": "5.8.69 업데이트",
+        "csub": "11월 22일 · 조아메모리",
+        "citems": "",
+        "ctip": "",
+        "nlook": "sticker",
+        "ncol": "#a9c7a0",
+        "nemo": "☁️",
+        "nface": "메롱",
+        "nopen": true
+      }
+    },
+    "pin": false,
+    "at": 1795349251652
+  },
   {
     "id": "pmwrj269q",
     "menu": "mmwr932h5",
