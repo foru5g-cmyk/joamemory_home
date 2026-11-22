@@ -220,11 +220,11 @@
     x.save(); x.shadowColor = '#4a426614'; x.shadowBlur = 16; x.shadowOffsetY = 6; x.fillStyle = '#fff'; x.beginPath(); x.roundRect(0, 0, tw, 39, 19.5); x.fill(); x.restore();
     x.fillStyle = col; x.fillText(tag, 20, 27); x.restore();
     let y = 46 + 39 + 26; font(800, 58); x.fillStyle = '#3a3350'; for (const l of tl) { x.fillText(l, TX, y + 52); y += 67; }
-    y += 14; font(500, 23); x.fillStyle = '#6f6886'; for (const l of sl) { x.fillText(l, TX, y + 26); y += 37; }
+    y += 14; font(600, 23); x.fillStyle = '#4f4866'; for (const l of sl) { x.fillText(l, TX, y + 26); y += 37; }
     // 아래: 아이콘 · 조아메모리 · 날짜
     const ic = await img('img/icon.png'), fy = H - 38 - 36; if (ic) { x.save(); x.beginPath(); x.roundRect(TX, fy, 36, 36, 11); x.clip(); x.drawImage(ic, TX, fy, 36, 36); x.restore(); }
-    x.fillStyle = mix(col, '#4a4266', .45); font(700, 18); x.fillText('조아메모리', TX + 46, fy + 24);
-    if (d.nwhen) { const wx = TX + 46 + x.measureText('조아메모리').width + 14; font(500, 18); x.globalAlpha = .8; x.fillText(d.nwhen, wx, fy + 24); x.globalAlpha = 1; }
+    x.fillStyle = mix(col, '#2f2a40', .6); font(700, 18); x.fillText('조아메모리', TX + 46, fy + 24);
+    if (d.nwhen) { const wx = TX + 46 + x.measureText('조아메모리').width + 14; font(600, 18); x.fillText(d.nwhen, wx, fy + 24); }
     return new Promise((ok, no) => cv.toBlob(b => b ? ok(b) : no(new Error('그림을 못 만들었어요')), 'image/png'));
   }
   const pageHtml = d => d.style === 'notice' ? noticeHtml(d) : d.style === 'card' ? cardHtml(d) : d.kind === 'guide' ? guideHtml(d) : chatHtml(d);

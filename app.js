@@ -179,6 +179,8 @@
       ${owner() ? `<div class="tools"><button data-act="edit" data-arg="${esc(p.id)}">고치기</button><button data-act="pin" data-arg="${esc(p.id)}">${p.pin ? '고정 풀기' : '맨 위에 고정'}</button><button data-act="del" data-arg="${esc(p.id)}">지우기</button></div>` : ''}
     </article>`;
   }
+  // shortcut: 칸 값 저장(specs) 전에 만든 알림판 그림 한 장은 글자를 여기 적어 둬요 · 그 그림을 다시 만들면 지워도 돼요
+  const OLD_SPECS = { 'img/20261122-m7bva6-update.png': { kind: 'news', style: 'notice', ntag: '알려진 오류', nemo: '🐞', ntitle: '타임라인이 멈춰있어요', nsub: '기억은 잘 따라와요.', nwhen: '2026년 11월 22일 (일) · 오후 12:18' } };
   function render() { renderChrome(); const m = curMenu(), p = curPost(); p && !st.edit ? renderPost(p, m) : m.kind === 'faq' ? renderFaq() : m.kind === 'page' ? renderPage(m) : m.kind === 'cards' ? renderCards(m) : m.kind === 'stream' ? renderStream(m) : renderFeed(m); }
 
   // ── 주인: 로그인 · 설정 ──
@@ -228,7 +230,7 @@
           const e = st.edit; if ((site().menus.find(x => x.id === e.menu) || {}).kind === 'stream') { render(); return toast('그림을 붙였어요 · 올리기를 누르면 같이 올라가요'); } if (!e.title) e.title = r.title; if (!e.body) e.body = r.body; if (!e.icon) e.icon = r.icon; e.tags = [...new Set([...(r.tags || []), ...(e.tags || [])])]; render(); toast('그림을 붙였어요 · 올리기를 누르면 같이 올라가요'); }); }
       case 'edit': st.edit = { ...post() }; st.files = [...(st.edit.images || [])]; if (hash().startsWith('p-')) go('#' + encodeURIComponent(st.edit.menu)); render(); return main.querySelector('.new, .cwrite')?.scrollIntoView({ block: 'center' });
       case 'pick': return b.parentElement.querySelector('[data-pick]').click();
-      case 'remake': { if (!window.JoaMaker) return; keepForm(); const i = Number(arg), f = st.files[i], spec = (typeof f === 'string' ? (st.edit.specs || {})[f] : f?.spec) || { style: 'notice' }; // 칸 값이 없는 예전 그림은 공지 모양 새 판으로 열어 이 자리에 바꿔 넣어요 // 그림 만들기로 만든 그림을 그때 칸 값으로 다시 열어 고쳐요
+      case 'remake': { if (!window.JoaMaker) return; keepForm(); const i = Number(arg), f = st.files[i], spec = (typeof f === 'string' ? (st.edit.specs || {})[f] || OLD_SPECS[f] : f?.spec) || { style: 'notice' }; // 칸 값이 없는 예전 그림은 공지 모양 새 판으로 열어 이 자리에 바꿔 넣어요 // 그림 만들기로 만든 그림을 그때 칸 값으로 다시 열어 고쳐요
         return window.JoaMaker.open({ version: st.ver || site().version, date: st.edit.date || today(), kind: spec.kind || (st.edit.menu === 'guide' ? 'guide' : 'news'), spec }, r => { if (!st.edit) return; st.files[i] = { file: r.file, url: URL.createObjectURL(r.file), spec: r.spec }; render(); toast('그림을 고쳤어요 · 올리기를 누르면 바뀌어요'); }); }
       case 'rmfile': st.files.splice(Number(arg), 1); return keepForm();
       case 'fixed': return work(async () => { const l = data.POSTS.map(p => p.id === arg ? (p.fixed ? (({ fixed, ...q }) => q)(p) : { ...p, fixed: today() }) : p); await saveData('POSTS', l, '수정 완료 표시'); }, '저장했어요'); // 알려진 오류를 고치면 카드에 '수정 완료 · 날짜'
