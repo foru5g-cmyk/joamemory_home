@@ -1,4 +1,4 @@
-window.JOA_POSTS_AT = 1795333245758;
+window.JOA_POSTS_AT = 1795333272867;
 window.JOA_POSTS = [
   {
     "id": "pmwrj269q",
@@ -54,7 +54,9 @@ window.JOA_POSTS = [
       }
     },
     "pin": false,
-    "at": 1795333245758
+    "at": 1795333245758,
+    "fixed": "2026-11-22",
+    "fixedVer": "5.8.67"
   },
   {
     "id": "pmwrfxs7q",
