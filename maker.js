@@ -99,7 +99,7 @@
   .nt > img { position:absolute; }
   .nt .sp { position:absolute; color:#fff; line-height:1; }
   .nt .em { position:absolute; right:196px; bottom:150px; width:96px; height:96px; border-radius:50%; background:#fff; font-size:52px; line-height:1; display:flex; align-items:center; justify-content:center; box-shadow:0 10px 24px #4a426622; }
-  .nt.fixed { padding-bottom:132px; } .nt.fixed .ft { bottom:74px; } .nt .fx { position:absolute; left:50px; bottom:30px; display:inline-flex; align-items:center; gap:6px; background:#ffffffcc; border-radius:99px; padding:4px 14px 4px 5px; font-size:15px; font-weight:800; color:#4fa877; white-space:nowrap; } .nt .fx img { width:24px; height:24px; } .nt .fx b { font-size:13px; font-weight:600; color:#8d88a3; margin-left:2px; } /* 수정 완료: 아래 조아메모리 줄 밑에 작게(폰에서 고양이와 안 겹치게) */
+  .nt .st, .lk .st { position:absolute; z-index:2; width:128px; height:124px; transform:rotate(-6deg); } .nt .st img, .lk .st img { position:absolute; left:14px; top:0; width:100px; } .nt .st span, .lk .st span { position:absolute; left:50%; bottom:0; border:2.5px solid #fff; transform:translateX(-50%) rotate(-4deg); white-space:nowrap; padding:4px 10px; border-radius:8px; color:#fff; font-size:15px; font-weight:800; line-height:1.15; text-align:center; box-shadow:0 4px 8px #4a426618; } .nt .st b, .lk .st b { display:block; font-size:10.5px; font-weight:700; opacity:.92; } .nt .st { right:78px; top:92px; } /* 수정 완료: 동글 강아지 + 리본 */
   .nt .tx { position:relative; max-width:440px; }
   .nt .tg { display:inline-block; background:#fff; font-weight:800; font-size:21px; padding:9px 20px; border-radius:99px; transform:rotate(-2deg); box-shadow:0 6px 16px #4a426614; }
   .nt h1 { font-size:58px; font-weight:800; letter-spacing:-2.2px; margin:26px 0 14px; color:#3a3350; line-height:1.16; }
@@ -112,21 +112,19 @@
   .lk p { font-size:22px; font-weight:500; color:#6f6886; line-height:1.55; white-space:pre-wrap; word-break:keep-all; }
   .lk .ft { font-size:18px; font-weight:700; }
   .lk .em { width:92px; height:92px; border-radius:50%; background:#fff; display:flex; align-items:center; justify-content:center; font-size:46px; line-height:1; box-shadow:0 8px 20px #4a426618; }
-  .lk .st { z-index:2; width:108px; height:108px; border-radius:50%; background:#fff; border:3px dashed #7cc79a; display:flex; flex-direction:column; align-items:center; justify-content:center; font-size:20px; font-weight:800; color:#4fa877; transform:rotate(-14deg); box-shadow:0 6px 14px #4a426614; } .lk .st b { font-size:13px; font-weight:600; color:#8d88a3; margin-top:2px; }
   .lk-memo { padding:74px 150px 62px 64px; background-image:radial-gradient(#ffffff 2.2px, transparent 2.4px); background-size:26px 26px; }
   .lk-memo .pad { position:relative; z-index:1; width:560px; min-height:290px; background:#fff; border-radius:34px; padding:38px 40px 34px; transform:rotate(-2deg); } .lk-memo .pad > * { max-width:440px; } .lk-memo .ft { position:static; margin-top:20px; }
   .lk-memo .tape { left:300px; top:52px; width:130px; height:38px; border-radius:6px; transform:rotate(-6deg); z-index:2; } .lk-memo .cat { right:40px; top:30px; width:210px; transform:rotate(12deg); z-index:2; } .lk-memo .em { right:140px; bottom:70px; transform:rotate(8deg); z-index:2; } .lk-memo .st { left:430px; top:30px; }
-  .lk-bubble { height:420px; } .lk-bubble .bb { left:52px; top:24px; width:620px; height:420px; } .lk-bubble .bw { left:40px; top:12px; width:620px; height:420px; }
-  .lk-bubble .pad { position:absolute; left:150px; top:132px; width:400px; text-align:center; } .lk-bubble h1 { font-size:44px; } .lk-bubble p { font-size:20px; display:-webkit-box; -webkit-box-orient:vertical; -webkit-line-clamp:3; overflow:hidden; }
-  .lk-bubble .cat { right:30px; bottom:24px; width:140px; transform:rotate(10deg); } .lk-bubble .em { right:44px; top:40px; } .lk-bubble .ft { left:34px; bottom:26px; } .lk-bubble .st { right:40px; top:150px; }
   .lk-window { padding:46px 120px 70px 60px; background-image:linear-gradient(#ffffff66 1px, transparent 1px), linear-gradient(90deg, #ffffff66 1px, transparent 1px); background-size:30px 30px; }
   .lk-window .pad { position:relative; width:600px; min-height:300px; background:#fff; border-radius:20px; border:3px solid #3a3350; overflow:hidden; }
-  .lk-window .bar { height:46px; border-bottom:3px solid #3a3350; display:flex; align-items:center; gap:8px; padding:0 16px; font-weight:800; font-size:17px; } .lk-window .bar i { width:15px; height:15px; border-radius:50%; border:2px solid #3a3350; background:#f2a7b8; } .lk-window .bar i + i { background:#f2cf7a; } .lk-window .bar i + i + i { background:#9fd5a8; } .lk-window .bar span { margin-left:8px; }
+  .lk-window .bar { border-radius:17px 17px 0 0; height:46px; border-bottom:3px solid #3a3350; display:flex; align-items:center; gap:8px; padding:0 16px; font-weight:800; font-size:17px; } .lk-window .bar i { width:15px; height:15px; border-radius:50%; border:2px solid #3a3350; background:#f2a7b8; } .lk-window .bar i + i { background:#f2cf7a; } .lk-window .bar i + i + i { background:#9fd5a8; } .lk-window .bar span { margin-left:8px; }
   .lk-window .in { padding:26px 34px 30px; } .lk-window .in > * { max-width:440px; } .lk-window .cat { right:26px; bottom:-20px; width:190px; transform:rotate(-8deg); } .lk-window .em { right:40px; top:40px; } .lk-window .ft { left:62px; bottom:24px; color:#3a3350aa !important; } .lk-window .st { right:22px; top:128px; }
   .lk-sign { padding:20px 140px 150px; background-image:linear-gradient(180deg, transparent, #ffffff); text-align:center; }
   .lk-sign .pad { position:relative; z-index:1; background:#fff; border:4px solid; border-radius:26px; padding:24px 30px 28px; box-shadow:0 10px 24px #4a42661a; transform:rotate(-1.5deg); } .lk-sign .pad > p { max-width:430px; margin:0 auto; }
   .lk-sign .cat { left:296px; bottom:-34px; width:190px; } .lk-sign .em { left:50px; bottom:110px; transform:rotate(-12deg); } .lk-sign .ft { right:30px; bottom:24px; } .lk-sign .st { right:40px; top:18px; }
-  .lk-sticker { padding:52px 220px 64px 52px; }
+  .lk-sticker { padding:52px 220px 64px 52px; } .lk-sticker > .sk { position:absolute; z-index:2; display:flex; align-items:center; justify-content:center; background:#fff; border-radius:50%; box-shadow:0 4px 10px #4a426618; line-height:1; } .lk-sticker .sk img { width:78%; }
+  .lk-sticker .s1 { width:66px; height:66px; left:250px; top:12px; transform:rotate(-14deg); } .lk-sticker .s2 { width:62px; height:62px; right:18px; bottom:16px; transform:rotate(12deg); } .lk-sticker .s3 { width:60px; height:60px; left:16px; bottom:16px; transform:rotate(-10deg); } .lk-sticker .s4 { width:54px; height:54px; right:226px; bottom:14px; transform:rotate(8deg); }
+  .lk-sticker .t1 { width:44px; height:44px; font-size:26px; right:20px; top:20px; transform:rotate(14deg); } .lk-sticker .t2 { width:40px; height:40px; font-size:22px; right:172px; top:10px; transform:rotate(-10deg); } .lk-sticker .t3 { width:38px; height:38px; font-size:22px; left:22px; top:18px; } .lk-sticker .t4 { width:36px; height:36px; font-size:19px; left:380px; bottom:14px; transform:rotate(-12deg); }
   .lk-sticker .pad { position:relative; min-height:296px; border:10px solid #fff; border-radius:60px 60px 60px 18px; padding:34px 40px; box-shadow:0 12px 26px #4a42661c; transform:rotate(-3deg); }
   .lk-sticker .cc { right:40px; top:40px; width:170px; height:170px; border-radius:50%; background:#fff; display:grid; place-items:center; box-shadow:0 8px 18px #4a426618; transform:rotate(8deg); } .lk-sticker .cc img { width:130px; }
   .lk-sticker .em { right:96px; bottom:44px; border-radius:24px; transform:rotate(-10deg); } .lk-sticker .ft { right:34px; top:236px; padding:8px 16px; border-radius:99px; background:#fff; box-shadow:0 6px 14px #4a426614; transform:rotate(6deg); } .lk-sticker .st { left:440px; top:22px; }
@@ -263,40 +261,50 @@
       '졸림': x => { bar(x, 38, 49); bar(x, 62, 49); blob(x, 50, 57, 2.4, 2.4, '#fff'); }, '메롱': x => { arc(x, 38, 49); dot(x, 62, 48); smile(x); blob(x, 52, 60, 3.6, 4.4, '#ff8fab'); },
       '울먹': x => { dot(x, 38, 48, 4.6); dot(x, 62, 48, 4.6); blob(x, 36, 56, 2, 3.2, '#bfe3ff'); x.beginPath(); x.moveTo(45, 58); x.quadraticCurveTo(50, 54, 55, 58); st(x); } };
   })();
+  const dogPng = c => catCache['dog' + c] || (catCache['dog' + c] = (() => { const cv = document.createElement('canvas'); cv.width = cv.height = 600; const x = cv.getContext('2d'); x.scale(6, 6);
+    const ear = new Path2D(), head = new Path2D(); for (const sd of [-1, 1]) ear.ellipse(50 + sd * 34, 40, 11, 15, sd * -0.5, 0, 7); head.ellipse(50, 52, 38, 32, 0, 0, 7); head.moveTo(30, 76); head.lineTo(26, 92); head.lineTo(44, 80); head.closePath();
+    x.strokeStyle = '#fff'; x.lineWidth = 7; x.lineJoin = 'round'; x.stroke(ear); x.stroke(head); // 흰 테두리(스티커처럼 티 나게)
+    x.fillStyle = mix(c, '#7a6a9a', .14); x.fill(ear); x.fillStyle = c; x.fill(head);
+    x.fillStyle = '#ffb3c7'; for (const cx of [31, 69]) { x.beginPath(); x.ellipse(cx, 62, 5.5, 3.6, 0, 0, 7); x.fill(); }
+    x.fillStyle = '#fff'; x.strokeStyle = '#fff'; x.lineCap = 'round'; for (const cx of [39, 61]) { x.beginPath(); x.arc(cx, 55, 4.6, 0, 7); x.fill(); }
+    x.beginPath(); x.ellipse(50, 60, 2.6, 2, 0, 0, 7); x.fill(); x.lineWidth = 2.4; x.beginPath(); x.moveTo(46, 63.5); x.quadraticCurveTo(48, 66, 50, 64); x.quadraticCurveTo(52, 66, 54, 63.5); x.stroke();
+    return cv.toDataURL('image/png'); })());
+  const fixedHtml = (d, c0) => (c => d.fixed ? `<div class="st"><img alt="" src="${dogPng(c)}"><span style="background:${c}">고쳤어요 ✓<b>${d.fixedVer ? esc(d.fixedVer) + ' · ' : ''}${esc((f => +f[1] + '.' + +f[2])(String(d.fixed).split('-')))}</b></span></div>` : '')('#86cfa3'); // 늘 같은 초록(고쳤다 = 초록)
   const catPng = (c, face = '기본') => catCache[c + face] || (catCache[c + face] = (() => { const cv = document.createElement('canvas'); cv.width = cv.height = 800; const x = cv.getContext('2d'); x.scale(8, 8);
     x.fillStyle = c; x.fill(new Path2D(CAT_PATH)); if (!face) return cv.toDataURL('image/png');
     x.fillStyle = '#ffb3c7'; for (const cx of [28, 72]) { x.beginPath(); x.ellipse(cx, 57, 5.5, 3.4, 0, 0, 7); x.fill(); }
     (FACES[face] || FACES['기본'])(x); return cv.toDataURL('image/png'); })());
   // 포스터 말고 다른 모양들(메모지·말풍선·창·팻말·스티커) · 알림판에선 화면에 바로 그리고, 그림 받기는 html2canvas로 찍어요
-  const LOOKS = [['poster', '🖼️ 포스터'], ['memo', '📝 메모지'], ['bubble', '💬 말풍선'], ['window', '🪟 창'], ['sign', '🪧 팻말'], ['sticker', '🌟 스티커']];
+  const LOOKS = [['poster', '🖼️ 포스터'], ['memo', '📝 메모지'], ['window', '🪟 창'], ['sign', '🪧 팻말'], ['sticker', '🌟 스티커']];
   const NT_FACE = { '알려진 오류': '울먹', '긴급 공지': '놀람', '해결 완료': '반짝', '권장 사항': '윙크', '업데이트 예고': '행복', '점검 안내': '졸림', '알림': '기본' };
-  const LOOK_FACE = { memo: '기본', bubble: '행복', window: '윙크', sign: '반짝', sticker: '기본' };
+  const LOOK_FACE = { memo: '기본', window: '윙크', sign: '반짝', sticker: '기본' };
   const ntFace = d => d.nface || (d.nlook && d.nlook !== 'poster' ? NT_FACE[d.ntag] || LOOK_FACE[d.nlook] : '기본');
   const shortWhen = w => (m => m ? `${m[1]}월 ${m[2]}일` : '')(String(w || '').match(/(\d+)월 (\d+)일/));
+  // 스티커 모양에 다닥다닥 붙는 작은 스티커들(고양이 얼굴·별·하트) · [색, 얼굴, 자리 클래스]
+  const STK = [['#f2a7b8', '하트눈', 's1'], ['#9fd5a8', '윙크', 's2'], ['#f2cf7a', '행복', 's3'], ['#9dbdf0', '메롱', 's4'], ['#f2cf7a', '', 't1 ★'], ['#f2a7b8', '', 't2 ♥'], ['#b8a6f0', '', 't3 ✦'], ['#9fd5a8', '', 't4 ♥']];
   function lookHtml(d) { const [, col0, bg, emo] = ntPal(d), e = d.nemo == null ? emo : d.nemo, col = d.ncol || mix(col0, '#ffffff', .22), face = ntFace(d), L = d.nlook;
     const tg = `<span class="tg" style="background:${col}">${esc(d.ntag || '공지')}</span>`, h1 = `<h1>${esc(d.ntitle || '제목')}</h1>`, p = d.nsub ? `<p>${esc(d.nsub)}</p>` : '', when = shortWhen(d.nwhen);
     const ft = `<div class="ft" style="color:${col}">♡ 조아메모리${when ? ' · ' + when : ''}</div>`;
-    const fx = d.fixed ? `<div class="st">고쳤어요!<b>${d.fixedVer ? esc(d.fixedVer) + ' · ' : ''}${esc((f => +f[1] + '.' + +f[2])(String(d.fixed).split('-')))}</b></div>` : '';
+    const fx = fixedHtml(d, col);
     const em = e ? `<span class="em">${esc(e)}</span>` : '', cat = `<img class="cat" alt="" src="${catPng(col, face)}">`;
     const body = {
       memo: `<i class="tape" style="background:${col}88"></i><div class="pad" style="box-shadow:0 14px 0 ${col}55,0 18px 40px #4a426618">${tg}${h1}${p}${ft}</div>${cat}${em}`,
-      bubble: `<img class="bb" alt="" src="${catPng(mix(col, '#ffffff', .55), '')}"><img class="bw" alt="" src="${catPng('#ffffff', '')}"><div class="pad">${tg}${h1}${p}</div>${cat}${em}${ft}`,
       window: `<div class="pad" style="box-shadow:10px 10px 0 ${col}"><div class="bar" style="background:${col}55"><i></i><i></i><i></i><span>joamemory.txt</span></div><div class="in">${tg}${h1}${p}</div></div>${cat}${em}${ft}`,
       sign: `<div class="pad" style="border-color:${col}">${tg}${h1}${p}</div>${cat}${em}${ft}`,
-      sticker: `<div class="pad" style="background:${mix(col, '#ffffff', .78)}">${tg}${h1}${p}</div><div class="cc">${cat}</div>${em}${ft}`,
+      sticker: `<div class="pad" style="background:${mix(col, '#ffffff', .78)}">${tg}${h1}${p}</div><div class="cc">${cat}</div>${em}${ft}${STK.map(([c, f, k]) => f ? `<span class="sk ${k}"><img alt="" src="${catPng(c, f)}"></span>` : `<span class="sk ${k}" style="color:${c}">${esc(k.split(' ')[1])}</span>`).join('')}`,
     }[L];
     return `<div class="lk lk-${L}" style="background-color:${bg}">${body}${fx}</div>`; }
   function noticeHtml(d) { if (d.nlook && d.nlook !== 'poster' && LOOK_FACE[d.nlook]) return lookHtml(d); const [, col, bg, emo] = ntPal(d), e = d.nemo == null ? emo : d.nemo;
     const cat = (c, s) => `<img style="${s}" alt="" src="${catPng(c)}">`;
     const pals = ['#b7a6f2', '#f7b8cf', '#a9d3ee', '#f6d48a', '#a8dcc0'].filter(c => mix(c, col, .5) !== c), k = Math.max(0, NOTICE.findIndex(x => x[0] === d.ntag));
-    return `<div class="nt${d.fixed ? ' fixed' : ''}" style="background:linear-gradient(140deg,${bg},${mix(bg, '#ffffff', .45)})">
+    return `<div class="nt" style="background:linear-gradient(140deg,${bg},${mix(bg, '#ffffff', .45)})">
       <span class="sp" style="left:392px;top:36px;font-size:30px">✦</span><span class="sp" style="left:560px;top:150px;font-size:20px">✦</span><span class="sp" style="left:330px;top:318px;font-size:22px">✦</span><span class="sp" style="left:716px;top:60px;font-size:16px">✦</span>
       ${cat(pals[k % pals.length], 'right:226px;top:40px;width:64px;transform:rotate(-12deg)') + cat(pals[(k + 2) % pals.length], 'right:34px;top:26px;width:86px;transform:rotate(10deg)')}
       <img style="right:22px;bottom:-34px;width:250px;transform:rotate(-7deg)" alt="" src="${catPng(mix(col, '#ffffff', .28), ntFace(d))}">
       ${e ? `<span class="em">${esc(e)}</span>` : ''}
       <div class="tx"><span class="tg" style="color:${col}">${esc(d.ntag || '공지')}</span>
       <h1>${esc(d.ntitle || '제목')}</h1>${d.nsub ? `<p>${esc(d.nsub)}</p>` : ''}</div>
-      <div class="ft" style="color:${mix(col, '#4a4266', .45)}"><img src="${ntIcon(d)}" alt="">조아메모리${d.nwhen ? `<i>${esc(d.nwhen)}</i>` : ''}</div>${d.fixed ? `<span class="fx"><img src="${catPng('#8fd3b0')}" alt="">고쳤어요!<b>${d.fixedVer ? esc(d.fixedVer) + ' · ' : ''}${esc((f => +f[1] + '.' + +f[2])(String(d.fixed).split('-')))}</b></span>` : ''}</div>`; }
+      <div class="ft" style="color:${mix(col, '#4a4266', .45)}"><img src="${ntIcon(d)}" alt="">조아메모리${d.nwhen ? `<i>${esc(d.nwhen)}</i>` : ''}</div>${fixedHtml(d, mix(col, '#ffffff', .3))}</div>`; }
   // 공지 그림은 화면을 찍지 않고 캔버스에 바로 그려요(html2canvas는 흐림·그림자·SVG를 번지게 그려서) · 미리보기(noticeHtml)와 같은 자리·색
   async function noticeCanvas(d, S = 3) {
     const [, col, bg, emo] = ntPal(d), e = d.nemo == null ? emo : d.nemo;
