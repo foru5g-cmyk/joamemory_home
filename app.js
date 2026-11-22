@@ -86,7 +86,7 @@
         <input class="dt" type="date" name="date" required value="${esc(p.date || today())}" aria-label="날짜">
         <input class="grow" name="tags" value="${esc((p.tags || []).join(', '))}" placeholder="꼬리표 (쉼표로 나눠요)"></div>
       <div class="pv">${st.files.map((f, i) => `<span><img src="${esc(typeof f === 'string' ? (fresh[f] || f) : f.url)}" alt=""><button type="button" class="re" data-act="remake" data-arg="${i}" aria-label="그림 다시 만들기">✏️</button><button type="button" data-act="rmfile" data-arg="${i}" aria-label="그림 빼기">✕</button></span>`).join('')}</div>
-      <div class="act"><label class="note"><input type="file" accept="image/*" multiple data-pick hidden><button type="button" class="btn ghost" data-act="pick">🖼️ 그림 고르기</button><span class="tip"> 끌어다 놓거나 붙여 넣어도 돼요</span></label>
+      <div class="act"><label class="note"><input type="file" accept="image/*" multiple data-pick hidden><button type="button" class="btn ghost" data-act="pick">🖼️ 그림 고르기</button></label>
         <button type="button" class="btn ghost" data-act="maker"${dis()}>🎨 그림 만들기</button><button type="button" class="btn ghost" data-act="cancel"${dis()}>닫기</button><button class="btn"${dis()}>${st.busy ? '올리는 중…' : p.id ? '고친 대로 올리기' : '올리기'}</button></div>
     </form>`;
   }

@@ -15,6 +15,7 @@
   html { scroll-behavior:smooth; scrollbar-gutter:stable; overflow-y:scroll; } /* 목록이 짧아져 스크롤바가 사라져도 화면이 옆으로 밀리지 않게 */
   /* 글꼴이 늦게 와서 글자 크기가 바뀌어 보이지 않게: 글꼴이 오거나 0.8초가 지나면 보여 줘요 */
   html.wait body { opacity:0; } body { transition:opacity .15s; }
+  html { -webkit-text-size-adjust:100%; text-size-adjust:100%; } /* 아이폰이 780 판 글씨를 멋대로 키워 카드 밖으로 넘치지 않게 */
   body { background:#fff; color:var(--ink); font-family:'Pretendard Variable','Malgun Gothic','Apple SD Gothic Neo',sans-serif; font-size:17px; line-height:1.65; word-break:keep-all; letter-spacing:-.2px; }
   button, input, textarea, select { font:inherit; color:inherit; letter-spacing:inherit; }
   button { cursor:pointer; border:0; background:none; }
@@ -139,7 +140,7 @@
   .btn { background:var(--ink); color:#fff; font-weight:600; border-radius:99px; padding:10px 22px; font-size:15px; }
   .btn.ghost { background:#fff; color:var(--ink); border:1px solid var(--line); }
   .btn[disabled] { opacity:.5; cursor:default; }
-  .note { font-size:14px; color:var(--sub); margin-right:auto; }
+  .note { font-size:14px; color:var(--sub); margin-right:auto; } .form .act .note { margin-right:0; }
 
   .it.same { margin-top:-38px; } .it.same .dot { width:10px; height:10px; margin-top:20px; border:0; background:#d9d4ee; box-shadow:none; } /* 같은 날 이어지는 글 */
   /* 만든 것: 고정한 건 큰 카드 · 나머지는 폰 홈 화면처럼 앱 아이콘 */
