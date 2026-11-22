@@ -1,4 +1,4 @@
-window.JOA_POSTS_AT = 1795315459582;
+window.JOA_POSTS_AT = 1795315471247;
 window.JOA_POSTS = [
   {
     "id": "pmwr8gkh8",
@@ -6,7 +6,7 @@ window.JOA_POSTS = [
     "date": "2026-11-22",
     "icon": "",
     "title": "",
-    "body": "📢 알려진 오류 ",
+    "body": "📢 알려진 오류",
     "tags": [
       "알려진 오류"
     ],
