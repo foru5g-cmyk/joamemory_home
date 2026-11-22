@@ -1,5 +1,61 @@
-window.JOA_POSTS_AT = 1795328374223;
+window.JOA_POSTS_AT = 1795333245758;
 window.JOA_POSTS = [
+  {
+    "id": "pmwrj269q",
+    "menu": "mmwr932h5",
+    "date": "2026-11-22",
+    "icon": "",
+    "title": "",
+    "body": "",
+    "tags": [],
+    "images": [
+      "img/20261122-kohmno-update.png"
+    ],
+    "specs": {
+      "img/20261122-kohmno-update.png": {
+        "kind": "news",
+        "ver": "5.8.67",
+        "bg": "#ddd5f0",
+        "acc": "#8a5cf0",
+        "av": "",
+        "pill": "11월 22일 소식",
+        "head": "조아메모리",
+        "sub": "업데이트",
+        "bubbles": "",
+        "me": "",
+        "cards": "",
+        "foot": "",
+        "title": "",
+        "lead": "",
+        "steps": [
+          {
+            "t": "",
+            "p": "",
+            "img": ""
+          },
+          {
+            "t": "",
+            "p": "",
+            "img": ""
+          }
+        ],
+        "tips": "",
+        "errs": "",
+        "style": "notice",
+        "ntag": "알림",
+        "nwhen": "2026년 11월 22일 (일) · 오후 4:39",
+        "ntitle": " 버텍스 404: Neon",
+        "nsub": "새 모델이 싱가포르 서버에 없어서 나던 오류예요. 이제 알아서 global 서버로 불러요.",
+        "cicon": "",
+        "ctitle": "5.8.67 업데이트",
+        "csub": "11월 22일 · 조아메모리",
+        "citems": "",
+        "ctip": ""
+      }
+    },
+    "pin": false,
+    "at": 1795333245758
+  },
   {
     "id": "pmwrfxs7q",
     "menu": "mmwr932h5",
