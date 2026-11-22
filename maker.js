@@ -237,7 +237,7 @@
     box.style.cssText = 'position:fixed;left:-10000px;top:0;'; box.innerHTML = pageHtml(d); document.body.appendChild(box);
     try { if (document.fonts) { await document.fonts.load("25px 'Jua'"); await document.fonts.load("25px 'Gowun Dodum'"); await document.fonts.load("800 25px 'Pretendard Variable'", box.textContent); await document.fonts.ready; }
       await Promise.all([...box.querySelectorAll('img')].map(i => i.decode().catch(() => {})));
-      const c = await H(box.firstElementChild, { scale: d.style === 'notice' ? 3 : 2, backgroundColor: null, useCORS: true, logging: false });
+      const c = await H(box.firstElementChild, { scale: 3, backgroundColor: null, useCORS: true, logging: false });
       return await new Promise((ok, no) => c.toBlob(b => b ? ok(b) : no(new Error('그림을 못 만들었어요')), 'image/png'));
     } finally { box.remove(); }
   }
