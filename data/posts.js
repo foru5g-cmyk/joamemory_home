@@ -1,4 +1,4 @@
-window.JOA_POSTS_AT = 1795319598599;
+window.JOA_POSTS_AT = 1795319611383;
 window.JOA_POSTS = [
   {
     "id": "pmwrapne5",
@@ -9,10 +9,10 @@ window.JOA_POSTS = [
     "body": "",
     "tags": [],
     "images": [
-      "img/20261122-8x3rxw-update.png"
+      "img/20261122-ikgv9v-update.png"
     ],
     "specs": {
-      "img/20261122-8x3rxw-update.png": {
+      "img/20261122-ikgv9v-update.png": {
         "kind": "news",
         "ver": "5.8.58",
         "bg": "#cfe0f1",
