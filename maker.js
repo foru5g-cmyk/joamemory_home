@@ -173,6 +173,8 @@
       <div class="ft">조아메모리ෆ${d.ver ? ' ' + esc(d.ver) : ''}</div></div></div>`;
   }
   const NOTICE = [['긴급 공지', '#e8707c', '#ffdfe3', '🚨'], ['점검 안내', '#e59a4c', '#ffe9cc', '🛠️'], ['업데이트 예고', '#8f7be6', '#e6dffd', '🎁'], ['해결 완료', '#4fb589', '#d6f2e3', '✨'], ['알림', '#5a9bdc', '#d8eafb', '💌'], ['알려진 오류', '#e072a4', '#fddfec', '🐞']]; // 글자색 · 파스텔 바탕 · 기본 이모지(칸에서 바꾸거나 지울 수 있어요)
+  const NT_ICON = { '긴급 공지': 'pink', '점검 안내': 'peach', '업데이트 예고': '', '해결 완료': 'mint', '알림': 'blue', '알려진 오류': 'pink' };
+  const ntIcon = tag => (c => c ? `img/icon-${c}.png` : 'img/icon.png')(NT_ICON[tag] ?? 'sky'); // 종류마다 색 고양이(업데이트 예고는 원래 보라)
   const nowText = () => { const d = new Date(), h = d.getHours(); return `${d.getFullYear()}년 ${d.getMonth() + 1}월 ${d.getDate()}일 (${'일월화수목금토'[d.getDay()]}) · ${h < 12 ? '오전' : '오후'} ${(h % 12) || 12}:${String(d.getMinutes()).padStart(2, '0')}`; };
   // 고양이 말풍선을 PNG로 그려 둬요(SVG 그림은 아이폰에서 그림으로 찍을 때 빠져서) · 색마다 한 번만
   const catCache = {};
@@ -192,7 +194,7 @@
       ${e ? `<span class="em">${esc(e)}</span>` : ''}
       <div class="tx"><span class="tg" style="color:${col}">${esc(d.ntag || '공지')}</span>
       <h1>${esc(d.ntitle || '제목')}</h1>${d.nsub ? `<p>${esc(d.nsub)}</p>` : ''}</div>
-      <div class="ft" style="color:${mix(col, '#2f2a40', .6)}"><img src="img/icon.png" alt="">조아메모리${d.nwhen ? `<i>${esc(d.nwhen)}</i>` : ''}</div></div>`; }
+      <div class="ft" style="color:${mix(col, '#2f2a40', .6)}"><img src="${ntIcon(d.ntag)}" alt="">조아메모리${d.nwhen ? `<i>${esc(d.nwhen)}</i>` : ''}</div></div>`; }
   // 공지 그림은 화면을 찍지 않고 캔버스에 바로 그려요(html2canvas는 흐림·그림자·SVG를 번지게 그려서) · 미리보기(noticeHtml)와 같은 자리·색
   async function noticeCanvas(d, S = 3) {
     const [, col, bg, emo] = NOTICE.find(x => x[0] === d.ntag) || [d.ntag, d.acc, mix(d.acc, '#ffffff', .8), ''], e = d.nemo == null ? emo : d.nemo;
@@ -223,7 +225,7 @@
     let y = 46 + 39 + 26; font(800, 58); x.fillStyle = '#3a3350'; for (const l of tl) { x.fillText(l, TX, y + 52); y += 67; }
     y += 14; font(600, 23); x.fillStyle = '#4f4866'; for (const l of sl) { x.fillText(l, TX, y + 26); y += 37; }
     // 아래: 아이콘 · 조아메모리 · 날짜
-    const ic = await img('img/icon.png'), fy = H - 38 - 36; if (ic) { x.save(); x.beginPath(); x.roundRect(TX, fy, 36, 36, 11); x.clip(); x.drawImage(ic, TX, fy, 36, 36); x.restore(); }
+    const ic = await img(ntIcon(d.ntag)), fy = H - 38 - 36; if (ic) { x.save(); x.beginPath(); x.roundRect(TX, fy, 36, 36, 11); x.clip(); x.drawImage(ic, TX, fy, 36, 36); x.restore(); }
     x.fillStyle = mix(col, '#2f2a40', .6); font(700, 18); x.fillText('조아메모리', TX + 46, fy + 24);
     if (d.nwhen) { const wx = TX + 46 + x.measureText('조아메모리').width + 14; font(600, 18); x.fillText(d.nwhen, wx, fy + 24); }
     return new Promise((ok, no) => cv.toBlob(b => b ? ok(b) : no(new Error('그림을 못 만들었어요')), 'image/png'));
