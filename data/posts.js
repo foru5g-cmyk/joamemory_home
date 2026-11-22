@@ -1,4 +1,4 @@
-window.JOA_POSTS_AT = 1795328353173;
+window.JOA_POSTS_AT = 1795328374223;
 window.JOA_POSTS = [
   {
     "id": "pmwrfxs7q",
@@ -6,7 +6,7 @@ window.JOA_POSTS = [
     "date": "2026-11-22",
     "icon": "",
     "title": "",
-    "body": "아이폰(STAY)에서 시간 안에 못 보내던 문제예요.",
+    "body": "",
     "tags": [],
     "images": [
       "img/20261122-cll4li-update.png"
