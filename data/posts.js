@@ -63,7 +63,7 @@ window.JOA_POSTS = [
   },
   {
     "id": "pmwrj269q",
-    "menu": "mmwr932h5",
+    "menu": "mmwr8eeje",
     "date": "2026-11-22",
     "icon": "",
     "title": "",
@@ -121,7 +121,7 @@ window.JOA_POSTS = [
   },
   {
     "id": "pmwrfxs7q",
-    "menu": "mmwr932h5",
+    "menu": "mmwr8eeje",
     "date": "2026-11-22",
     "icon": "",
     "title": "",
@@ -179,7 +179,7 @@ window.JOA_POSTS = [
   },
   {
     "id": "pmwrapne5",
-    "menu": "mmwr932h5",
+    "menu": "mmwr8eeje",
     "date": "2026-11-22",
     "icon": "",
     "title": "",
