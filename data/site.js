@@ -1,4 +1,4 @@
-window.JOA_SITE_AT = 1795316385926;
+window.JOA_SITE_AT = 1795316512146;
 window.JOA_SITE = {
   "small": "랙시들의",
   "title": "조아메모리",
@@ -19,6 +19,12 @@ window.JOA_SITE = {
       "icon": "📮",
       "name": "소식",
       "kind": "feed"
+    },
+    {
+      "id": "mmwr932h5",
+      "icon": "🔔",
+      "name": "알림판",
+      "kind": "stream"
     },
     {
       "id": "guide",
