@@ -1,18 +1,63 @@
-window.JOA_POSTS_AT = 1795396523976;
+window.JOA_POSTS_AT = 1795424173802;
 window.JOA_POSTS = [
   {
-    "id": "pmwskpzn6",
-    "menu": "guide",
+    "id": "pmwt172sq",
+    "menu": "mmwr8eeje",
     "date": "2026-11-23",
-    "icon": "📖",
-    "title": "조아 홈페이지로 빠르게 접속하기",
-    "body": "❤를 누르면 자동으로 조아 메모리 홈페이지로 이동!",
+    "icon": "",
+    "title": "",
+    "body": "",
     "tags": [],
     "images": [
-      "img/20261123-id69x4-guide.png"
+      "img/20261123-ywkqnv-update.png"
     ],
+    "specs": {
+      "img/20261123-ywkqnv-update.png": {
+        "kind": "news",
+        "ver": "5.8.70",
+        "bg": "#ddd5f0",
+        "acc": "#8a5cf0",
+        "av": "",
+        "pill": "11월 23일 소식",
+        "head": "조아메모리",
+        "sub": "업데이트",
+        "bubbles": "",
+        "me": "",
+        "cards": "",
+        "foot": "",
+        "title": "",
+        "lead": "",
+        "steps": [
+          {
+            "t": "",
+            "p": "",
+            "img": ""
+          },
+          {
+            "t": "",
+            "p": "",
+            "img": ""
+          }
+        ],
+        "tips": "",
+        "errs": "",
+        "style": "notice",
+        "ntag": "알림",
+        "nwhen": "2026년 11월 23일 (월) · 오후 5:54",
+        "ntitle": "조아메모리 5.8.75",
+        "nsub": "- 백업 불러온 뒤 남은 턴 정리 안 되던 문제 해결\n- 임신: 관계 아닌 장면을 잘못 세던 것 쫌쫌따리 수정\n- 아이폰·갤럭시 파이어폭스에서 노트 수정 칸 고침, 더 가볍게 ! ",
+        "cicon": "",
+        "ctitle": "5.8.70 업데이트",
+        "csub": "11월 23일 · 조아메모리",
+        "citems": "",
+        "ctip": "",
+        "preset": 6,
+        "ncol": "",
+        "nlook": "window"
+      }
+    },
     "pin": false,
-    "at": 1795396502706
+    "at": 1795424173802
   },
   {
     "id": "pmwrsl8hw",
@@ -364,7 +409,7 @@ window.JOA_POSTS = [
       "img/guide-manual-1.jpg",
       "img/guide-manual-2.jpg"
     ],
-    "pin": false
+    "pin": true
   },
   {
     "id": "g-webmode",
