@@ -1,4 +1,4 @@
-window.JOA_POSTS_AT = 1795396502706;
+window.JOA_POSTS_AT = 1795396523976;
 window.JOA_POSTS = [
   {
     "id": "pmwskpzn6",
@@ -364,7 +364,7 @@ window.JOA_POSTS = [
       "img/guide-manual-1.jpg",
       "img/guide-manual-2.jpg"
     ],
-    "pin": true
+    "pin": false
   },
   {
     "id": "g-webmode",
