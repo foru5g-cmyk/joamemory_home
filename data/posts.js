@@ -1,5 +1,23 @@
-window.JOA_POSTS_AT = 1795435559703;
+window.JOA_POSTS_AT = 1795443738797;
 window.JOA_POSTS = [
+  {
+    "id": "pmwtcuf8t",
+    "menu": "news",
+    "date": "2026-11-23",
+    "icon": "📅",
+    "title": "날짜로그가 달력이 됐어요",
+    "body": "건의로 날짜로그에 달력을 넣었어요. 약속은 하트로, 회귀는 회차마다 따로 보여요!",
+    "tags": [
+      "5.8.77",
+      "달력",
+      "약속"
+    ],
+    "images": [
+      "img/20261123-i7il00.png"
+    ],
+    "pin": false,
+    "at": 1795443738797
+  },
   {
     "id": "pmwskpzn6",
     "menu": "guide",
