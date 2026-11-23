@@ -1,4 +1,4 @@
-window.JOA_FAQ_AT = 1795395571493;
+window.JOA_FAQ_AT = 1795395590197;
 window.JOA_FAQ = [
   {
     "id": "fmwsjzn4j",
@@ -26,7 +26,7 @@ window.JOA_FAQ = [
     "q": "\"크랙 로그인 정보를 찾지 못했어요\"가 떠요",
     "a": "크랙 로그인이 풀렸거나 페이지가 덜 열린 상태예요.\n\n크랙에 로그인한 뒤 새로고침해 주세요.",
     "cat": "처음",
-    "pin": false
+    "pin": true
   },
   {
     "id": "fmwsjwoal",
