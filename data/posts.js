@@ -1,5 +1,19 @@
-window.JOA_POSTS_AT = 1795349285902;
+window.JOA_POSTS_AT = 1795396502706;
 window.JOA_POSTS = [
+  {
+    "id": "pmwskpzn6",
+    "menu": "guide",
+    "date": "2026-11-23",
+    "icon": "📖",
+    "title": "조아 홈페이지로 빠르게 접속하기",
+    "body": "❤를 누르면 자동으로 조아 메모리 홈페이지로 이동!",
+    "tags": [],
+    "images": [
+      "img/20261123-id69x4-guide.png"
+    ],
+    "pin": false,
+    "at": 1795396502706
+  },
   {
     "id": "pmwrsl8hw",
     "menu": "mmwr8eeje",
