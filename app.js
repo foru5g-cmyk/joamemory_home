@@ -10,7 +10,19 @@
   const dayParts = d => { const [y, m, dd] = String(d).split('-').map(Number); return { y, m, d: dd, w: WD[new Date(Date.UTC(y, m - 1, dd)).getUTCDay()] }; };
   const sortPosts = l => [...l].sort((a, b) => (b.pin ? 1 : 0) - (a.pin ? 1 : 0) || String(b.date).localeCompare(String(a.date)) || String(b.id).localeCompare(String(a.id)));
   const today = () => { const n = new Date(); return n.getFullYear() + '-' + String(n.getMonth() + 1).padStart(2, '0') + '-' + String(n.getDate()).padStart(2, '0'); };
-  if (typeof module !== 'undefined') { module.exports = { esc, linkify, textB64, dataFile, dayParts, sortPosts }; return; }
+  // 저장할 때: 이 화면이 열려 있던 동안 다른 기기에서 올린 것은 그대로 두고, 방금 바꾼 것만 최신에 얹어요
+  const readData = (text, name) => { const m = String(text).match(new RegExp('window\\.JOA_' + name + '\\s*=\\s*([\\s\\S]*);\\s*$')); return JSON.parse(m[1]); };
+  const same = (a, b) => JSON.stringify(a) === JSON.stringify(b);
+  const mergeData = (base, next, live) => { // base: 바꾸기 전 이 화면 · next: 바꾼 뒤 · live: 지금 저장소
+    if (!Array.isArray(next)) { const out = { ...live }; for (const k of new Set([...Object.keys(base || {}), ...Object.keys(next)])) if (!same((base || {})[k], next[k])) { if (k === 'menus' && Array.isArray(live.menus)) out.menus = mergeMenus((base || {}).menus || [], next.menus, live.menus); else if (k in next) out[k] = next[k]; else delete out[k]; } return out; }
+    const B = new Map((base || []).map(x => [x.id, x])), N = new Map(next.map(x => [x.id, x])), L = new Set(live.map(x => x.id));
+    const out = live.filter(x => !(B.has(x.id) && !N.has(x.id))).map(x => N.has(x.id) && !same(B.get(x.id), N.get(x.id)) ? N.get(x.id) : x);
+    return [...next.filter(x => !L.has(x.id) && !same(B.get(x.id), x)), ...out]; };
+  const mergeMenus = (base, next, live) => { // 메뉴는 바꾼 칸(이름·글·버튼 주소 등)만 얹어요 · 순서는 바꿨을 때만
+    const by = l => new Map(l.map(x => [x.id, x])), ids = l => l.map(x => x.id).join(), B = by(base), N = by(next), L = by(live), one = m => B.has(m.id) && N.has(m.id) ? mergeData(B.get(m.id), N.get(m.id), m) : m;
+    if (ids(base) === ids(next)) return live.map(one);
+    return [...next.filter(m => L.has(m.id) || !B.has(m.id)).map(m => L.has(m.id) ? one(L.get(m.id)) : m), ...live.filter(m => !N.has(m.id) && !B.has(m.id))]; };
+  if (typeof module !== 'undefined') { module.exports = { readData, mergeData, esc, linkify, textB64, dataFile, dayParts, sortPosts }; return; }
 
   // ── 자료 ──
   const FILES = { SITE: 'data/site.js', POSTS: 'data/posts.js', FAQ: 'data/faq.js' };
@@ -24,22 +36,25 @@
   }
   if (!data.SITE || !Array.isArray(data.SITE.menus)) { document.getElementById('main').innerHTML = '<p class="empty">사이트 자료(data/site.js)를 읽지 못했어요.</p>'; return; }
   data.POSTS = Array.isArray(data.POSTS) ? data.POSTS : []; data.FAQ = Array.isArray(data.FAQ) ? data.FAQ : [];
+  const origin = {}; for (const n of Object.keys(FILES)) origin[n] = JSON.stringify(data[n]); // 마지막으로 읽거나 저장한 모습(메뉴 추가처럼 저장 전에 화면 자료부터 바뀌는 것도 알아보게)
 
   // ── GitHub에 저장 (주인만) ──
   async function gh(path, opt = {}) {
-    const r = await fetch('https://api.github.com/repos/' + repo() + path, { method: opt.method || 'GET', body: opt.body, headers: { Authorization: 'Bearer ' + tok(), Accept: 'application/vnd.github+json', ...(opt.body ? { 'Content-Type': 'application/json' } : {}) } });
+    const r = await fetch('https://api.github.com/repos/' + repo() + path, { cache: 'no-store', method: opt.method || 'GET', body: opt.body, headers: { Authorization: 'Bearer ' + tok(), Accept: 'application/vnd.github+json', ...(opt.body ? { 'Content-Type': 'application/json' } : {}) } });
     if (r.status === 404 && opt.ok404) return null;
     if (!r.ok) throw new Error(r.status === 401 ? '토큰이 맞지 않아요' : r.status === 403 ? '이 토큰으로는 쓸 수 없어요(권한 확인)' : r.status === 404 ? '저장소를 못 찾았어요' : r.status === 409 || r.status === 422 ? '방금 다른 저장과 겹쳤어요 · 다시 눌러 주세요' : 'GitHub 오류 ' + r.status);
     return r.json();
   }
-  async function putFile(path, contentB64, message) {
+  async function putFile(path, content, message) { // content: 올릴 글자(base64) · 함수면 지금 저장소 글을 받아 만들어요
     const url = '/contents/' + path.split('/').map(encodeURIComponent).join('/'), cur = await gh(url, { ok404: true });
+    const contentB64 = typeof content === 'function' ? content(cur) : content;
     await gh(url, { method: 'PUT', body: JSON.stringify({ message, content: contentB64, ...(cur && cur.sha ? { sha: cur.sha } : {}) }) });
   }
   async function saveData(name, value, message) {
     const at = Date.now();
-    await putFile(FILES[name], textB64(dataFile(name, value, at)), message);
-    data[name] = value; store.set('joa_c_' + name, JSON.stringify({ at, v: value }));
+    await putFile(FILES[name], cur => { if (cur) { let live; try { live = readData(new TextDecoder().decode(Uint8Array.from(atob(String(cur.content).replace(/\s/g, '')), c => c.charCodeAt(0))), name); } catch (_) { throw new Error('지금 올라가 있는 글을 못 읽어서 저장을 멈췄어요(덮어쓰지 않게)'); } value = mergeData(JSON.parse(origin[name]), value, live); }
+      return textB64(dataFile(name, value, at)); }, message);
+    data[name] = value; origin[name] = JSON.stringify(value); store.set('joa_c_' + name, JSON.stringify({ at, v: value }));
   }
   const fresh = {}; // 방금 올린 그림: 사이트에 반영되기 전까지 이 화면에서는 고른 파일을 그대로 보여 줘요
   async function uploadImage(file) {
