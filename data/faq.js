@@ -1,4 +1,4 @@
-window.JOA_FAQ_AT = 1795395465455;
+window.JOA_FAQ_AT = 1795395554565;
 window.JOA_FAQ = [
   {
     "id": "fmwsjzn4j",
@@ -10,7 +10,7 @@ window.JOA_FAQ = [
   {
     "id": "fmwsjyp2y",
     "q": "ChatGPT 로그인을 누르면 \"새 창이 막혔어요\"가 떠요",
-    "a": "설정에서 ChatGPT 로그인을 누를 때 브라우저가 팝업을 막으면 떠요.\n\n주소창 옆 팝업 차단 표시에서 crack.wrtn.ai를 허용하고 다시 눌러 주세요.",
+    "a": "설정에서 ChatGPT 로그인을 누를 때 브라우저가 팝업을 막으면 떠요.\n주소창 옆 팝업 차단 표시에서 crack.wrtn.ai를 허용하고 다시 눌러 주세요.",
     "cat": "오류",
     "pin": false
   },
