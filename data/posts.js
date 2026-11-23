@@ -1,4 +1,4 @@
-window.JOA_POSTS_AT = 1795443738797;
+window.JOA_POSTS_AT = 1795443829725;
 window.JOA_POSTS = [
   {
     "id": "pmwtcuf8t",
@@ -13,7 +13,7 @@ window.JOA_POSTS = [
       "약속"
     ],
     "images": [
-      "img/20261123-i7il00.png"
+      "img/20261123-7b1eb1.png"
     ],
     "pin": false,
     "at": 1795443738797
