@@ -1,4 +1,4 @@
-window.JOA_POSTS_AT = 1795424173802;
+window.JOA_POSTS_AT = 1795424205924;
 window.JOA_POSTS = [
   {
     "id": "pmwt172sq",
@@ -9,10 +9,10 @@ window.JOA_POSTS = [
     "body": "",
     "tags": [],
     "images": [
-      "img/20261123-ywkqnv-update.png"
+      "img/20261123-xm1vd8-update.png"
     ],
     "specs": {
-      "img/20261123-ywkqnv-update.png": {
+      "img/20261123-xm1vd8-update.png": {
         "kind": "news",
         "ver": "5.8.70",
         "bg": "#ddd5f0",
@@ -45,7 +45,7 @@ window.JOA_POSTS = [
         "ntag": "알림",
         "nwhen": "2026년 11월 23일 (월) · 오후 5:54",
         "ntitle": "조아메모리 5.8.75",
-        "nsub": "- 백업 불러온 뒤 남은 턴 정리 안 되던 문제 해결\n- 임신: 관계 아닌 장면을 잘못 세던 것 쫌쫌따리 수정\n- 아이폰·갤럭시 파이어폭스에서 노트 수정 칸 고침, 더 가볍게 ! ",
+        "nsub": "- 백업 불러온 뒤 남은 턴 정리 안 되던 문제 해결\n- 임신: 관계 아닌 장면을 잘못 세던 것 쫌쫌따리 수정\n- 아이폰·갤럭시 노트 수정 칸 고침, 더 가볍게 ! ",
         "cicon": "",
         "ctitle": "5.8.70 업데이트",
         "csub": "11월 23일 · 조아메모리",
