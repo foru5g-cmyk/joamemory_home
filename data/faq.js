@@ -1,4 +1,4 @@
-window.JOA_FAQ_AT = 1795395554565;
+window.JOA_FAQ_AT = 1795395571493;
 window.JOA_FAQ = [
   {
     "id": "fmwsjzn4j",
@@ -11,13 +11,6 @@ window.JOA_FAQ = [
     "id": "fmwsjyp2y",
     "q": "ChatGPT 로그인을 누르면 \"새 창이 막혔어요\"가 떠요",
     "a": "설정에서 ChatGPT 로그인을 누를 때 브라우저가 팝업을 막으면 떠요.\n주소창 옆 팝업 차단 표시에서 crack.wrtn.ai를 허용하고 다시 눌러 주세요.",
-    "cat": "오류",
-    "pin": false
-  },
-  {
-    "id": "fmwsjy8yg",
-    "q": "백업 파일을 불러오니 \"다른 대화방의 백업이라 불러오지 않았어요\"가 떠요",
-    "a": "백업 파일은 만든 방에만 불러올 수 있어요.\n\n그 파일을 만든 방을 열고 불러와 주세요.",
     "cat": "오류",
     "pin": false
   },
