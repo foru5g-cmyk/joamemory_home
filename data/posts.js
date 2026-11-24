@@ -1,5 +1,23 @@
-window.JOA_POSTS_AT = 1795506054885;
+window.JOA_POSTS_AT = 1795514167113;
 window.JOA_POSTS = [
+  {
+    "id": "pmwuiry2x",
+    "menu": "news",
+    "date": "2026-11-24",
+    "icon": "🐱",
+    "title": "프로필 톡, 끝!",
+    "body": "맨 밑까지 안 내려가도 돼! 홈에서 바로 고르고, 첫 지문 이름까지 바꿔 줌.",
+    "tags": [
+      "5.8.90",
+      "프로필",
+      "유저노트"
+    ],
+    "images": [
+      "img/20261124-6fw3u7-update.jpg"
+    ],
+    "pin": false,
+    "at": 1795514167113
+  },
   {
     "id": "pmwudhdgs",
     "menu": "mmwr8eeje",
