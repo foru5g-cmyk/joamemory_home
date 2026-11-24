@@ -1,5 +1,22 @@
-window.JOA_POSTS_AT = 1795443829725;
+window.JOA_POSTS_AT = 1795500855147;
 window.JOA_POSTS = [
+  {
+    "id": "pmwuaumi3",
+    "menu": "news",
+    "date": "2026-11-24",
+    "icon": "🪄",
+    "title": "조아메모리 최적화 및 단장",
+    "body": "더 가볍게, 더 보기 좋게. 자주 쓰는 버튼은 위로 모았어요.",
+    "tags": [
+      "5.8.83",
+      "홈"
+    ],
+    "images": [
+      "img/20261124-zmo0mx.png"
+    ],
+    "pin": false,
+    "at": 1795500855147
+  },
   {
     "id": "pmwtcuf8t",
     "menu": "news",
