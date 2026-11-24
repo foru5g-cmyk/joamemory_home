@@ -122,6 +122,12 @@
   .lk-sign { padding:20px 140px 150px; background-image:linear-gradient(180deg, transparent, #ffffff); text-align:center; }
   .lk-sign .pad { position:relative; z-index:1; background:#fff; border:4px solid; border-radius:26px; padding:24px 30px 28px; box-shadow:0 10px 24px #4a42661a; transform:rotate(-1.5deg); } .lk-sign .pad > p { max-width:430px; margin:0 auto; }
   .lk-sign .cat { left:296px; bottom:-34px; width:190px; } .lk-sign .em { left:50px; bottom:110px; transform:rotate(-12deg); } .lk-sign .ft { right:30px; bottom:24px; } .lk-sign .st { right:40px; top:18px; }
+  .lk-battle { padding:38px 44px 66px; background-image:radial-gradient(#ffffffaa 2.4px, transparent 2.6px); background-size:30px 30px; } .lk-battle > .hill { left:-60px; right:-60px; bottom:-120px; height:300px; border-radius:50% 50% 0 0; } .lk-battle > div { position:relative; z-index:1; }
+  .lk-battle .hd { display:flex; align-items:center; justify-content:space-between; } .lk-battle .cnt { background:#fff; border:3px solid #3a3350; border-radius:99px; padding:6px 18px; font-size:19px; font-weight:800; } .lk-battle > h1 { position:relative; z-index:1; margin:14px 0 16px; }
+  .lk-battle .fd { display:flex; gap:16px; align-items:center; min-height:250px; } .lk-battle .foes:empty { display:none; } .lk-battle .tg { color:#3a3350; } .lk-battle .boss { flex:1; text-align:center; } .lk-battle .boss img { width:210px; } .lk-battle .hero { width:236px; flex:none; } .lk-battle .hero img { display:block; width:250px; margin:0 0 -6px -14px; } .lk-battle .foes { flex:1; min-width:0; display:flex; flex-direction:column; gap:12px; align-self:center; }
+  .lk-battle .foe { display:flex; align-items:center; gap:12px; } .lk-battle .foe img { width:76px; flex:none; } .lk-battle .hpb { flex:1; min-width:0; background:#fff; border:3px solid #3a3350; border-radius:18px; padding:10px 16px 13px; } .lk-battle .hpb.off { background:#ffffffcc; border-color:#b9b4c8; } .lk-battle .hpb.off b { color:#a7a2b6; text-decoration:line-through; }
+  .lk-battle .hn { display:flex; justify-content:space-between; gap:10px; align-items:baseline; } .lk-battle .hn b { font-size:21px; font-weight:800; letter-spacing:-.6px; word-break:keep-all; } .lk-battle .hn span { flex:none; font-size:16px; font-weight:800; } .lk-battle .hp { margin-top:8px; height:14px; border-radius:99px; background:#ece9f3; overflow:hidden; } .lk-battle .hp u { display:block; height:14px; border-radius:99px; }
+  .lk-battle .say { margin-top:20px; background:#fff; border:4px solid #3a3350; border-radius:22px; padding:16px 24px; font-size:22px; font-weight:600; line-height:1.6; word-break:keep-all; } .lk-battle .say i { font-style:normal; margin-right:10px; font-size:17px; } .lk-battle > .ft { position:absolute; right:40px; bottom:22px; color:#3a3350aa !important; } .lk-battle > .st { position:absolute; right:34px; top:76px; }
   .lk-sticker { padding:52px 220px 64px 52px; } .lk-sticker > .sk { position:absolute; z-index:2; display:flex; align-items:center; justify-content:center; background:#fff; border-radius:50%; box-shadow:0 4px 10px #4a426618; line-height:1; } .lk-sticker .sk img { width:78%; }
   .lk-sticker .s1 { width:66px; height:66px; left:250px; top:12px; transform:rotate(-14deg); } .lk-sticker .s2 { width:62px; height:62px; right:18px; bottom:16px; transform:rotate(12deg); } .lk-sticker .s3 { width:60px; height:60px; left:16px; bottom:16px; transform:rotate(-10deg); } .lk-sticker .s4 { width:54px; height:54px; right:226px; bottom:14px; transform:rotate(8deg); }
   .lk-sticker .t1 { width:44px; height:44px; font-size:26px; right:20px; top:20px; transform:rotate(14deg); } .lk-sticker .t2 { width:40px; height:40px; font-size:22px; right:172px; top:10px; transform:rotate(-10deg); } .lk-sticker .t3 { width:38px; height:38px; font-size:22px; left:22px; top:18px; } .lk-sticker .t4 { width:36px; height:36px; font-size:19px; left:380px; bottom:14px; transform:rotate(-12deg); }
@@ -238,8 +244,8 @@
       ${tips.length ? `<div class="tip" style="background:${mix(acc, '#ffffff', .9)}">${tips.map(t => esc(t)).join('<br>')}</div>` : ''}
       <div class="ft">조아메모리ෆ${d.ver ? ' ' + esc(d.ver) : ''}</div></div></div>`;
   }
-  const NOTICE = [['긴급 공지', '#e8707c', '#ffdfe3', '🚨'], ['점검 안내', '#e59a4c', '#ffe9cc', '🛠️'], ['업데이트 예고', '#8f7be6', '#e6dffd', '🎁'], ['해결 완료', '#4fb589', '#d6f2e3', '✨'], ['알림', '#5a9bdc', '#d8eafb', '💌'], ['알려진 오류', '#e072a4', '#fddfec', '🐞'], ['권장 사항', '#3a9fae', '#d4eef2', '💡']]; // 글자색 · 파스텔 바탕 · 기본 이모지(칸에서 바꾸거나 지울 수 있어요)
-  const NT_ICON = { '긴급 공지': 'pink', '점검 안내': 'peach', '업데이트 예고': '', '해결 완료': 'mint', '알림': 'blue', '알려진 오류': 'pink' };
+  const NOTICE = [['긴급 공지', '#e8707c', '#ffdfe3', '🚨'], ['점검 안내', '#e59a4c', '#ffe9cc', '🛠️'], ['업데이트 예고', '#8f7be6', '#e6dffd', '🎁'], ['해결 완료', '#4fb589', '#d6f2e3', '✨'], ['알림', '#5a9bdc', '#d8eafb', '💌'], ['알려진 오류', '#e072a4', '#fddfec', '🐞'], ['권장 사항', '#3a9fae', '#d4eef2', '💡'], ['오류와의 전쟁', '#e6ad2e', '#fff3cd', '']]; // 글자색 · 파스텔 바탕 · 기본 이모지(칸에서 바꾸거나 지울 수 있어요)
+  const NT_ICON = { '긴급 공지': 'pink', '점검 안내': 'peach', '업데이트 예고': '', '해결 완료': 'mint', '알림': 'blue', '알려진 오류': 'pink', '오류와의 전쟁': 'yellow' };
   const ntIcon = d => (c => c ? `img/icon-${c}.png` : 'img/icon.png')(d.nicon ?? NT_ICON[d.ntag] ?? 'sky');
   const ICONS = ['', 'sky', 'blue', 'mint', 'yellow', 'peach', 'pink']; // img/icon(-색).png
   const ntPal = d => { const p = NOTICE.find(x => x[0] === d.ntag); return d.ncol ? [d.ntag, d.ncol, mix(d.ncol, '#ffffff', .82), p ? p[3] : ''] : p || [d.ntag, d.acc, mix(d.acc, '#ffffff', .8), '']; }; // 종류마다 색 고양이(업데이트 예고는 원래 보라)
@@ -256,7 +262,8 @@
     const heart = (x, cx, cy) => { x.fillStyle = '#fff'; x.beginPath(); x.moveTo(cx, cy + 5); x.bezierCurveTo(cx - 8, cy - 1, cx - 4, cy - 7, cx, cy - 3); x.bezierCurveTo(cx + 4, cy - 7, cx + 8, cy - 1, cx, cy + 5); x.fill(); };
     const star = (x, cx, cy) => { x.fillStyle = '#fff'; x.beginPath(); for (let i = 0; i < 8; i++) { const r = i % 2 ? 2 : 6, a = i * Math.PI / 4; x.lineTo(cx + r * Math.sin(a), cy - r * Math.cos(a)); } x.fill(); };
     const blob = (x, cx, cy, rx, ry, c) => { x.fillStyle = c; x.beginPath(); x.ellipse(cx, cy, rx, ry, 0, 0, 7); x.fill(); };
-    return { '기본': x => { dot(x, 38, 48); dot(x, 62, 48); smile(x); }, '윙크': x => { dot(x, 38, 48); arc(x, 62, 49); smile(x); }, '행복': x => { arc(x, 38, 49); arc(x, 62, 49); smile(x, true); },
+    return { '전투': x => { for (const [a, b, y2] of [[31, 44, 45], [69, 56, 45]]) { x.beginPath(); x.moveTo(a, 39); x.lineTo(b, y2); st(x); } dot(x, 38, 50); dot(x, 62, 50); smile(x, true); },
+      '기본': x => { dot(x, 38, 48); dot(x, 62, 48); smile(x); }, '윙크': x => { dot(x, 38, 48); arc(x, 62, 49); smile(x); }, '행복': x => { arc(x, 38, 49); arc(x, 62, 49); smile(x, true); },
       '하트눈': x => { heart(x, 38, 48); heart(x, 62, 48); smile(x); }, '반짝': x => { star(x, 38, 48); star(x, 62, 48); smile(x, true); }, '놀람': x => { dot(x, 38, 47, 5); dot(x, 62, 47, 5); blob(x, 50, 58, 3.4, 4.2, '#fff'); },
       '졸림': x => { bar(x, 38, 49); bar(x, 62, 49); blob(x, 50, 57, 2.4, 2.4, '#fff'); }, '메롱': x => { arc(x, 38, 49); dot(x, 62, 48); smile(x); blob(x, 52, 60, 3.6, 4.4, '#ff8fab'); },
       '울먹': x => { dot(x, 38, 48, 4.6); dot(x, 62, 48, 4.6); blob(x, 36, 56, 2, 3.2, '#bfe3ff'); x.beginPath(); x.moveTo(45, 58); x.quadraticCurveTo(50, 54, 55, 58); st(x); } };
@@ -274,10 +281,30 @@
     x.fillStyle = c; x.fill(new Path2D(CAT_PATH)); if (!face) return cv.toDataURL('image/png');
     x.fillStyle = '#ffb3c7'; for (const cx of [28, 72]) { x.beginPath(); x.ellipse(cx, 57, 5.5, 3.4, 0, 0, 7); x.fill(); }
     (FACES[face] || FACES['기본'])(x); return cv.toDataURL('image/png'); })());
+  // 전쟁 모양: 투구·칼·방패를 든 고양이 기사 · 잡아야 할 벌레(잡으면 눈이 ×)
+  const knightPng = (c, face) => catCache['kn' + c + face] || (catCache['kn' + c + face] = (() => { const cv = document.createElement('canvas'); cv.width = cv.height = 900; const x = cv.getContext('2d'); x.scale(6, 6); x.lineJoin = x.lineCap = 'round';
+    x.save(); x.translate(118, 62); x.rotate(0.42); x.fillStyle = '#eef2f8'; x.strokeStyle = '#3a3350'; x.lineWidth = 2.6; x.beginPath(); x.moveTo(-5, 0); x.lineTo(-5, -42); x.lineTo(0, -50); x.lineTo(5, -42); x.lineTo(5, 0); x.closePath(); x.fill(); x.stroke(); x.fillStyle = '#f2cf7a'; x.beginPath(); x.roundRect(-13, 0, 26, 7, 3.5); x.fill(); x.stroke(); x.fillStyle = '#b98a5a'; x.beginPath(); x.roundRect(-3.5, 7, 7, 14, 3); x.fill(); x.stroke(); x.restore();
+    x.save(); x.translate(20, 38); x.fillStyle = c; x.fill(new Path2D(CAT_PATH)); x.fillStyle = '#ffb3c7'; for (const cx of [28, 72]) { x.beginPath(); x.ellipse(cx, 57, 5.5, 3.4, 0, 0, 7); x.fill(); } (FACES[face] || FACES['전투'])(x); x.restore();
+    x.strokeStyle = '#3a3350'; x.lineWidth = 2.6; x.fillStyle = '#d5dae6'; x.beginPath(); x.moveTo(51, 63); x.quadraticCurveTo(52, 37, 70, 37); x.quadraticCurveTo(88, 37, 89, 63); x.quadraticCurveTo(70, 57, 51, 63); x.closePath(); x.fill(); x.stroke();
+    x.fillStyle = '#f2a7b8'; x.beginPath(); x.moveTo(70, 37); x.quadraticCurveTo(58, 16, 78, 10); x.quadraticCurveTo(92, 14, 84, 24); x.quadraticCurveTo(78, 30, 76, 37); x.closePath(); x.fill(); x.stroke();
+    x.fillStyle = '#fff'; x.beginPath(); x.moveTo(8, 88); x.lineTo(40, 88); x.lineTo(40, 108); x.quadraticCurveTo(38, 124, 24, 130); x.quadraticCurveTo(10, 124, 8, 108); x.closePath(); x.fill(); x.stroke(); x.fillStyle = c; x.beginPath(); for (let i = 0; i < 10; i++) { const r = i % 2 ? 4.4 : 10.5, a = i * Math.PI / 5; x.lineTo(24 + r * Math.sin(a), 107 - r * Math.cos(a)); } x.closePath(); x.fill();
+    return cv.toDataURL('image/png'); })());
+  const bugPng = (c, dead) => catCache['bug' + c + dead] || (catCache['bug' + c + dead] = (() => { const cv = document.createElement('canvas'); cv.width = cv.height = 480; const x = cv.getContext('2d'); x.scale(4.8, 4.8); x.lineCap = x.lineJoin = 'round'; const ink = '#3a3350';
+    if (dead) { x.translate(50, 54); x.rotate(Math.PI); x.translate(-50, -50); }
+    x.strokeStyle = ink; x.lineWidth = 3; for (const sd of [-1, 1]) { for (const y of [50, 62, 74]) { x.beginPath(); x.moveTo(50 + sd * 28, y); x.lineTo(50 + sd * 42, y + (y - 60) * .5); x.stroke(); } x.beginPath(); x.moveTo(50 + sd * 9, 30); x.quadraticCurveTo(50 + sd * 13, 14, 50 + sd * 22, 12); x.stroke(); x.fillStyle = ink; x.beginPath(); x.arc(50 + sd * 22, 12, 3.4, 0, 7); x.fill(); }
+    x.fillStyle = dead ? '#d9d6e2' : c; x.beginPath(); x.ellipse(50, 58, 31, 32, 0, 0, 7); x.fill(); x.stroke();
+    x.fillStyle = '#ffffff88'; for (const [a, b, r] of [[32, 76, 5], [68, 76, 5], [50, 82, 4]]) { x.beginPath(); x.arc(a, b, r, 0, 7); x.fill(); }
+    if (dead) { x.lineWidth = 2.8; for (const cx of [39, 61]) { x.beginPath(); x.moveTo(cx - 4, 48); x.lineTo(cx + 4, 56); x.moveTo(cx + 4, 48); x.lineTo(cx - 4, 56); x.stroke(); } x.beginPath(); x.moveTo(44, 66); x.lineTo(56, 66); x.stroke(); }
+    else { for (const cx of [39, 61]) { x.fillStyle = '#fff'; x.beginPath(); x.arc(cx, 52, 7.5, 0, 7); x.fill(); x.lineWidth = 2; x.stroke(); x.fillStyle = ink; x.beginPath(); x.arc(cx + (cx < 50 ? 1.6 : -1.6), 53, 3.4, 0, 7); x.fill(); } x.lineWidth = 3; x.beginPath(); x.moveTo(31, 41); x.lineTo(43, 45); x.moveTo(69, 41); x.lineTo(57, 45); x.stroke(); x.beginPath(); x.moveTo(44, 68); x.quadraticCurveTo(50, 63, 56, 68); x.stroke(); }
+    return cv.toDataURL('image/png'); })());
+  const BUG_COLS = ['#f2a7b8', '#9dbdf0', '#b8a6f0', '#f5b38a', '#9fd5a8'];
+  // 설명 한 줄 = 적 하나: 오류 | 남은 체력(0~100) · 안 쓰면 100 · '잡음'도 0 · | 가 없는 줄은 아래 말상자로
+  const foesOf = d => lines(d.nsub || '').filter(l => l.includes('|')).slice(0, 6).map(l => { const [n, v] = l.split('|').map(t => t.trim()), hp = d.fixed || /잡|끝|완료|고침/.test(v) ? 0 : v === '' || !Number.isFinite(parseInt(v, 10)) ? 100 : Math.max(0, Math.min(100, parseInt(v, 10))); return { n, hp }; });
+  const saysOf = d => lines(d.nsub || '').filter(l => !l.includes('|'));
   // 포스터 말고 다른 모양들(메모지·말풍선·창·팻말·스티커) · 알림판에선 화면에 바로 그리고, 그림 받기는 html2canvas로 찍어요
-  const LOOKS = [['poster', '🖼️ 포스터'], ['memo', '📝 메모지'], ['window', '🪟 창'], ['sign', '🪧 팻말'], ['sticker', '🌟 스티커']];
-  const NT_FACE = { '알려진 오류': '울먹', '긴급 공지': '놀람', '해결 완료': '반짝', '권장 사항': '윙크', '업데이트 예고': '행복', '점검 안내': '졸림', '알림': '기본' };
-  const LOOK_FACE = { memo: '기본', window: '윙크', sign: '반짝', sticker: '기본' };
+  const LOOKS = [['poster', '🖼️ 포스터'], ['memo', '📝 메모지'], ['window', '🪟 창'], ['sign', '🪧 팻말'], ['sticker', '🌟 스티커'], ['battle', '⚔️ 전쟁']];
+  const NT_FACE = { '알려진 오류': '울먹', '긴급 공지': '놀람', '해결 완료': '반짝', '권장 사항': '윙크', '업데이트 예고': '행복', '점검 안내': '졸림', '알림': '기본', '오류와의 전쟁': '전투' };
+  const LOOK_FACE = { memo: '기본', window: '윙크', sign: '반짝', sticker: '기본', battle: '전투' };
   const ntFace = d => d.nface || (d.nlook && d.nlook !== 'poster' ? NT_FACE[d.ntag] || LOOK_FACE[d.nlook] : '기본');
   const shortWhen = w => (m => m ? `${m[1]}월 ${m[2]}일` : '')(String(w || '').match(/(\d+)월 (\d+)일/));
   // 스티커 모양에 다닥다닥 붙는 작은 스티커들(고양이 얼굴·별·하트) · [색, 얼굴, 자리 클래스]
@@ -292,6 +319,10 @@
       window: `<div class="pad" style="box-shadow:10px 10px 0 ${col}"><div class="bar" style="background:${col}55"><i></i><i></i><i></i><span>joamemory.txt</span></div><div class="in">${tg}${h1}${p}</div></div>${cat}${em}${ft}`,
       sign: `<div class="pad" style="border-color:${col}">${tg}${h1}${p}</div>${cat}${em}${ft}`,
       sticker: `<div class="pad" style="background:${mix(col, '#ffffff', .78)}">${tg}${h1}${p}</div><div class="cc">${cat}</div>${em}${ft}${STK.map(([c, f, k]) => f ? `<span class="sk ${k}"><img alt="" src="${catPng(c, f)}"></span>` : `<span class="sk ${k}" style="color:${c}">${esc(k.split(' ')[1])}</span>`).join('')}`,
+      battle: (() => { const F = foesOf(d), left = F.filter(f => f.hp).length, T = saysOf(d);
+        return `<i class="hill" style="background:${mix(col, '#ffffff', .62)}"></i><div class="hd">${tg}${F.length ? `<span class="cnt">${left ? `남은 적 <b style="color:${mix(col, '#3a3350', .3)}">${left}</b> / ${F.length}` : '전부 잡았다!'}</span>` : ''}</div>${h1}
+        <div class="fd"><div class="hero"><img alt="" src="${knightPng(mix(col, '#ffffff', .18), face)}"></div>${F.length ? '' : `<div class="boss"><img alt="" src="${bugPng('#f2a7b8', !!d.fixed)}"></div>`}<div class="foes">${F.map((f, i) => `<div class="foe"><img alt="" src="${bugPng(BUG_COLS[i % 5], !f.hp)}"><div class="hpb${f.hp ? '' : ' off'}"><div class="hn"><b>${esc(f.n)}</b><span style="color:${f.hp ? mix(col, '#3a3350', .2) : '#4fa877'}">${!f.hp ? '잡았다 ✓' : f.hp < 100 ? '싸우는 중' : '발견!'}</span></div><div class="hp"><u style="width:${f.hp}%;background:${f.hp > 50 ? '#f08a9b' : '#f2c14e'}"></u></div></div></div>`).join('')}</div></div>
+        ${T.length ? `<div class="say">${T.map(t => `<div><i style="color:${col}">▶</i>${esc(t)}</div>`).join('')}</div>` : ''}${ft}`; })(),
     }[L];
     return `<div class="lk lk-${L}" style="background-color:${bg}">${body}${fx}</div>`; }
   function noticeHtml(d) { if (d.nlook && d.nlook !== 'poster' && LOOK_FACE[d.nlook]) return lookHtml(d); const [, col, bg, emo] = ntPal(d), e = d.nemo == null ? emo : d.nemo;
@@ -413,7 +444,7 @@
       <label>날짜·시간 (안 써도 돼요)<input data-k="nwhen" value="${esc(d.nwhen)}"><button type="button" class="add" data-nnow style="padding:6px;margin-top:4px">지금 시각으로</button></label>
       <label>이모지 (바꾸거나 지워도 돼요)<input data-k="nemo" value="${esc(d.nemo == null ? (NOTICE.find(x => x[0] === d.ntag) || [])[3] || '' : d.nemo)}" maxlength="4"></label>
       <label>제목<input data-k="ntitle" value="${esc(d.ntitle)}" placeholder="꼭 확인해 주세요"></label>
-      <label>설명 (안 써도 돼요)<textarea data-k="nsub" style="min-height:70px" placeholder="조아메모리 사용에 영향을 주는 중요한 소식이에요">${esc(d.nsub)}</textarea></label>`;
+      <label>${d.nlook === 'battle' ? '적 (한 줄에 하나 · 오류 | 남은 체력)' : '설명 (안 써도 돼요)'}<textarea data-k="nsub" style="min-height:${d.nlook === 'battle' ? 110 : 70}px" placeholder="${d.nlook === 'battle' ? '아이폰에서 튕김 | 100&#10;정리 중 표시가 다른 방에 뜸 | 40&#10;새 방이 느림 | 잡음&#10;막대 없이 쓰면 아래 말상자에 나와요' : '조아메모리 사용에 영향을 주는 중요한 소식이에요'}">${esc(d.nsub)}</textarea>${d.nlook === 'battle' ? '<span class="hint">100 발견 · 1~99 싸우는 중 · 0이나 잡음 = 잡았다 · | 없는 줄은 아래 말상자</span>' : ''}</label>`;
   const styleBar = (d, kind) => `<div class="sw" style="margin:-4px 0 4px"><button type="button" data-style="base" aria-pressed="${d.style === 'base'}" style="padding:5px 14px">${kind === 'guide' ? '설명서' : '카톡'} 모양</button><button type="button" data-style="card" aria-pressed="${d.style === 'card'}" style="padding:5px 14px">노션 카드</button><button type="button" data-style="notice" aria-pressed="${d.style === 'notice'}" style="padding:5px 14px">공지</button></div>`;
   // open({ version, date, kind }, done({ file, title, body, icon, tags }))
   function open(opt, done) {
@@ -441,7 +472,7 @@
     const busy = on => dlg.querySelectorAll('[data-mk]').forEach(b => { b.disabled = on; });
     dlg.addEventListener('click', async e => {
       const g = s => e.target.closest(s);
-      if (g('[data-ntag]')) { const b = g('[data-ntag]').dataset; d.ntag = b.ntag; d.ncol = b.c || ''; if (b.i == null) delete d.nicon; else d.nicon = b.i; return repaint(); }
+      if (g('[data-ntag]')) { const b = g('[data-ntag]').dataset; d.ntag = b.ntag; d.ncol = b.c || ''; if (b.ntag === '오류와의 전쟁') d.nlook = 'battle'; if (b.i == null) delete d.nicon; else d.nicon = b.i; return repaint(); }
       if (g('[data-nord]')) { e.preventDefault(); d.nord = !d.nord; return repaint(); }
       if (g('[data-mv]')) { e.preventDefault(); const [n, dir] = g('[data-mv]').dataset.mv.split(','), L = kindList().map(k => k.n), i = L.indexOf(n), j = i + Number(dir); if (j >= 0 && j < L.length) { [L[i], L[j]] = [L[j], L[i]]; last.order = L; store.set(last); } return repaint(); }
       if (g('[data-kdel]')) { e.preventDefault(); const n = g('[data-kdel]').dataset.kdel; last.kinds = (last.kinds || []).filter(k => k.n !== n); store.set(last); return repaint(); }
@@ -470,7 +501,7 @@
         store.set(Object.assign(last, { style: d.style }, kind === 'guide' || d.style === 'card' ? { gacc: d.acc } : { preset: d.preset ?? NEWS.findIndex(t => t.bg === d.bg) }));
         if (mk === 'save') { const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = name; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 4000); }
         else { dlg.close(); const file = new File([blob], name, { type: 'image/png' });
-          if (d.style === 'notice') fin({ file, title: d.ntitle.trim(), body: d.nsub.trim(), icon: '', tags: [] });
+          if (d.style === 'notice') fin({ file, title: d.ntitle.trim(), body: d.nlook === 'battle' ? [...foesOf(d).map(f => (f.hp ? '⚔️ ' : '✅ ') + f.n), ...saysOf(d)].join('\n') : d.nsub.trim(), icon: '', tags: [] });
           else if (d.style === 'card') { const it = lines(d.citems).map(pair); fin({ file, title: d.ctitle.trim(), body: it.slice(0, 3).map(x => x[0]).join(' · '), icon: d.cicon || '', tags: d.ver ? [d.ver] : [] }); }
           else if (kind === 'guide') fin({ file, title: d.title.trim(), body: d.lead.trim(), icon: '📖', tags: [] });
           else { const b = lines(d.bubbles).map(pair); fin({ file, title: b[0][0].replace(/[.!~]+$/, ''), body: b.slice(0, 3).map(x => x[0]).join(' '), icon: d.av || '', tags: d.ver ? [d.ver] : [] }); } }
