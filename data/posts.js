@@ -1,4 +1,4 @@
-window.JOA_POSTS_AT = 1795505979078;
+window.JOA_POSTS_AT = 1795506054885;
 window.JOA_POSTS = [
   {
     "id": "pmwudhdgs",
@@ -9,10 +9,10 @@ window.JOA_POSTS = [
     "body": "",
     "tags": [],
     "images": [
-      "img/20261124-68t7lm-update.png"
+      "img/20261124-3w0b77-update.png"
     ],
     "specs": {
-      "img/20261124-68t7lm-update.png": {
+      "img/20261124-3w0b77-update.png": {
         "kind": "news",
         "ver": "5.8.88",
         "bg": "#c9d2e4",
@@ -45,7 +45,7 @@ window.JOA_POSTS = [
         "ntag": "오류와의 전쟁",
         "nwhen": "2026년 11월 24일 (화) · 오후 4:25",
         "ntitle": "오류 3마리가 쳐들어왔다!",
-        "nsub": "랙시들의 제보가 무기예요! \n오늘부터 오류 제외 추가 업데이트 없이 오류를 계속 잡을 예정이예요!",
+        "nsub": "랙시들의 제보가 무기예요! \n오늘부터 오류 안정화 작업에 집중해요",
         "cicon": "",
         "ctitle": "5.8.88 업데이트",
         "csub": "11월 24일 · 조아메모리",
