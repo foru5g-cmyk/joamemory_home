@@ -1,4 +1,4 @@
-window.JOA_POSTS_AT = 1795527948809;
+window.JOA_POSTS_AT = 1795528113327;
 window.JOA_POSTS = [
   {
     "id": "pmwuqtzj5",
@@ -17,23 +17,6 @@ window.JOA_POSTS = [
     ],
     "pin": false,
     "at": 1795527699233
-  },
-  {
-    "id": "pmwuiry2x",
-    "menu": "mmwr8eeje",
-    "date": "2026-11-24",
-    "icon": "🐱",
-    "title": "업데이트 예정 · 프로필 톡, 끝!",
-    "body": "5.8.90 업데이트 예정! 조아메모리 안 웹 모드 홈, 첫 대화 시작 전에 떠. 프로필 고르고 유저노트 넣고, 첫 지문 이름까지 바꿔 줄게.",
-    "tags": [
-      "업데이트 예정",
-      "5.8.90"
-    ],
-    "images": [
-      "img/20261124-qs3j59.jpg"
-    ],
-    "pin": false,
-    "at": 1795514167113
   },
   {
     "id": "pmwudhdgs",
