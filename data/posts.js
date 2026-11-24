@@ -1,4 +1,4 @@
-window.JOA_POSTS_AT = 1795505341654;
+window.JOA_POSTS_AT = 1795505383942;
 window.JOA_POSTS = [
   {
     "id": "pmwudhdgs",
@@ -9,10 +9,10 @@ window.JOA_POSTS = [
     "body": "",
     "tags": [],
     "images": [
-      "img/20261124-2npx28-update.png"
+      "img/20261124-ur1ocw-update.png"
     ],
     "specs": {
-      "img/20261124-2npx28-update.png": {
+      "img/20261124-ur1ocw-update.png": {
         "kind": "news",
         "ver": "5.8.88",
         "bg": "#c9d2e4",
@@ -55,7 +55,7 @@ window.JOA_POSTS = [
         "foes": [
           {
             "n": "나도 모르는 오류",
-            "hp": 10,
+            "hp": 100,
             "c": ""
           },
           {
