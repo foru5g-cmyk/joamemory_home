@@ -1,4 +1,4 @@
-window.JOA_POSTS_AT = 1795503333368;
+window.JOA_POSTS_AT = 1795503338293;
 window.JOA_POSTS = [
   {
     "id": "pmwucb8cs",
@@ -15,7 +15,7 @@ window.JOA_POSTS = [
     "images": [
       "img/20261124-hxsfpg.png"
     ],
-    "pin": false,
+    "pin": true,
     "at": 1795503309580
   },
   {
