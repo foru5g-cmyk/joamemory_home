@@ -298,9 +298,8 @@
     else { for (const cx of [39, 61]) { x.fillStyle = '#fff'; x.beginPath(); x.arc(cx, 52, 7.5, 0, 7); x.fill(); x.lineWidth = 2; x.stroke(); x.fillStyle = ink; x.beginPath(); x.arc(cx + (cx < 50 ? 1.6 : -1.6), 53, 3.4, 0, 7); x.fill(); } x.lineWidth = 3; x.beginPath(); x.moveTo(31, 41); x.lineTo(43, 45); x.moveTo(69, 41); x.lineTo(57, 45); x.stroke(); x.beginPath(); x.moveTo(44, 68); x.quadraticCurveTo(50, 63, 56, 68); x.stroke(); }
     return cv.toDataURL('image/png'); })());
   const BUG_COLS = ['#f2a7b8', '#9dbdf0', '#b8a6f0', '#f5b38a', '#9fd5a8'];
-  // 설명 한 줄 = 적 하나: 오류 | 남은 체력(0~100) · 안 쓰면 100 · '잡음'도 0 · | 가 없는 줄은 아래 말상자로
-  const foesOf = d => lines(d.nsub || '').filter(l => l.includes('|')).slice(0, 6).map(l => { const [n, v] = l.split('|').map(t => t.trim()), hp = d.fixed || /잡|끝|완료|고침/.test(v) ? 0 : v === '' || !Number.isFinite(parseInt(v, 10)) ? 100 : Math.max(0, Math.min(100, parseInt(v, 10))); return { n, hp }; });
-  const saysOf = d => lines(d.nsub || '').filter(l => !l.includes('|'));
+  // 적: 칸에서 하나씩(이름·남은 체력·색) · 체력 100 발견 · 1~99 싸우는 중 · 0 잡음 · 설명 칸은 아래 말상자
+  const foesOf = d => (d.foes || []).filter(f => f.n.trim()).map(f => d.fixed ? { ...f, hp: 0 } : f);
   // 포스터 말고 다른 모양들(메모지·말풍선·창·팻말·스티커) · 알림판에선 화면에 바로 그리고, 그림 받기는 html2canvas로 찍어요
   const LOOKS = [['poster', '🖼️ 포스터'], ['memo', '📝 메모지'], ['window', '🪟 창'], ['sign', '🪧 팻말'], ['sticker', '🌟 스티커'], ['battle', '⚔️ 전쟁']];
   const NT_FACE = { '알려진 오류': '울먹', '긴급 공지': '놀람', '해결 완료': '반짝', '권장 사항': '윙크', '업데이트 예고': '행복', '점검 안내': '졸림', '알림': '기본', '오류와의 전쟁': '전투' };
@@ -319,9 +318,9 @@
       window: `<div class="pad" style="box-shadow:10px 10px 0 ${col}"><div class="bar" style="background:${col}55"><i></i><i></i><i></i><span>joamemory.txt</span></div><div class="in">${tg}${h1}${p}</div></div>${cat}${em}${ft}`,
       sign: `<div class="pad" style="border-color:${col}">${tg}${h1}${p}</div>${cat}${em}${ft}`,
       sticker: `<div class="pad" style="background:${mix(col, '#ffffff', .78)}">${tg}${h1}${p}</div><div class="cc">${cat}</div>${em}${ft}${STK.map(([c, f, k]) => f ? `<span class="sk ${k}"><img alt="" src="${catPng(c, f)}"></span>` : `<span class="sk ${k}" style="color:${c}">${esc(k.split(' ')[1])}</span>`).join('')}`,
-      battle: (() => { const F = foesOf(d), left = F.filter(f => f.hp).length, T = saysOf(d);
+      battle: (() => { const F = foesOf(d), left = F.filter(f => f.hp).length, T = lines(d.nsub || '');
         return `<i class="hill" style="background:${mix(col, '#ffffff', .62)}"></i><div class="hd">${tg}${F.length ? `<span class="cnt">${left ? `남은 적 <b style="color:${mix(col, '#3a3350', .3)}">${left}</b> / ${F.length}` : '전부 잡았다!'}</span>` : ''}</div>${h1}
-        <div class="fd"><div class="hero"><img alt="" src="${knightPng(mix(col, '#ffffff', .18), face)}"></div>${F.length ? '' : `<div class="boss"><img alt="" src="${bugPng('#f2a7b8', !!d.fixed)}"></div>`}<div class="foes">${F.map((f, i) => `<div class="foe"><img alt="" src="${bugPng(BUG_COLS[i % 5], !f.hp)}"><div class="hpb${f.hp ? '' : ' off'}"><div class="hn"><b>${esc(f.n)}</b><span style="color:${f.hp ? mix(col, '#3a3350', .2) : '#4fa877'}">${!f.hp ? '잡았다 ✓' : f.hp < 100 ? '싸우는 중' : '발견!'}</span></div><div class="hp"><u style="width:${f.hp}%;background:${f.hp > 50 ? '#f08a9b' : '#f2c14e'}"></u></div></div></div>`).join('')}</div></div>
+        <div class="fd"><div class="hero"><img alt="" src="${knightPng(mix(col, '#ffffff', .18), face)}"></div>${F.length ? '' : `<div class="boss"><img alt="" src="${bugPng('#f2a7b8', !!d.fixed)}"></div>`}<div class="foes">${F.map((f, i) => `<div class="foe"><img alt="" src="${bugPng(f.c || BUG_COLS[i % 5], !f.hp)}"><div class="hpb${f.hp ? '' : ' off'}"><div class="hn"><b>${esc(f.n)}</b><span style="color:${f.hp ? mix(col, '#3a3350', .2) : '#4fa877'}">${!f.hp ? '잡았다 ✓' : f.hp < 100 ? '싸우는 중' : '발견!'}</span></div><div class="hp"><u style="width:${f.hp}%;background:${f.c || (f.hp > 50 ? '#f08a9b' : '#f2c14e')}"></u></div></div></div>`).join('')}</div></div>
         ${T.length ? `<div class="say">${T.map(t => `<div><i style="color:${col}">▶</i>${esc(t)}</div>`).join('')}</div>` : ''}${ft}`; })(),
     }[L];
     return `<div class="lk lk-${L}" style="background-color:${bg}">${body}${fx}</div>`; }
@@ -430,6 +429,12 @@
   const PASTEL = ['#f2a7b8', '#f0a6c9', '#f5b38a', '#f2cf7a', '#a9c7a0', '#9fd5a8', '#8fcfd8', '#9dbdf0', '#b8a6f0', '#d7a6e8'];
   const kindList = () => { const L = store.get() || {}, o = L.order || [], at = n => (o.indexOf(n) + 1) || 999;
     return [...NOTICE.map(([n, c]) => ({ n, c })), ...(L.kinds || []).filter(k => !NOTICE.some(x => x[0] === k.n)).map(k => ({ ...k, saved: true }))].sort((a, b) => at(a.n) - at(b.n)); }; // shortcut: 순서는 이 기기에만, 여러 기기면 사이트 설정으로
+  const foeForm = d => { d.foes = d.foes || [{ n: '', hp: 100, c: '' }];
+    return `<label>적 (잡을 오류)</label><div class="steps-ed">${d.foes.map((f, i) => `<div class="stp"><div class="sh"><img src="${bugPng(f.c || BUG_COLS[i % 5], !f.hp)}" alt="" style="width:26px;height:26px">${i + 1}번 적${d.foes.length > 1 ? `<button type="button" data-delfoe="${i}">빼기</button>` : ''}</div>
+        <input data-foe="n" data-i="${i}" value="${esc(f.n)}" placeholder="오류 이름 (예: 아이폰에서 튕김)">
+        <div class="sw">${[['발견!', 100], ['싸우는 중', 50], ['잡았다', 0]].map(([t, h]) => `<button type="button" data-foehp="${i},${h}" aria-pressed="${h === 50 ? f.hp > 0 && f.hp < 100 : f.hp === h}">${t}</button>`).join('')}</div>
+        ${f.hp > 0 && f.hp < 100 ? `<label>남은 체력 (밀어서 줄여요)<input type="range" min="5" max="95" step="5" data-foe="hp" data-i="${i}" value="${f.hp}"></label>` : ''}
+        ${f.hp ? `<label>막대·벌레 색<div class="sw"><button type="button" data-foecol="${i}," aria-pressed="${!f.c}">저절로</button>${PASTEL.map(c => `<button type="button" data-foecol="${i},${c}" aria-pressed="${f.c === c}" style="padding:4px"><i style="background:${c};width:22px;height:22px"></i></button>`).join('')}<input type="color" class="cpick" data-foe="c" data-i="${i}" value="${f.c || BUG_COLS[i % 5]}" title="색 직접 고르기"></div></label>` : ''}</div>`).join('')}</div>${d.foes.length < 6 ? '<button type="button" class="add" data-addfoe>+ 적 추가</button>' : ''}`; };
   const noticeForm = d => `
       <label>모양<div class="sw">${LOOKS.map(([k, n]) => `<button type="button" data-nlook="${k}" aria-pressed="${(d.nlook || 'poster') === k}">${n}</button>`).join('')}</div></label>
       <label>종류 <button type="button" class="nord" data-nord aria-pressed="${!!d.nord}">${d.nord ? '다 했어요' : '순서 바꾸기'}</button><div class="sw">${kindList().map(k => d.nord
@@ -444,7 +449,7 @@
       <label>날짜·시간 (안 써도 돼요)<input data-k="nwhen" value="${esc(d.nwhen)}"><button type="button" class="add" data-nnow style="padding:6px;margin-top:4px">지금 시각으로</button></label>
       <label>이모지 (바꾸거나 지워도 돼요)<input data-k="nemo" value="${esc(d.nemo == null ? (NOTICE.find(x => x[0] === d.ntag) || [])[3] || '' : d.nemo)}" maxlength="4"></label>
       <label>제목<input data-k="ntitle" value="${esc(d.ntitle)}" placeholder="꼭 확인해 주세요"></label>
-      <label>${d.nlook === 'battle' ? '적 (한 줄에 하나 · 오류 | 남은 체력)' : '설명 (안 써도 돼요)'}<textarea data-k="nsub" style="min-height:${d.nlook === 'battle' ? 110 : 70}px" placeholder="${d.nlook === 'battle' ? '아이폰에서 튕김 | 100&#10;정리 중 표시가 다른 방에 뜸 | 40&#10;새 방이 느림 | 잡음&#10;막대 없이 쓰면 아래 말상자에 나와요' : '조아메모리 사용에 영향을 주는 중요한 소식이에요'}">${esc(d.nsub)}</textarea>${d.nlook === 'battle' ? '<span class="hint">100 발견 · 1~99 싸우는 중 · 0이나 잡음 = 잡았다 · | 없는 줄은 아래 말상자</span>' : ''}</label>`;
+      ${d.nlook === 'battle' ? foeForm(d) : ''}<label>${d.nlook === 'battle' ? '아래 말상자 (안 써도 돼요)' : '설명 (안 써도 돼요)'}<textarea data-k="nsub" style="min-height:70px" placeholder="${d.nlook === 'battle' ? '랙시들의 제보가 무기예요!' : '조아메모리 사용에 영향을 주는 중요한 소식이에요'}">${esc(d.nsub)}</textarea></label>`;
   const styleBar = (d, kind) => `<div class="sw" style="margin:-4px 0 4px"><button type="button" data-style="base" aria-pressed="${d.style === 'base'}" style="padding:5px 14px">${kind === 'guide' ? '설명서' : '카톡'} 모양</button><button type="button" data-style="card" aria-pressed="${d.style === 'card'}" style="padding:5px 14px">노션 카드</button><button type="button" data-style="notice" aria-pressed="${d.style === 'notice'}" style="padding:5px 14px">공지</button></div>`;
   // open({ version, date, kind }, done({ file, title, body, icon, tags }))
   function open(opt, done) {
@@ -466,7 +471,8 @@
     const repaint = () => { const y = dlg.querySelector('.side')?.scrollTop || 0, wy = dlg.querySelector('.wrap')?.scrollTop || 0; paint(); const sd = dlg.querySelector('.side'), wr = dlg.querySelector('.wrap'); if (sd) sd.scrollTop = y; if (wr) wr.scrollTop = wy; };
     dlg.addEventListener('input', e => { const t = e.target, k = t.dataset.k, sk = t.dataset.sk;
       if (k) { d[k] = t.value; if (k === 'bg') { d.acc = mix(t.value, '#000000', .45); dlg.querySelectorAll('[data-preset]').forEach(b => b.setAttribute('aria-pressed', 'false')); } if (k === 'ncol') dlg.querySelectorAll('[data-ntag]').forEach(b => b.setAttribute('aria-pressed', 'false')); if (k === 'acc') dlg.querySelectorAll('[data-acc]').forEach(b => b.setAttribute('aria-pressed', 'false')); draw(); }
-      else if (sk) { d.steps[+t.dataset.i][sk] = t.value; draw(); } });
+      else if (sk) { d.steps[+t.dataset.i][sk] = t.value; draw(); }
+      else if (t.dataset.foe) { d.foes[+t.dataset.i][t.dataset.foe] = t.dataset.foe === 'hp' ? +t.value : t.value; draw(); } });
     dlg.addEventListener('change', e => { const t = e.target; if (!t.dataset.shot) return; const f = t.files && t.files[0]; if (!f) return; const i = +t.dataset.shot;
       const r = new FileReader(); r.onload = () => { d.steps[i].img = r.result; repaint(); }; r.readAsDataURL(f); }); // 단계 그림은 데이터로 넣어 둬요(그림으로 찍을 때 그대로 들어가게)
     const busy = on => dlg.querySelectorAll('[data-mk]').forEach(b => { b.disabled = on; });
@@ -486,6 +492,10 @@
       if (g('[data-style]')) { d.style = g('[data-style]').dataset.style; if (kind === 'news') d.acc = d.style === 'card' ? (last.gacc || ACCS[0]) : (NEWS.find(t => t.bg === d.bg) || NEWS[0]).acc; return repaint(); }
       if (g('[data-preset]')) { const t = NEWS[+g('[data-preset]').dataset.preset]; Object.assign(d, { bg: t.bg, acc: t.acc }); d.preset = +g('[data-preset]').dataset.preset; return repaint(); }
       if (g('[data-acc]')) { d.acc = g('[data-acc]').dataset.acc; return repaint(); }
+      if (g('[data-addfoe]')) { d.foes.push({ n: '', hp: 100, c: '' }); return repaint(); }
+      if (g('[data-delfoe]')) { d.foes.splice(+g('[data-delfoe]').dataset.delfoe, 1); return repaint(); }
+      if (g('[data-foehp]')) { const [n, h] = g('[data-foehp]').dataset.foehp.split(',').map(Number); d.foes[n].hp = h; return repaint(); }
+      if (g('[data-foecol]')) { const [n, c] = g('[data-foecol]').dataset.foecol.split(','); d.foes[+n].c = c; return repaint(); }
       if (g('[data-addstep]')) { d.steps.push({ t: '', p: '', img: '' }); repaint(); return dlg.querySelector('.add')?.scrollIntoView({ block: 'center' }); }
       if (g('[data-delstep]')) { d.steps.splice(+g('[data-delstep]').dataset.delstep, 1); return repaint(); }
       if (g('[data-pickshot]')) return dlg.querySelector(`[data-shot="${g('[data-pickshot]').dataset.pickshot}"]`).click();
@@ -501,7 +511,7 @@
         store.set(Object.assign(last, { style: d.style }, kind === 'guide' || d.style === 'card' ? { gacc: d.acc } : { preset: d.preset ?? NEWS.findIndex(t => t.bg === d.bg) }));
         if (mk === 'save') { const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = name; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 4000); }
         else { dlg.close(); const file = new File([blob], name, { type: 'image/png' });
-          if (d.style === 'notice') fin({ file, title: d.ntitle.trim(), body: d.nlook === 'battle' ? [...foesOf(d).map(f => (f.hp ? '⚔️ ' : '✅ ') + f.n), ...saysOf(d)].join('\n') : d.nsub.trim(), icon: '', tags: [] });
+          if (d.style === 'notice') fin({ file, title: d.ntitle.trim(), body: d.nlook === 'battle' ? [...foesOf(d).map(f => (f.hp ? '⚔️ ' : '✅ ') + f.n), ...lines(d.nsub || '')].join('\n') : d.nsub.trim(), icon: '', tags: [] });
           else if (d.style === 'card') { const it = lines(d.citems).map(pair); fin({ file, title: d.ctitle.trim(), body: it.slice(0, 3).map(x => x[0]).join(' · '), icon: d.cicon || '', tags: d.ver ? [d.ver] : [] }); }
           else if (kind === 'guide') fin({ file, title: d.title.trim(), body: d.lead.trim(), icon: '📖', tags: [] });
           else { const b = lines(d.bubbles).map(pair); fin({ file, title: b[0][0].replace(/[.!~]+$/, ''), body: b.slice(0, 3).map(x => x[0]).join(' '), icon: d.av || '', tags: d.ver ? [d.ver] : [] }); } }
