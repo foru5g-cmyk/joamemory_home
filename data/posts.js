@@ -1,5 +1,22 @@
-window.JOA_POSTS_AT = 1795502747049;
+window.JOA_POSTS_AT = 1795502991053;
 window.JOA_POSTS = [
+  {
+    "id": "pmwuc4ekt",
+    "menu": "guide",
+    "date": "2026-11-24",
+    "icon": "☁️",
+    "title": "구글 드라이브 더 빠르게 바꾸기",
+    "body": "이미 쓰던 사람만! 주소랑 비밀번호는 그대로예요.",
+    "tags": [
+      "5.8.85",
+      "드라이브"
+    ],
+    "images": [
+      "img/20261124-0pux31.png"
+    ],
+    "pin": false,
+    "at": 1795502991053
+  },
   {
     "id": "pmwuaumi3",
     "menu": "news",
