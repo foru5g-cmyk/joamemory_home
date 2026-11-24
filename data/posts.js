@@ -1,4 +1,4 @@
-window.JOA_POSTS_AT = 1795502084295;
+window.JOA_POSTS_AT = 1795502747049;
 window.JOA_POSTS = [
   {
     "id": "pmwuaumi3",
@@ -8,7 +8,7 @@ window.JOA_POSTS = [
     "title": "조아메모리 최적화 및 단장",
     "body": "더 가볍게, 더 보기 좋게. 자주 쓰는 버튼은 위로 모았어요.",
     "tags": [
-      "5.8.83",
+      "5.8.84",
       "홈"
     ],
     "images": [
