@@ -1,19 +1,5 @@
-window.JOA_POSTS_AT = 1795502064246;
+window.JOA_POSTS_AT = 1795502084295;
 window.JOA_POSTS = [
-  {
-    "id": "pmwubkjg6",
-    "menu": "guide",
-    "date": "2026-11-24",
-    "icon": "📖",
-    "title": "☁️ 드라이브가 더 빨라져요 (교체)",
-    "body": "",
-    "tags": [],
-    "images": [
-      "img/20261124-aokl2j.png"
-    ],
-    "pin": false,
-    "at": 1795502064246
-  },
   {
     "id": "pmwuaumi3",
     "menu": "news",
