@@ -1,4 +1,4 @@
-window.JOA_POSTS_AT = 1795527699233;
+window.JOA_POSTS_AT = 1795527948809;
 window.JOA_POSTS = [
   {
     "id": "pmwuqtzj5",
@@ -6,14 +6,14 @@ window.JOA_POSTS = [
     "date": "2026-11-24",
     "icon": "💫",
     "title": "업데이트 완료 · 프로필 톡, 끝!",
-    "body": "첫 대화 전에 프로필·유저노트·첫 지문 이름까지 한 번에. 달력 요일도 롤플 날짜대로 나와요.",
+    "body": "조아메모리 › 웹 모드 › 홈 맨 위, 첫 대화 전에 떠요. 고르면 바로 돼요, 새로고침 안 해도!",
     "tags": [
       "5.8.91",
       "프로필",
       "달력"
     ],
     "images": [
-      "img/20261124-epe8nc.png"
+      "img/20261124-xcyuxt.png"
     ],
     "pin": false,
     "at": 1795527699233
