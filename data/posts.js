@@ -1,5 +1,80 @@
-window.JOA_POSTS_AT = 1795503338293;
+window.JOA_POSTS_AT = 1795505275756;
 window.JOA_POSTS = [
+  {
+    "id": "pmwudhdgs",
+    "menu": "mmwr8eeje",
+    "date": "2026-11-24",
+    "icon": "",
+    "title": "",
+    "body": "",
+    "tags": [],
+    "images": [
+      "img/20261124-iui8aw-update.png"
+    ],
+    "specs": {
+      "img/20261124-iui8aw-update.png": {
+        "kind": "news",
+        "ver": "5.8.88",
+        "bg": "#c9d2e4",
+        "acc": "#7b61d9",
+        "av": "",
+        "pill": "11월 24일 소식",
+        "head": "조아메모리",
+        "sub": "업데이트",
+        "bubbles": "",
+        "me": "",
+        "cards": "",
+        "foot": "",
+        "title": "",
+        "lead": "",
+        "steps": [
+          {
+            "t": "",
+            "p": "",
+            "img": ""
+          },
+          {
+            "t": "",
+            "p": "",
+            "img": ""
+          }
+        ],
+        "tips": "",
+        "errs": "",
+        "style": "notice",
+        "ntag": "오류와의 전쟁",
+        "nwhen": "2026년 11월 24일 (화) · 오후 4:25",
+        "ntitle": "오류 3마리가 쳐들어왔다!",
+        "nsub": "랙시들의 제보가 무기예요! ",
+        "cicon": "",
+        "ctitle": "5.8.88 업데이트",
+        "csub": "11월 24일 · 조아메모리",
+        "citems": "",
+        "ctip": "",
+        "nlook": "battle",
+        "foes": [
+          {
+            "n": "나도 모르는 오류",
+            "hp": 10,
+            "c": ""
+          },
+          {
+            "n": "아무튼 어쩌고 오류",
+            "hp": 20,
+            "c": "#9dbdf0"
+          },
+          {
+            "n": "턴이 길 때 생기는 오류",
+            "hp": 10,
+            "c": "#f2cf7a"
+          }
+        ],
+        "ncol": "#b8a6f0"
+      }
+    },
+    "pin": false,
+    "at": 1795505275756
+  },
   {
     "id": "pmwucb8cs",
     "menu": "guide",
