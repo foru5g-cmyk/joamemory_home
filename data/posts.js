@@ -1,4 +1,4 @@
-window.JOA_POSTS_AT = 1795505383942;
+window.JOA_POSTS_AT = 1795505420657;
 window.JOA_POSTS = [
   {
     "id": "pmwudhdgs",
@@ -9,10 +9,10 @@ window.JOA_POSTS = [
     "body": "",
     "tags": [],
     "images": [
-      "img/20261124-ur1ocw-update.png"
+      "img/20261124-i9uwu5-update.png"
     ],
     "specs": {
-      "img/20261124-ur1ocw-update.png": {
+      "img/20261124-i9uwu5-update.png": {
         "kind": "news",
         "ver": "5.8.88",
         "bg": "#c9d2e4",
@@ -60,12 +60,12 @@ window.JOA_POSTS = [
           },
           {
             "n": "아무튼 어쩌고 오류",
-            "hp": 20,
+            "hp": 40,
             "c": "#9dbdf0"
           },
           {
             "n": "턴이 길 때 생기는 오류",
-            "hp": 10,
+            "hp": 70,
             "c": "#f2cf7a"
           }
         ],
