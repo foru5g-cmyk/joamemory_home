@@ -1,4 +1,4 @@
-window.JOA_POSTS_AT = 1795706046689;
+window.JOA_POSTS_AT = 1795707087916;
 window.JOA_POSTS = [
   {
     "id": "pmwxp0lb5",
@@ -8,12 +8,12 @@ window.JOA_POSTS = [
     "title": "업데이트 완료 · 말풍선 톡톡 수정",
     "body": "말풍선을 두 번 톡톡 하면 수정이 열려요(설정 › 화면에서 켜요). 넓게 볼 때 ⋯ 단추를 가리던 화살표도 작아졌어요.",
     "tags": [
-      "6.0.21",
+      "6.0.22",
       "톡톡 수정",
       "편의"
     ],
     "images": [
-      "img/20261127-6gkci6.png"
+      "img/20261127-7b7wih.png"
     ],
     "pin": false,
     "at": 1795706046689
