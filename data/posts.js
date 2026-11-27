@@ -1,5 +1,23 @@
-window.JOA_POSTS_AT = 1795707087916;
+window.JOA_POSTS_AT = 1795794253397;
 window.JOA_POSTS = [
+  {
+    "id": "pmwz5j61h",
+    "menu": "news",
+    "date": "2026-11-28",
+    "icon": "📅",
+    "title": "업데이트 완료 · HUD에 연도 넣기",
+    "body": "설정 › 화면 › HUD에 연도 넣기가 깔끔해지고 빨라졌어요. HUD 한 줄을 붙여 넣고 날짜를 누르면 이 방 AI 답 머리말 날짜에 연도를 한꺼번에 붙여 줘요(12월 → 1월은 다음 해로). 긴 방도 여러 개씩 같이 바꿔서 훨씬 빨리 끝나고, 바꾼 줄은 되돌릴 수 있어요.\n아이폰 Userscripts 앱에서 자동 정리가 안 돌고 빨간 하트만 뜨던 것도 고쳤어요.",
+    "tags": [
+      "6.0.34",
+      "HUD",
+      "자동 정리"
+    ],
+    "images": [
+      "img/20261128-ve4syk.png"
+    ],
+    "pin": false,
+    "at": 1795794253397
+  },
   {
     "id": "pmwxp0lb5",
     "menu": "news",
